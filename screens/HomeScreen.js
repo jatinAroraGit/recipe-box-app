@@ -1,5 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
+import { Button } from 'react-native-paper';
 import {
   Image,
   Platform,
@@ -10,10 +11,19 @@ import {
   View,
 } from 'react-native';
 
+import { Provider as PaperProvider } from 'react-native-paper';
+
 import { MonoText } from '../components/StyledText';
 
 export default function HomeScreen() {
   return (
+     <PaperProvider>
+     <Button icon="camera" mode="contained" onPress={() => console.log('Pressed')}>
+    Press me
+  </Button>
+    </PaperProvider>
+  )
+  /*return (
     <View style={styles.container}>
       <ScrollView
         style={styles.container}
@@ -66,7 +76,7 @@ export default function HomeScreen() {
         </View>
       </View>
     </View>
-  );
+  );*/
 }
 
 HomeScreen.navigationOptions = {
