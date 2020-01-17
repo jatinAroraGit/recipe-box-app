@@ -4,6 +4,7 @@
     "slug": "recipe-box",
     "privacy": "public",
     "sdkVersion": "36.0.0",
+    "primaryColor": "#F06292",
     "platforms": [
       "ios",
       "android",
@@ -15,7 +16,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFF176"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,7 +25,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.groupQuattro.recipeBox"
+    },
+    "android": {
+      "package": "com.groupQuattro.recipeBox"
+    },
+    "description": ""
   }
 }
