@@ -1,14 +1,16 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
+import { bold } from 'ansi-colors';
 
 export default function TabBarIcon(props) {
   return (
-    <Ionicons
+    <MaterialCommunityIcons
       name={props.name}
-      size={26}
-      style={{ marginBottom: -3 }}
+      size={25}
+      fontWeight={"500"}
+      style={{ marginBottom: -3, fontWeight: bold }}
       color={props.focused ? Colors.tabIconSelected : Colors.tabIconDefault}
     />
   );
