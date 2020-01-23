@@ -3,11 +3,12 @@ import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme, Drawer, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 //import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 import AppNavigator from './navigation/AppNavigator';
+import SidebarNavigator from './navigation/SidebarNavigator'
 
 export default function App(props) {
   
@@ -24,13 +25,11 @@ export default function App(props) {
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
       <PaperProvider theme={theme}>
-     
       <AppLoading
         startAsync={loadResourcesAsync}
         onError={handleLoadingError}
         onFinish={() => handleFinishLoading(setLoadingComplete)}
       />
-      
     </PaperProvider>
     );
   } else {
