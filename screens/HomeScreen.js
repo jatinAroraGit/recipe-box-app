@@ -15,8 +15,6 @@ import {
 
 import { MonoText } from '../components/StyledText';
 
-import  TopBar  from '../components/TopBar'
-import Test from '../components/TopNavbar';
 import TopNavbar from '../components/TopNavbar';
 const viewChildrenStyle = StyleSheet.create({
   sameRow: {
@@ -110,7 +108,7 @@ export default function HomeScreen() {
           </Surface>
           <Surface style={surfaceCustom.surface}>
             <Headline style={{ color: '#F06292', fontWeight: "600" }}>Store Recipes</Headline>
-            <Title>You won't need to manage any notebook to write any recipes ever again.</Title>
+            <Title>You won't need to manage a notebook to write any recipes ever again.</Title>
             <Subheading>{'\u2B24'} Store your own recipes by just simply filling out the details and pressing upload</Subheading>
             <Subheading>{'\u2B24'} Your recipes are stored privately and never shared with anyone else.</Subheading>
             <Subheading>{'\u2B24'} You can save recipes as draft.</Subheading>

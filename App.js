@@ -8,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 //import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 import AppNavigator from './navigation/AppNavigator';
-import SidebarNavigator from './navigation/SidebarNavigator'
 
 export default function App(props) {
   
