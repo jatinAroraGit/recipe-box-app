@@ -36,6 +36,14 @@ class TopNavbar extends React.Component {
    }
     
   render() {
+    let ThirdButton;
+    if (this.props.enableThirdButton) {
+    if(this.props.iconName)
+    ThirdButton = <Appbar.Action icon={this.props.iconName} style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
+    else
+        ThirdButton = <Appbar.Action icon='settings' style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
+
+    }
     return (
      
        <Appbar.Header style={appbarCustom.transparentStyle} >
@@ -47,7 +55,7 @@ class TopNavbar extends React.Component {
             subtitle= {this.props.subtitle}
           />
           <Appbar.Action icon="magnify" style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
-         <Appbar.Action icon="menu" style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
+        {ThirdButton}
         </Appbar.Header>
    
     );
