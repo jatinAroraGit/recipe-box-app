@@ -5,9 +5,9 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import DevScreen from '../screens/DevScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
+import UserProfileScreen from '../screens/UserProfileScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -17,7 +17,7 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-
+    UserProfile: UserProfileScreen,
   },
   config
 );
