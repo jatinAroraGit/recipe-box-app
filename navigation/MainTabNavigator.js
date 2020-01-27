@@ -8,6 +8,10 @@ import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 
 const config = Platform.select({
@@ -38,7 +42,11 @@ HomeStack.path = '';
 
 const AccountStack = createStackNavigator(
   {
-    Account: PageNotFound,
+    Login: LoginScreen,
+    Register: RegisterScreen,
+    ForgotPassword: ForgotPasswordScreen,
+    UserAccount: PageNotFound,
+    SecurityQuestion: SecurityQuestionScreen,
   },
   config
 );
