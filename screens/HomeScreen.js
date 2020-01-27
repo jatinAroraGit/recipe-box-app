@@ -264,7 +264,7 @@ class HomeScreen extends React.Component {
             <Button icon="magnify" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Search')}>
               Start Searching
   </Button>
-            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('UserProfile')}>
+            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Options')}>
               Know More About Recipe Box
   </Button>
           </View>
