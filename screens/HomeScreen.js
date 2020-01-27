@@ -1,7 +1,9 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Title, Headline, Subheading, Surface, Button, Card } from 'react-native-paper';
+import { createAnimatableComponent, View } from 'react-native-animatable';
 import { withNavigation } from 'react-navigation';
+
 import {
   Image,
   ImageBackground,
@@ -10,13 +12,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  SafeAreaView
+  
+  SafeAreaView,
+  Dimensions
 } from 'react-native';
-
-
 import TopNavbar from '../components/TopNavbar';
 import UserProfileScreen from './UserProfileScreen';
+
+const AnimatableSectionList = createAnimatableComponent(Image);
+
 const viewChildrenStyle = StyleSheet.create({
   sameRow: {
     margin: 12,
@@ -61,7 +65,7 @@ const customStyles = StyleSheet.create({
         width: 400
       },
       web: {
-        width: 600,
+      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
 
 
       }
@@ -82,7 +86,7 @@ const customStyles = StyleSheet.create({
         width: 270
       },
       web: {
-        width: 500,
+      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-70): 550,
 
 
       }
@@ -116,7 +120,7 @@ const customStyles = StyleSheet.create({
         width: 300
       },
       web: {
-        width: 600,
+       width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
 
 
       }
@@ -131,8 +135,6 @@ class HomeScreen extends React.Component {
 
   render() {
     const { navigation } = this.props.navigation;
-    console.log('NAVIGATION HOME %%%%%%% ');
-    console.log(this.props.navigation.state.routeName);
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
@@ -159,7 +161,7 @@ class HomeScreen extends React.Component {
           </View>
 
 
-          <View style={viewChildrenStyle.sameColumn}>
+          <View animation="fadeIn" style={viewChildrenStyle.sameColumn}>
             <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
               <View style={customStyles.viewBoxStyle}>
                 <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Search Recipes</Headline>

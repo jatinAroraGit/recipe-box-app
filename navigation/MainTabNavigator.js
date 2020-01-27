@@ -8,6 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import DevScreen from '../screens/DevScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -53,7 +54,7 @@ AccountStack.path = '';
 
 const SearchStack = createStackNavigator(
   {
-    Search: PageNotFound,
+    Search: DevScreen,
   },
   config
 );
