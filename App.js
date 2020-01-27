@@ -24,7 +24,9 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
+      
       <PaperProvider theme={theme}>
+        <StatusBar hidden={true}></StatusBar>
       <AppLoading
         startAsync={loadResourcesAsync}
         onError={handleLoadingError}

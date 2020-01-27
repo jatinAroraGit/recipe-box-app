@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Button, Appbar, Snackbar, Menu, Divider, Provider } from 'react-native-paper';
-
-import { DrawerActions }  from 'react-navigation-drawer';
-
-import HomeScreen from "../screens/HomeScreen";
-import { visible } from 'ansi-colors';
-import Colors from '../constants/Colors';
-import { withNavigation } from 'react-navigation';
 import TopNavbar from '../components/TopNavbar';
+import { useForm } from 'react-hook-form'
+import UserProfileForm from './UserProfileForm';
+
 
 const appbarCustom = StyleSheet.create({
   safeView: {
@@ -35,20 +31,30 @@ const appbarCustom = StyleSheet.create({
 class UserProfileScreen extends React.Component {
    constructor(props) {
     super(props);
-   }
     
+   }
+  handleSubmitClick = (color) => {
+    console.log('CLICKED %%%');
+  }
   render() {
+    
 const { navigation } = this.props.navigation;
 console.log(navigation);
  console.log('NAVIGATION USER %%%%%%% ');
     console.log(this.props.navigation.state.routeName);
 return (
   
-  <View>
-    <TopNavbar title='User Profile'></TopNavbar>
+      <SafeAreaView style={{ flex: 3 }}>
+ <TopNavbar title='User Profile'></TopNavbar>
+        <ScrollView >
+  <View style={{ marginStart:10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
+   
   <Text>User Profile Screen</Text>
-  <Button onPress={() => this.props.navigation.navigate('Home')} >Click</Button>
+   <UserProfileForm props={this.props.navigation} ></UserProfileForm>
+
   </View>
+  </ScrollView>
+  </SafeAreaView>
  );
 
 
