@@ -47,17 +47,16 @@ const styles = StyleSheet.create({
 });
 
 
-function LoginForm({props}) {
+function ForgotPasswordForm({props}) {
     
     const { control, handleSubmit, errors } = useForm({mode:'onChange'});
     const onSubmit = data => {
 
         console.log(data);
 
-        if(data.email && data.password) {
+        if(data.email) {
 
             console.log('good');
-            props.navigate('UserAccount');
 
         } else {
 
@@ -75,7 +74,7 @@ function LoginForm({props}) {
   return (
 
     <View style={styles.container}>
-        <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Login</Title>
+        <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Forgot Password</Title>
         <Text style={styles.label}>Email</Text>
         <Controller
             as={<TextInput style={styles.input} />}
@@ -86,29 +85,19 @@ function LoginForm({props}) {
         />
         {errors.email && <Text style={{color:'#00FFFF'}}>Invalid Email.</Text>}
 
-        <Text style={styles.label}>Password</Text>
-        <Controller
-            as={<TextInput style={styles.input} secureTextEntry={true} />}
-            name="password"
-            control={control}
-            onChange={onChange}
-
-            rules={{ required: true, pattern:/(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/}}
-        />
-        {errors.password && <Text style={{color:'#00FFFF'}}>Invalid Password.</Text>}
+        <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
+                Send
+        </Button>
 
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
+            <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={() => props.navigate('Login')}>
                 Log in
             </Button>
             <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor: 'grey'}} mode="contained" onPress={() => props.navigate('Register')}>
                 Register
             </Button>
         </View>
-        <TouchableHighlight style={{alignSelf: 'center', marginTop: 20}} onPress={() => props.navigate('ForgotPassword')}>
-            <Text>Forgot Password?</Text>
-        </TouchableHighlight>
     </View>
   );
 }
-export default LoginForm;
+export default ForgotPasswordForm;

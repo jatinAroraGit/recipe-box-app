@@ -53,12 +53,13 @@ function LoginForm({props}) {
     const onSubmit = data => {
 
         console.log(data);
-
-        if(data.email && data.password && data.confirmEmail) {
+        
+        if(data.email && data.password && data.confirmEmail && data.confirmPassword) {
 
             if(data.email === data.confirmEmail && data.password === data.confirmPassword) {
 
             console.log('good');
+            props.navigate('SecurityQuestion');
 
             } else {
 
@@ -139,9 +140,9 @@ function LoginForm({props}) {
 
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
-                Register
+                Continue
             </Button>
-            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor: 'grey'}} mode="contained" onPress={() => props.navigate('Account')}>
+            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor: 'grey'}} mode="contained" onPress={() => props.navigate('Login')}>
                 Log in
             </Button>
         </View>
