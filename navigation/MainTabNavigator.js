@@ -96,7 +96,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: PageNotFound,
+    Options: DevScreen,
   },
   config
 );
