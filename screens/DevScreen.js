@@ -38,9 +38,12 @@ class DevScreen extends React.Component {
      recipes : []
    }
 componentDidMount() {
-  this.fetchData(this.props.navigation.getParam('searchQuery'))
+ // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
+  this.fetchData(this.props.navigation.getParam('searchQuery'));
   }
-
+componentDidUpdate(prevProps) {
+  this.fetchData(this.props.navigation.getParam('searchQuery'));
+} 
   fetchData(query){
     let apiKey = require('../configure/apiKey.json');
     if(query){

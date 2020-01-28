@@ -108,9 +108,9 @@ function LoginForm({props}) {
                 Register
             </Button>
         </View>
-        <TouchableHighlight style={{alignSelf: 'center', margin: 20}} onPress={() => props.navigate('ForgotPassword')}>
-            <Subheading style={{color:'#FFFFFF'}}>Forgot Password ?</Subheading>
-        </TouchableHighlight>
+        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => props.navigate('ForgotPassword')}>
+            Forgot Password ?
+        </Button>
     </View>
   );
 }
