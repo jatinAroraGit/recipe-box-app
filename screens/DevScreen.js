@@ -44,7 +44,6 @@ componentDidMount() {
   fetchData(query){
     let apiKey = require('../configure/apiKey.json');
     if(query){
-      console.log('!!!! URL CALLING ---- '+'https://api.spoonacular.com/recipes/search?apiKey='+apiKey.key+'&query='+query+'&number=40');
       axios.get('https://api.spoonacular.com/recipes/search?apiKey='+apiKey.key+'&query='+query+'&number=40')
       .then(res => {
         const recipes = res.data.results;

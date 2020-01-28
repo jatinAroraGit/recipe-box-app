@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
-import { Button, TextInput, Title } from 'react-native-paper';
+import { Button, TextInput, Title,Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
@@ -12,17 +12,16 @@ const styles = StyleSheet.create({
   },
   button :{
     marginTop: 40,
-    height: 40,
-    backgroundColor: '#ec5990',
+    height: 20,
+    backgroundColor: '#1DE9B6',
     borderRadius: 4
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 20,
-    marginTop: 20,
-    backgroundColor: '#7986cb',
+    padding: 8,
+    backgroundColor: '#263238',
     borderRadius:10,
     height:'auto',
      ...Platform.select({
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
         width: 320
       },
       web: {
-         width: ((Dimensions.get('window').width)-50),
+        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
       },
       android: {
         width: 320
@@ -75,7 +74,7 @@ function ForgotPasswordForm({props}) {
 
     <View style={styles.container}>
         <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Forgot Password</Title>
-        <Text style={styles.label}>Email</Text>
+        <Subheading style={styles.label}>Email</Subheading>
         <Controller
             as={<TextInput style={styles.input} />}
             name="email"
@@ -83,7 +82,7 @@ function ForgotPasswordForm({props}) {
             onChange={onChange}
             rules={{ pattern:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/}}
         />
-        {errors.email && <Text style={{color:'#00FFFF'}}>Invalid Email.</Text>}
+        {errors.email && <Subheading style={{color:'#BF360C'}}>Invalid Email.</Subheading>}
 
         <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
                 Send
