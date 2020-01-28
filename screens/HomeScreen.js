@@ -1,6 +1,9 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
-import {Title, Headline, Subheading, Surface, Button } from 'react-native-paper';
+import { Title, Headline, Subheading, Surface, Button, Card } from 'react-native-paper';
+import { createAnimatableComponent, View } from 'react-native-animatable';
+import { withNavigation } from 'react-navigation';
+
 import {
   Image,
   ImageBackground,
@@ -9,184 +12,270 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  SafeAreaView
+  
+  SafeAreaView,
+  Dimensions
 } from 'react-native';
+import TopNavbar from '../components/TopNavbar';
+import UserProfileScreen from './UserProfileScreen';
 
-import { MonoText } from '../components/StyledText';
+const AnimatableSectionList = createAnimatableComponent(Image);
 
 const viewChildrenStyle = StyleSheet.create({
-sameRow: {
-  flex:1,
-  margin:12,
-  flexDirection:"row",
-  justifyContent:"center"
-  ,alignItems:"center",
-  alignSelf: "center"
-},
+  sameRow: {
+    margin: 12,
+    flexDirection: "row",
+    justifyContent: "center"
+    , alignItems: "center",
+    alignSelf: "center"
+  },
 
-sameColumn:{
-  margin:12,  
-  flexDirection:"column",
-  justifyContent:"center",
-  alignSelf: "center"
-}
+  sameColumn: {
+    margin: 12,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignSelf: "center"
+  }
 });
 
-const surfaceCustom = StyleSheet.create({
+const customStyles = StyleSheet.create({
   defaultRounded: {
-  margin:2,
-  borderWidth:0,
-  borderRadius:10,
+    margin: 2,
+    borderWidth: 0,
+    borderRadius: 10,
     padding: 4,
     height: 'auto',
     width: 'auto',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 1,
-    backgroundColor:'#EC407A'
+    backgroundColor: '#EC407A'
   },
-  surface: {
-    margin:18,
-    padding: 3,
+  customStyle: {
+    borderWidth: 0,
+    borderRadius: 10,
+    backgroundColor: '#81D4FA',
+    margin: 18,
     height: 'auto',
     ...Platform.select({
-     ios: { width: 300 
-     },
-      android: { width: 300 
-     },
-      web: { width: 'auto' 
-     }
+      ios: {
+        width: 400
+      },
+      android: {
+        width: 400
+      },
+      web: {
+      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+
+
+      }
     }),
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    backgroundColor:'#FFF59D'
   },
+
+  nestedCardStyle: {
+    padding: 0,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    margin: 5,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 270
+      },
+      android: {
+        width: 270
+      },
+      web: {
+      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-70): 550,
+
+
+      }
+
+    }),
+  },
+  viewBoxStyle: {
+    marginTop: 10,
+    backgroundColor: '#81D4FA',
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    borderWidth: 0,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 300
+      },
+      android: {
+        width: 300
+      },
+      web: {
+       width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+
+
+      }
+    }),
+  }
 });
 
-export default function HomeScreen() {
-  return (
-     <SafeAreaView  style={{flex:3}}>
-       <View style={{flex:2, margin:"3%",marginBottom:"1%",borderWidth:0, borderRadius:30, overflow:"hidden", position:"relative" }}>
-        <ImageBackground source={require('../assets/images/landingCover.jpg')} style={{width: '100%', height: '190%', position:"relative" }} ></ImageBackground>
-     <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
-     <Headline style={{color:'white', fontSize:30, fontWeight:"500" }}>Recipe Box</Headline>
-     <Headline>A box full of recipes for you.</Headline>
-     <Image source={require('../assets/images/splash.png')} style={{width: 200, height: 200, position:"relative" }}></Image>
-    <Surface style={surfaceCustom.defaultRounded}>
-     <Text style={{color:'#ffffff'}}>Scroll Below To Know More
+class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { navigation } = this.props.navigation;
+    return (
+
+      <SafeAreaView style={{ flex: 3 }}>
+        <TopNavbar title='Home'></TopNavbar>
+
+        <ScrollView >
+
+          <View style={{ flex: 3, margin: '3%', marginBottom: "1%", marginStart: '5%', marginEnd: '5%', minHeight: 400, borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
+            <ImageBackground source={require('../assets/images/landingCover.jpg')} style={{ width: '100%', height: '100%', position: "absolute" }} ></ImageBackground>
+
+            <View style={{ position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+              <Headline style={{ color: 'white', marginTop: 25, fontSize: 30, fontWeight: "500" }}>Recipe Box</Headline>
+              <Headline>A box full of recipes for you.</Headline>
+              <Image source={require('../assets/images/splash.png')} style={{ width: 200, height: 200, position: "relative" }}></Image>
+
+              <Surface style={customStyles.defaultRounded}>
+                <Text style={{ color: '#ffffff' }}>Scroll  To Know More
      </Text>
-    
-  </Surface>
-   </View>
-  
-     </View>
-       <ScrollView style={{flex:1}}>
-      { 
-        
-        // <View style={{flex:3, margin:'5%', borderWidth:0, borderRadius:30,borderBottomEndRadius:30, 
-      // borderBottomLeftRadius:30, overflow:'hidden', backgroundColor: '#00FF00' }}>
-      }
-      <View style={viewChildrenStyle.sameColumn}> 
- <Surface style={surfaceCustom.surface}>
-   <Headline style={{color:'#F06292', fontWeight:"600"}}>Search Recipes</Headline>
-   <Title>Search thousands of recipes from different cuisine and cultures</Title>
-     <Subheading>{'\u2B24'} Search For Recipes based on the ingredients you have, author of recipes or title of dish.</Subheading>
-     <Subheading>{'\u2B24'} Filter recipes by excluding any ingredients, diet, allergens and cuisine</Subheading>
-     <Subheading>{'\u2B24'} Explore recipes of the day</Subheading>
 
-  </Surface>
-  <Surface style={surfaceCustom.surface}>
-     <Headline style={{color:'#F06292', fontWeight:"600"}}>Store Recipes</Headline>
-     <Title>You won't need to manage any notebook to write any recipes ever again.</Title>
-     <Subheading>{'\u2B24'} Store your own recipes by just simply filling out the details and pressing upload</Subheading>
-     <Subheading>{'\u2B24'} Your recipes are stored privately and never shared with anyone else.</Subheading>
-     <Subheading>{'\u2B24'} You can save recipes as draft.</Subheading>
-  </Surface>
-  </View>
-   <View style={viewChildrenStyle.sameColumn}> 
-  <Surface style={surfaceCustom.surface}>
-     <Headline style={{color:'#F06292', fontWeight:"600"}}>Share Recipes</Headline>
-     <Title>Share with others on the app or send your friends a link to your dish.</Title>
-     <Subheading>{'\u2B24'} Make your recipes available to other users by a single click.</Subheading>
-     <Subheading>{'\u2B24'} Look at others recipe and modify it to save it as your own.</Subheading>
-     <Subheading>{'\u2B24'} Rate other recipes</Subheading>
-  </Surface>
-  <Surface style={surfaceCustom.surface}>
- <Headline style={{color:'#F06292', fontWeight:"600"}}>Much More...</Headline>
-     <Subheading>{'\u2B24'} Define your own quick filters</Subheading>
-     <Subheading>{'\u2B24'} Create Cookbooks: A collection of your recipes</Subheading>
-     <Subheading>{'\u2B24'} Download recipes for offline use.</Subheading>
-  </Surface>
-  </View>
-<View style={viewChildrenStyle.sameColumn}> 
- <Button icon="magnify" mode="contained" style={{marginBottom:5}} onPress={() => console.log('Pressed')}>
-    Start Searching
-  </Button>
-  <Button icon="comment-question" mode="contained" style={{marginBottom:5}} onPress={() => console.log('Pressed')}>
-    Know More About Recipe Box
-  </Button>
-</View>
-</ScrollView>
-</SafeAreaView>
+              </Surface>
+            </View>
 
-  )
-  /*return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
-
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
-
-          <Text style={styles.getStartedText}>Get started by opening</Text>
-
-          <View
-            style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
           </View>
 
-          <Text style={styles.getStartedText}>
-            Change this text and your app will automatically reload.
-          </Text>
-        </View>
 
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>
-              Help, it didn’t automatically reload!
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+          <View animation="fadeIn" style={viewChildrenStyle.sameColumn}>
+            <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
+              <View style={customStyles.viewBoxStyle}>
+                <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Search Recipes</Headline>
+                <Title>Search thousands of recipes from different cuisine and cultures</Title>
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Search For Recipes based on the ingredients you have, author of recipes or title of dish</Subheading>
+                  </Card.Content>
+                </Card>
 
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>
-          This is a tab bar. You can edit it in:
-        </Text>
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Filter recipes by excluding any ingredients, diet, allergens and cuisine</Subheading>
+                  </Card.Content>
+                </Card>
 
-        <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>
-            navigation/BottomNavigationBar.js
-          </MonoText>
-        </View>
-      </View>
-    </View>
-  );*/
-}
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Explore recipes of the day</Subheading>
+                  </Card.Content>
+                </Card>
+              </View>
+              <View style={customStyles.viewBoxStyle}>
+
+                <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Store Recipes</Headline>
+                <Title>You won't need to manage a notebook to write any recipes ever again.</Title>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Store your own recipes by just simply filling out the details and pressing upload</Subheading>
+                  </Card.Content>
+                </Card>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Your recipes are stored privately and never shared with anyone else.</Subheading>
+                  </Card.Content>
+                </Card>
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>You can save recipes as draft.</Subheading>
+                  </Card.Content>
+                </Card>
+              </View>
+            </View>
+          </View>
+          <View style={viewChildrenStyle.sameColumn}>
+            <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
+              <View style={customStyles.viewBoxStyle}>
+
+                <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Share Recipes</Headline>
+                <Title>Share with others on the app or send your friends a link to your dish.</Title>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Make your recipes available to other users by a single click.</Subheading>
+                  </Card.Content>
+                </Card>
+
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Look at others recipe and modify it to save it as your own.</Subheading>
+                  </Card.Content>
+                </Card>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Rate other recipes</Subheading>
+                  </Card.Content>
+                </Card>
+              </View>
+              <View style={customStyles.viewBoxStyle}>
+
+                <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Much More</Headline>
+                <Title>We got lots of extras too. </Title>
+
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Define your own quick filters</Subheading>
+                  </Card.Content>
+                </Card>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Create Cookbooks: A collection of your recipes</Subheading>
+                  </Card.Content>
+                </Card>
+
+                <Card style={customStyles.nestedCardStyle}>
+                  <Card.Content>
+                    <Subheading style={{ justifyContent: "flex-start" }}>Download recipes for offline use.</Subheading>
+                  </Card.Content>
+                </Card>
+              </View>
+            </View>
+          </View>
+          <View style={viewChildrenStyle.sameColumn}>
+            <Button icon="magnify" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Search')}>
+              Start Searching
+  </Button>
+            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Options')}>
+              Know More About Recipe Box
+  </Button>
+          </View>
+
+        </ScrollView>
+      </SafeAreaView>
+
+
+    )
+  }
+};
 
 HomeScreen.navigationOptions = {
   header: null,
@@ -315,3 +404,4 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+export default HomeScreen;
