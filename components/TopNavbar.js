@@ -1,59 +1,139 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, Text, TouchableOpacity } from 'react-native';
-import { Button, Appbar, Snackbar, Menu, Divider, Provider } from 'react-native-paper';
-
+import { View, StyleSheet, Platform, Text, TouchableOpacity, StatusBar } from 'react-native';
+import { Button, Appbar, Snackbar, Menu, Divider, Provider, Searchbar } from 'react-native-paper';
 import { DrawerActions }  from 'react-navigation-drawer';
-
-import HomeScreen from "../screens/HomeScreen";
 import { visible } from 'ansi-colors';
 import Colors from '../constants/Colors';
+import { withNavigation } from 'react-navigation';
+import SafeAreaView from 'react-native-safe-area-view';
+
 
 const appbarCustom = StyleSheet.create({
-  safeView: {
-     ...Platform.select({
-     ios: { padding: 30 
-     },
-      android: { padding: 30 
-     }
-    }), 
-  },
+
   transparentStyle: {
      ...Platform.select({
-     ios: { backgroundColor: 'rgba(52, 52, 52, 0.0)' 
+     ios: { backgroundColor: 'transparent' 
      },
-      android: { backgroundColor: 'rgba(52, 52, 52, 0.0)'
+      android: { backgroundColor: 'transparent',
      },
      web:{
-       backgroundColor: '#000000'
+       backgroundColor: '#000000',
+       
      }
+     
     }), 
   }
 })
 
+const searchbarStyle = StyleSheet.create({
+default: {
+  marginTop:6,
+  marginEnd:4,
+  marginStart:4,
+},
+});
+
 class TopNavbar extends React.Component {
    constructor(props) {
     super(props);
+    this.state = {
+    firstQuery: '',
+    show: false
+  };
    }
-    
+  
+
+ShowHideComponent = () => {
+    if (this.state.show == true) {
+      this.setState({ show: false });
+    } else {
+      this.setState({ show: true });
+    }
+  };
+
+  handleSearch = (keyPress,query) => {
+   console.log(keyPress.keyboardWillHide);
+ // if(keyPress.nativeEvent.key=='Enter'){
+  console.log(query);
+  this.props.navigation.navigate('Search',{searchQuery: query});
+  //}
+  };
+
+  minimizeSearchBar = () => {
+  console.log('Minimize Search Bar search here');
+  this.setState({show: false});
+}
+
   render() {
-    return (
-     
-       <Appbar.Header style={appbarCustom.transparentStyle} >
-          <Appbar.BackAction style={{backgroundColor:'#000000', display: ((Platform.OS==='web')? 'none': 'flex')}}   
-            onPress={this._goBack}
+       const { firstQuery } = this.state;
+    let BackButton;
+    if(this.props.navigation.dangerouslyGetParent().state.index>0){
+      BackButton = <Appbar.BackAction color='#FFFFFF' style={{backgroundColor:'#000000', display: ((Platform.OS==='web')? 'none': 'flex')}}   
+           onPress={() => this.props.navigation.goBack()}
           />
-          <Appbar.Content color='#000000'
+    }
+    let ThirdButton;
+    if (this.props.enableThirdButton) {
+    if(this.props.iconName)
+    ThirdButton = <Appbar.Action icon={this.props.iconName} style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
+    else
+        ThirdButton = <Appbar.Action icon='settings' style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
+
+    }
+    return (
+      <View>       
+ {this.state.show ? (
+   
+     
+<Appbar.Header  style={appbarCustom.transparentStyle}>
+ <Searchbar icon='window-minimize' onIconPress= { () => { this.minimizeSearchBar() }} iconColor='#C62828' style={{backgroundColor:'#F8BBD0', width:'100%' }}
+        placeholder="Search by title"
+        onChangeText={query => { this.setState({ firstQuery: query }); }}
+        value={firstQuery}
+         
+            //onKeyPress={ (e) => this.handleSearch(e,firstQuery)}
+
+        onSubmitEditing={(e) => this.handleSearch(e,firstQuery)}
+        
+      />
+      </Appbar.Header>
+
+        ) : ( 
+           <Appbar.Header style={appbarCustom.transparentStyle} >
+       {BackButton}
+            <Appbar.Content
+            color='#000000'
             title= {this.props.title}
             subtitle= {this.props.subtitle}
           />
-          <Appbar.Action icon="magnify" style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
-         <Appbar.Action icon="menu" style={{backgroundColor:'#000000'}} onPress={ () => { console.log('Pressed') }}  />
-        </Appbar.Header>
-   
+              <Appbar.Action icon="magnify" color='#FFFFFF' style={{backgroundColor:'#000000'}}  onPress={() => this.ShowHideComponent()} />
+        {ThirdButton}
+     </Appbar.Header>
+    )
+    }
+
+      </View>   
+      
+       
     );
   }
 }
-     
+function  testFunc() {
+  console.log('PRESSED SEARCH CLOSE');
+}
+ 
+ 
+      /*
+      <View>
+     {this.state.show ? (
+          <Image
+            source={{
+              uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png',
+            }}
+            style={{ width: 100, height: 100 }}
+          />
+        ) : null}
+        */
         /*
       <View>
         <Provider>
@@ -79,4 +159,4 @@ class TopNavbar extends React.Component {
      </View>
      </Provider>
      */
-     export default TopNavbar;
+     export default withNavigation(TopNavbar);

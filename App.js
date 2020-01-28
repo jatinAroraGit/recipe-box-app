@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { DefaultTheme, Drawer, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import  { NavigationAction}  from 'react-navigation';
 //import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 import AppNavigator from './navigation/AppNavigator';
@@ -23,7 +24,9 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
+      
       <PaperProvider theme={theme}>
+        <StatusBar hidden={true}></StatusBar>
       <AppLoading
         startAsync={loadResourcesAsync}
         onError={handleLoadingError}

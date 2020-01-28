@@ -5,9 +5,14 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import DevScreen from '../screens/DevScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
+import UserProfileScreen from '../screens/UserProfileScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
+import DevScreen from '../screens/DevScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -17,7 +22,7 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-
+    UserProfile: UserProfileScreen,
   },
   config
 );
@@ -37,7 +42,11 @@ HomeStack.path = '';
 
 const AccountStack = createStackNavigator(
   {
-    Account: PageNotFound,
+    Login: LoginScreen,
+    Register: RegisterScreen,
+    ForgotPassword: ForgotPasswordScreen,
+    UserAccount: PageNotFound,
+    SecurityQuestion: SecurityQuestionScreen,
   },
   config
 );
@@ -53,7 +62,7 @@ AccountStack.path = '';
 
 const SearchStack = createStackNavigator(
   {
-    Search: PageNotFound,
+    Search: DevScreen,
   },
   config
 );
