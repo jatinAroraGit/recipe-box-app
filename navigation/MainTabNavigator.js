@@ -13,6 +13,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
+import SearchScreen from '../screens/SearchScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -62,7 +63,8 @@ AccountStack.path = '';
 
 const SearchStack = createStackNavigator(
   {
-    Search: DevScreen,
+    Search: SearchScreen,
+    Results: PageNotFound,
   },
   config
 );
