@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
-import { Button, TextInput, Title } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+
 
 const styles = StyleSheet.create({
   label: {
@@ -12,17 +13,16 @@ const styles = StyleSheet.create({
   },
   button :{
     marginTop: 40,
-    height: 40,
-    backgroundColor: '#ec5990',
+    height: 20,
+    backgroundColor: '#1DE9B6',
     borderRadius: 4
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 20,
-    marginTop: 20,
-    backgroundColor: '#7986cb',
+    padding: 8,
+    backgroundColor: '#263238',
     borderRadius:10,
     height:'auto',
      ...Platform.select({
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         width: 320
       },
       web: {
-         width: ((Dimensions.get('window').width)-50),
+        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
       },
       android: {
         width: 320
@@ -76,7 +76,7 @@ function SecurityQuestionForm({props}) {
 
     <View style={styles.container}>
         <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Security Question</Title>
-        <Text style={styles.label}>Question</Text>
+        <Subheading style={styles.label}>Question</Subheading>
         <Controller
             as={<TextInput style={styles.input} />}
             name="question"
@@ -84,9 +84,9 @@ function SecurityQuestionForm({props}) {
             onChange={onChange}
             rules={{ required: true}}
         />
-        {errors.answer && <Text style={{color:'#00FFFF'}}>Must input question.</Text>}
+        {errors.answer && <Subheading style={{color:'#BF360C'}}>You must enter a question.</Subheading>}
 
-        <Text style={styles.label}>Answer</Text>
+        <Subheading style={styles.label}>Answer</Subheading>
         <Controller
             as={<TextInput style={styles.input} />}
             name="answer"
@@ -94,8 +94,8 @@ function SecurityQuestionForm({props}) {
             onChange={onChange}
             rules={{ required: true}}
         />
-        {errors.answer && <Text style={{color:'#00FFFF'}}>Must input answer.</Text>}
-        {errors.same && <Text style={{color:'#00FFFF'}}>Cannot be the same!</Text>}
+        {errors.answer && <Subheading style={{color:'#00FFFF'}}>You must provide an answer.</Subheading>}
+        {errors.same && <Subheading style={{color:'#00FFFF'}}>Your Answer cannot be same as the question</Subheading>}
 
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>

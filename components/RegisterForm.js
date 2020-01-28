@@ -1,28 +1,27 @@
 import * as React from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Title } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   label: {
     color: '#FFFFFF',
-    margin: 10,
+    margin: 20,
     marginLeft: 0
   },
   button :{
     marginTop: 40,
-    height: 40,
-    backgroundColor: '#ec5990',
+    height: 20,
+    backgroundColor: '#1DE9B6',
     borderRadius: 4
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 20,
-    marginTop: 20,
-    backgroundColor: '#7986cb',
+    padding: 8,
+    backgroundColor: '#263238',
     borderRadius:10,
     height:'auto',
      ...Platform.select({
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
         width: 320
       },
       web: {
-         width: ((Dimensions.get('window').width)-50),
+        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
       },
       android: {
         width: 320
@@ -45,6 +44,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   }
 });
+
+
 
 
 function LoginForm({props}) {
@@ -96,7 +97,7 @@ function LoginForm({props}) {
     <KeyboardAvoidingView behavior= 'position' keyboardVerticalOffset={15}>
     <View style={styles.container}>
         <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Register</Title>
-        <Text style={styles.label}>Email</Text>
+        <Subheading style={styles.label}>Email</Subheading>
         <Controller
             as={<TextInput style={styles.input} />}
             name="email"
@@ -104,9 +105,9 @@ function LoginForm({props}) {
             onChange={onChange}
             rules={{ pattern:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/}}
         />
-        {errors.email && <Text style={{color:'#00FFFF'}}>Invalid Email.</Text>}
+        {errors.email && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid Email.</Subheading>}
 
-        <Text style={styles.label}>Confirm Email</Text>
+        <Subheading style={styles.label}>Confirm Email</Subheading>
         <Controller
             as={<TextInput style={styles.input} />}
             name="confirmEmail"
@@ -114,10 +115,10 @@ function LoginForm({props}) {
             onChange={onChange}
             rules={{ pattern:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/}}
         />
-        {errors.confirmEmail && <Text style={{color:'#00FFFF'}}> Invalid Email.</Text>}
-        {errors.matchEmail && <Text style={{color:'#00FFFF'}}> Emails do not match</Text>}
+        {errors.confirmEmail && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}> Invalid Email.</Subheading>}
+        {errors.matchEmail && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}> Emails do not match</Subheading>}
 
-        <Text style={styles.label}>Password</Text>
+        <Subheading style={styles.label}>Password</Subheading>
         <Controller
             as={<TextInput style={styles.input} secureTextEntry={true} />}
             name="password"
@@ -125,9 +126,9 @@ function LoginForm({props}) {
             onChange={onChange}
             rules={{ required: true, pattern:/(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/}}
         />
-        {errors.password && <Text style={{color:'#00FFFF'}}>Invalid Password.</Text>}
+        {errors.password && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid Password.</Subheading>}
 
-        <Text style={styles.label}>Confirm Password</Text>
+        <Subheading style={styles.label}>Confirm Password</Subheading>
         <Controller
             as={<TextInput style={styles.input} secureTextEntry={true}  />}
             name="confirmPassword"
@@ -135,14 +136,14 @@ function LoginForm({props}) {
             onChange={onChange}
             rules={{ required: true, pattern:/(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/}}
         />
-        {errors.confirmPassword && <Text style={{color:'#00FFFF'}}>Invalid Password.</Text>}
-        {errors.matchPassword && <Text style={{color:'#00FFFF'}}> Passwords do not match</Text>}
+        {errors.confirmPassword && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid Password.</Subheading>}
+        {errors.matchPassword &&<Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}> Passwords do not match</Subheading>}
 
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
                 Continue
             </Button>
-            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor: 'grey'}} mode="contained" onPress={() => props.navigate('Login')}>
+            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6'}} mode="contained" onPress={() => props.navigate('Login')}>
                 Log in
             </Button>
         </View>

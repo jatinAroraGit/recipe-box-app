@@ -13,3 +13,4 @@ web-report/
 .DS_Store
 node_modules
 configure
+.env
