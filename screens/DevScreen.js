@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import UserProfileForm from './UserProfileForm';
 import '../configure/apiKey.json'
+import Firebase from '../configure/Firebase';
 
 
 const appbarCustom = StyleSheet.create({
@@ -40,7 +41,20 @@ class DevScreen extends React.Component {
 componentDidMount() {
  // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
   this.fetchData(this.props.navigation.getParam('searchQuery'));
-  }
+ 
+  var email="someone@gmail.com";
+  var password="Pa$$word0";
+  
+  //Create User with Email and Password
+  Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorCode);
+    console.log(errorMessage);
+  });
+  
+}
 componentDidUpdate(prevProps) {
   this.fetchData(this.props.navigation.getParam('searchQuery'));
 } 
