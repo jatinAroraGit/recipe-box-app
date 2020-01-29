@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Platform, Text, Dimensions, ScrollView } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -50,17 +50,18 @@ const styles = StyleSheet.create({
 
 
 function SearchResults({props}) {
-    
-  
 
   return (
 
-    <View style={styles.container}>
-        <Card title="123"></Card>
-        <Card title="abc"></Card>
-        <Card title="321"></Card>
-        <Card title="cba"></Card>
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        
+          <Card title='123'></Card>
+          <Card title="abc"></Card>
+          <Card title="321"></Card>
+          <Card title="cba"></Card>
+      </View>
+    </ScrollView>
   );
 }
 export default SearchResults;

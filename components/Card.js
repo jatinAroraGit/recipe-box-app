@@ -6,7 +6,7 @@ export default class Card extends React.PureComponent {
     return (
         <TouchableOpacity style={styles.card}>
           <Image style={styles.cardImage} source={{uri:'https://dynaimage.cdn.cnn.com/cnn/livestory/org/71ba7f52-bdeb-4c6b-9ce8-f561d8c25922.jpg'}} />
-          <Text style={styles.cardText}>{this.props.item.title}</Text>
+          <Text style={styles.cardText}>{this.props.title}</Text>
         </TouchableOpacity>
     );
   }
