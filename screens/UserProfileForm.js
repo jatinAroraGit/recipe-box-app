@@ -86,10 +86,8 @@ const styles = StyleSheet.create({
 
  function UserProfileForm({props}) {
   const { control, handleSubmit, errors } = useForm({mode:'onChange'});
-  console.log(props);
   const onSubmit = (data,event) => {
-    console.log(data,errors);
-    props.navigate('Home');
+    props.navigate('Profile', {names: data});
   };
   const onChange = args => {
     return {
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
         onChange={onChange}
         control={control}
         name="firstName"
-        rules={{required:true}}
+        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/}}
       />
        {errors.firstName && <Text style={{color:'#00FFFF'}}>This is required.</Text>}
 
@@ -116,10 +114,10 @@ const styles = StyleSheet.create({
         name="lastName"
         control={control}
         onChange={onChange}
-        rules={{ pattern:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/}}
+        rules={{ pattern:/^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/}}
         
       />
-{errors.lastName && <Text style={{color:'#00FFFF'}}>Invalid Email.</Text>}
+{errors.lastName && <Text style={{color:'#00FFFF'}}>This is required.</Text>}
       <View style={styles.button}>
         <Button
           color='#FFFFFF'      
