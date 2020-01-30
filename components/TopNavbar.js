@@ -4,7 +4,7 @@ import { Button, Appbar, Snackbar, Menu, Divider, Provider, Searchbar } from 're
 import { DrawerActions }  from 'react-navigation-drawer';
 import { visible } from 'ansi-colors';
 import Colors from '../constants/Colors';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 
 
@@ -55,7 +55,8 @@ ShowHideComponent = () => {
    console.log(keyPress.keyboardWillHide);
  // if(keyPress.nativeEvent.key=='Enter'){
   console.log(query);
-  this.props.navigation.navigate('Search',{searchQuery: query});
+  
+ this.props.navigation.navigate('Search',{searchQuery: query});
   //}
   };
 

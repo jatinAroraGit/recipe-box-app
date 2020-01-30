@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } fr
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import Firebase from '../configure/Firebase';
 
 const styles = StyleSheet.create({
   label: {
@@ -60,6 +61,14 @@ function LoginForm({props}) {
             if(data.email === data.confirmEmail && data.password === data.confirmPassword) {
 
             console.log('good');
+            //Create User with Email and Password
+            Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              console.log(errorCode);
+              console.log(errorMessage);
+              });
             props.navigate('SecurityQuestion');
 
             } else {
