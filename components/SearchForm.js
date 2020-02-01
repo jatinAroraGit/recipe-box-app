@@ -89,8 +89,9 @@ function SearchForm({ props }) {
 
       console.log('more')
       more = true;
-
     }
+  }
+  const setCuisine = (c) => {
 
 
   }
