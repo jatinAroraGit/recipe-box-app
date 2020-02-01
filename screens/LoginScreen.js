@@ -1,4 +1,5 @@
 import * as React from 'react';
+import firebase from '../configure/Firebase';
 import {
   View,
   StyleSheet,
@@ -61,12 +62,16 @@ class LoginScreen extends React.Component {
       }
     }
 
+<<<<<<< HEAD
   }
+=======
+  };
+>>>>>>> Adds boiler plate code for logout
 
   callbackFunction = (childData) => {
     this.setState({ login: childData });
-    console.log("login complete!")
-  }
+    console.log("login complete!");
+  };
 
   render() {
     

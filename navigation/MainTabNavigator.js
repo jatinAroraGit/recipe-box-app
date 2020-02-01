@@ -15,9 +15,13 @@ import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
+<<<<<<< HEAD
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 
+=======
+import VerificationScreen from '../screens/VerificationScreen';
+>>>>>>> Adds boiler plate code for logout
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -26,7 +30,10 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+<<<<<<< HEAD
     UserProfile: UserProfileFormScreen,
+=======
+>>>>>>> Adds boiler plate code for logout
   },
   config
 );
@@ -51,6 +58,7 @@ const AccountStack = createStackNavigator(
     ForgotPassword: ForgotPasswordScreen,
     UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
+<<<<<<< HEAD
     Profile: UserProfileScreen,
     Recipes: PageNotFound,
     Cookbooks: PageNotFound,
@@ -58,6 +66,9 @@ const AccountStack = createStackNavigator(
     ChangePassword: PageNotFound,
     CreateCookbook: PageNotFound,
     Verification: VerificationScreen,
+=======
+    UserProfile: UserProfileScreen
+>>>>>>> Adds boiler plate code for logout
   },
   config
 );
@@ -75,6 +86,7 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
     Results: SearchResults,
+    Verify: VerificationScreen,
   },
   config
 );

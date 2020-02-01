@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   }
 });
 
+<<<<<<< HEAD
 function LoginForm({props}) {
     
     const { control, handleSubmit, errors, setError } = useForm({mode:'onChange'});
@@ -78,7 +79,37 @@ function LoginForm({props}) {
         }
         else{
             console.log('Please fill in both email and password fields');
+=======
+
+
+
+function LoginForm({ props }) {
+
+  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+  const onSubmit = data => {
+
+    if (data.email && data.password) {
+
+      Firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        setError("invalid", 'no match', "Invalid User Details");
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+      Firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          // User is signed in.
+          console.log('good');
+          props.navigate('UserProfile');
+>>>>>>> Adds boiler plate code for logout
         }
+      });
+    }
+    else {
+      console.log('Please fill in both email and password fields');
+    }
 
   }
   const onChange = args => {
@@ -114,23 +145,38 @@ function LoginForm({props}) {
           rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
         />
 
-      
-        {errors.password && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid Password.</Subheading>}
-        {errors.invalid && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid User Details.</Subheading>}
 
-</View>
-        <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
-            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor:'#1DE9B6'}} mode="contained" onPress={handleSubmit(onSubmit)}>
-                Log in
+        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+        {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid User Details.</Subheading>}
+
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onSubmit)}>
+          Log in
 
             </Button>
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} mode="contained" onPress={() => props.navigate('Register')}>
           Register
             </Button>
 
+<<<<<<< HEAD
         </View>
         <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => { props.navigate('ForgotPassword')}}>
             Forgot Password ?
+=======
+      </View>
+      <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => {
+        Firebase.auth().signOut().then(function () {
+          // Sign-out successful.
+          console.log('User Logged Out!');
+        }).catch(function (error) {
+          // An error happened.
+          console.log(error);
+        });
+      }/*props.navigate('ForgotPassword')*/}>
+        Forgot Password ?
+
+>>>>>>> Adds boiler plate code for logout
         </Button>
     </View>
   );

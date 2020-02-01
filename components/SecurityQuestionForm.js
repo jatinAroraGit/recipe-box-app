@@ -49,13 +49,18 @@ const styles = StyleSheet.create({
 
 function SecurityQuestionForm({ props }) {
 
+<<<<<<< HEAD
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+=======
+  const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
+>>>>>>> Adds boiler plate code for logout
   const onSubmit = data => {
 
     console.log(data);
 
     if (data.question && data.question) {
 
+<<<<<<< HEAD
       if(data.question === data.answer) {
 
         setError("same", 'bothSame', "Fields can not be the same!");
@@ -65,6 +70,11 @@ function SecurityQuestionForm({ props }) {
       console.log('good');
       props.navigate('UserAccount');
       }
+=======
+      console.log('good');
+      props.navigate('Verify');
+
+>>>>>>> Adds boiler plate code for logout
     } else {
 
       console.log('bad');
@@ -101,7 +111,11 @@ function SecurityQuestionForm({ props }) {
         rules={{ required: true }}
       />
       {errors.answer && <Subheading style={{ color: '#00FFFF' }}>You must provide an answer.</Subheading>}
+<<<<<<< HEAD
       {errors.same && <Subheading style={{ color: '#00FFFF' }}>Your answer cannot be same as the question.</Subheading>}
+=======
+      {errors.same && <Subheading style={{ color: '#00FFFF' }}>Your Answer cannot be same as the question</Subheading>}
+>>>>>>> Adds boiler plate code for logout
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
