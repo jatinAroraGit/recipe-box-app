@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { View, SafeAreaView, ScrollView } from 'react-native';
-import { Button } from 'react-native-paper'
+import { View, StyleSheet, Platform, SafeAreaView, ScrollView, Dimensions, Text } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
-import RegisterForm from '../components/RegisterForm';
-import SearchForm from '../components/SearchForm';
+import SearchResults from '../components/SearchResults';
 
 
-class SearchScreen extends React.Component {
+class SearchResultScreen extends React.Component {
    constructor(props) {
     super(props);
       this.state = {
@@ -28,14 +26,11 @@ class SearchScreen extends React.Component {
     return (
   
       <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Search'></TopNavbar>
+        <TopNavbar title='Log in'></TopNavbar>
         <ScrollView >
           <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
             
-              <SearchForm props={this.props.navigation}></SearchForm>
-              <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => this.props.navigation.navigate('Results')}>
-                        Results
-                    </Button>
+              <SearchResults props={this.props.navigation}></SearchResults>
             
           </View>
         </ScrollView>
@@ -44,7 +39,7 @@ class SearchScreen extends React.Component {
   }
 }
 
-SearchScreen.navigationOptions = {
+SearchResultScreen.navigationOptions = {
   header: null,
 };
-export default SearchScreen;
+export default SearchResultScreen;
