@@ -71,16 +71,11 @@ function LoginForm({props}) {
                     console.log('good');
                     props.navigate('UserAccount');
                 }
-              });
-
-
-      console.log('good');
-      props.navigate('UserAccount');
-
+            });
+        }
+        else{
             console.log('Please fill in both email and password fields');
-
-
-    }
+        }
 
   }
   const onChange = args => {
