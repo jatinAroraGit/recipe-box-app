@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import Firebase from '../configure/Firebase';
 
 
 const styles = StyleSheet.create({
@@ -48,21 +49,36 @@ const styles = StyleSheet.create({
 
 
 
-function LoginForm({ props }) {
 
-  const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
-  const onSubmit = data => {
+function LoginForm({props}) {
+    
+    const { control, handleSubmit, errors, setError } = useForm({mode:'onChange'});
+    const onSubmit = data => {
+        
+        if(data.email && data.password) {
 
-    console.log(data);
+            Firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;   
+                setError("invalid", 'no match', "Invalid User Details");
+                console.log(errorCode);
+                console.log(errorMessage);
+            });
+            Firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                  // User is signed in.
+                    console.log('good');
+                    props.navigate('UserAccount');
+                }
+              });
 
-    if (data.email && data.password) {
 
       console.log('good');
       props.navigate('UserAccount');
 
-    } else {
+            console.log('Please fill in both email and password fields');
 
-      console.log('bad');
 
     }
 
@@ -98,18 +114,32 @@ function LoginForm({ props }) {
           rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
         />
 
-        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onSubmit)}>
-          Log in
+      
+        {errors.password && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid Password.</Subheading>}
+        {errors.invalid && <Subheading style={{color:'#BF360C', fontSize:15, fontWeight:'300'}}>Invalid User Details.</Subheading>}
+
+</View>
+        <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
+            <Button style={{marginHorizontal: 10, marginTop: 20, backgroundColor:'#1DE9B6'}} mode="contained" onPress={handleSubmit(onSubmit)}>
+                Log in
+
             </Button>
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} mode="contained" onPress={() => props.navigate('Register')}>
           Register
             </Button>
-      </View>
-      <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => props.navigate('ForgotPassword')}>
-        Forgot Password ?
+
+        </View>
+        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => {
+            Firebase.auth().signOut().then(function() {
+                // Sign-out successful.
+                console.log('User Logged Out!');
+              }).catch(function(error) {
+                // An error happened.
+                console.log(error);
+              });
+        }/*props.navigate('ForgotPassword')*/}>
+            Forgot Password ?
+
         </Button>
     </View>
   );
