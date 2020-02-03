@@ -17,7 +17,7 @@ import {
   Dimensions
 } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
-import UserProfileScreen from './UserProfileScreen';
+import UserProfileScreen from './UserProfileFormScreen';
 
 const AnimatableSectionList = createAnimatableComponent(Image);
 

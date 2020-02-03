@@ -15,7 +15,11 @@ import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
+<<<<<<< HEAD
 import UserProfileScreen from '../screens/UserProfileScreen';
+=======
+import UserProfileFormScreen from '../screens/UserProfileFormScreen';
+>>>>>>> 9bd8d702c64efaf59f81b14f9abcc4d176c145cd
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -50,6 +54,12 @@ const AccountStack = createStackNavigator(
     ForgotPassword: ForgotPasswordScreen,
     UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
+    Profile: UserProfileScreen,
+    Recipes: PageNotFound,
+    Cookbooks: PageNotFound,
+    ChangeEmail: PageNotFound,
+    ChangePassword: PageNotFound,
+    CreateCookbook: PageNotFound,
   },
   config
 );
