@@ -46,11 +46,12 @@ const styles = StyleSheet.create({
   }
 });
 
-
+var errorb = false;
 
 
 function LoginForm({ props }) {
 
+  
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
@@ -59,17 +60,36 @@ function LoginForm({ props }) {
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
 
       if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer) {
-
-        console.log('good');
+ 
+        errorb = false;
         //Create User with Email and Password
         Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function (error) {
           // Handle Errors here.
           var errorCode = error.code;
+          errorb = true;
           var errorMessage = error.message;
+          console.log("ErrorCode");
           console.log(errorCode);
+          console.log("ErrorMessage");
           console.log(errorMessage);
+          setError("firebase", 'error', errorMessage);
         });
-        props.navigate('SecurityQuestion');
+
+        Firebase.auth().onAuthStateChanged(function(user) {
+
+          if(user){
+            console.log('\n\n\n\n\n\n\n\nhere')
+            console.log(user.uid);
+            
+            props.navigate("Verification")
+
+
+          } else {
+
+            console.log("oops");
+          }
+
+        });
 
       } else {
 
@@ -84,6 +104,18 @@ function LoginForm({ props }) {
 
           console.log("password no good");
           setError("matchPassword", 'no pmatch', "Passwords do not match");
+
+        }
+
+        if(!data.firstName) {
+
+          setError("firstName", 'empty', "Cannot be blank!");
+
+        }
+
+        if(!data.lastName) {
+
+          setError("lastName", 'empty', "Cannot be blank!");
 
         }
 
@@ -165,7 +197,7 @@ function LoginForm({ props }) {
           name="firstName"
           rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
         />
-        {errors.firstName && <Text style={{ color: '#00FFFF' }}>This is required.</Text>}
+        {errors.firstName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
         <Subheading style={styles.label}>Last name</Subheading>
         <Controller
@@ -176,7 +208,7 @@ function LoginForm({ props }) {
           rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
 
         />
-        {errors.lastName && <Text style={{ color: '#00FFFF' }}>This is required.</Text>}
+        {errors.lastName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
         <Title style={{ color: '#FFFFFF', marginTop: 20 }}>Security Questions</Title>
         <Subheading style={styles.label}>Question</Subheading>
@@ -199,6 +231,7 @@ function LoginForm({ props }) {
         />
         {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must provide an answer.</Subheading>}
         {errors.same && <Subheading style={{ color: '#BF360C' }}>Your answer cannot be same as the question.</Subheading>}
+        {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
 
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>

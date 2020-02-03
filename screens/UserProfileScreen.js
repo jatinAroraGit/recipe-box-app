@@ -2,9 +2,9 @@ import * as React from 'react';
 import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Button, Appbar, Snackbar, Menu, Divider, Provider } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
-import { useForm } from 'react-hook-form'
-import UserProfileForm from './UserProfileForm';
 import UserProfile from '../components/UserProfile';
+import Firebase from '../configure/Firebase';
+import VerificationScreen from './VerificationScreen';
 
 
 const appbarCustom = StyleSheet.create({
@@ -32,10 +32,21 @@ const appbarCustom = StyleSheet.create({
     }),
   }
 })
-
+var verified = false;
 class UserProfileScreen extends React.Component {
+  
   constructor(props) {
     super(props);
+
+    
+    var user = Firebase.auth().currentUser;
+
+    if(user) {
+
+      verified = user.emailVerified;
+
+    }
+
 
   }
   handleSubmitClick = (color) => {
@@ -43,9 +54,18 @@ class UserProfileScreen extends React.Component {
   }
   render() {
 
-    /*console.log(navigation);
-    console.log('NAVIGATION USER %%%%%%% ');
-    console.log(this.props.navigation.state.routeName);*/
+    if(!verified) {
+
+      console.log("Unverified");
+      console.log(verified);
+      return (
+        <VerificationScreen></VerificationScreen>
+      )
+    } else {
+
+      console.log("Verified");
+      console.log(verified);
+
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
@@ -61,7 +81,7 @@ class UserProfileScreen extends React.Component {
     );
 
 
-
+    }
   }
 }
 

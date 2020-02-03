@@ -16,6 +16,7 @@ import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import VerificationScreen from '../screens/VerificationScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -56,6 +57,7 @@ const AccountStack = createStackNavigator(
     ChangeEmail: PageNotFound,
     ChangePassword: PageNotFound,
     CreateCookbook: PageNotFound,
+    Verification: VerificationScreen,
   },
   config
 );

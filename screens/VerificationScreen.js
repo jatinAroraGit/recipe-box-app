@@ -9,11 +9,10 @@ import {
   Text,
   ImageBackground
 } from 'react-native';
+import { Button } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
-import LoginForm from '../components/LoginForm';
-import { createPointerEventsContainer } from 'react-navigation-stack';
+
 import Firebase from '../configure/Firebase';
-import UserProfileScreen from './UserProfileScreen';
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
@@ -31,34 +30,29 @@ const baseStyle = StyleSheet.create({
   }
 });
 
-class LoginScreen extends React.Component {
+class VerificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       navigation: this.props.navigation,
-      loggedIn: false,
+
     }
 
     var user = Firebase.auth().currentUser;
 
-    console.log('')
-
     if(user) {
 
-      console.log("Login:");
-      
       if(!user.emailVerified) {
-        
-        this.setState(this.state, () => {loggedIn = false });
-        console.log("Unverified")
-
-      } else {
-
-        this.setState(this.state, () => {loggedIn = true });
-        console.log("Verified")
-
+        user.sendEmailVerification().then(function() {
+          console.log(' Email sent.');
+      
+        }).catch(function(error) {
+          console.log(' Already Verified.');
+          console.log(user.emailVerified);
+        });
       }
     }
+    
 
   }
 
@@ -68,33 +62,24 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    
-    if(this.state.loggedIn) {
-
-      return (
-        
-        <UserProfileScreen></UserProfileScreen>
-
-      )
-    } else {
 
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
+        <TopNavbar title='Verification'></TopNavbar>
         <ScrollView style={baseStyle.scrollViewBase}>
-          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+          <View style={{ marginStart: 10, marginTop: 30, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
-            <LoginForm props={this.props.navigation}></LoginForm>
+            <Text style={{color: '#FFFFFF', fontSize: 14}}>Please check your email for a verification link.</Text>
 
           </View>
         </ScrollView>
       </SafeAreaView>
-    )};
+    );
   }
 }
 
-LoginScreen.navigationOptions = {
+VerificationScreen.navigationOptions = {
   header: null,
 };
-export default LoginScreen;
+export default VerificationScreen;

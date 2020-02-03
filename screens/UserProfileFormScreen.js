@@ -44,9 +44,6 @@ class UserProfileFormScreen extends React.Component {
 
     const { navigation } = this.props.navigation;
     
-    /*console.log(navigation);
-    console.log('NAVIGATION USER %%%%%%% ');
-    console.log(this.props.navigation.state.routeName);*/
     return (
 
       <SafeAreaView style={{ flex: 3 }}>

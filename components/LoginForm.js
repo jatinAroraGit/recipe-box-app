@@ -63,14 +63,18 @@ function LoginForm({props}) {
                 console.log(errorMessage);
             });
             Firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                  // User is signed in.
-                    console.log('good');
-                    props.navigate('Profile');
-                } else {
 
-                }
+              if(user){
+                
+                props.navigate("Profile")
+    
+    
+              } else {
+    
+              }
+    
             });
+    
         }
         else{
             console.log('Please fill in both email and password fields');
