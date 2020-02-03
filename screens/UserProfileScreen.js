@@ -53,7 +53,7 @@ class UserProfileScreen extends React.Component {
         <ScrollView >
           <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
-            <UserProfile props={this.props.navigation} params={this.props.navigation.state.params}></UserProfile>
+            <UserProfile props={this.props.navigation} ></UserProfile>
 
           </View>
         </ScrollView>

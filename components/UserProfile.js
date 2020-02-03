@@ -60,11 +60,16 @@ const styles = StyleSheet.create({
 
 
 
-function UserProfile({ props, params }) {
+function UserProfile({ props }) {
 
-  const firstName = params.names.firstName;
-  const lastName = params.names.lastName;
+  var firstName = 'User';
+  var lastName = 'Profile';
 
+  /*if(params.names) {
+
+    firstName = params.names.firstName;
+    lastName = params.names.lastName;
+  }*/
   // Fill with data from API call for user saved recipes  
   const savedRecipes = [
     {title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1'},
@@ -135,7 +140,7 @@ function UserProfile({ props, params }) {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Avatar.Text color='#EEEEEE' size={150} label={firstName.charAt(0) + lastName.charAt(0)} style={{marginVertical: 20, backgroundColor: '#448AFF'}} ></Avatar.Text>
-        <Text style={{color: '#EEEEEE', fontSize: 30, marginVertical: 10}}> {params.names.firstName} {params.names.lastName}</Text>
+        <Text style={{color: '#EEEEEE', fontSize: 30, marginVertical: 10}}> {firstName} {lastName}</Text>
       </View>
 
       

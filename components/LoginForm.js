@@ -47,10 +47,6 @@ const styles = StyleSheet.create({
   }
 });
 
-
-const pass = "";
-const user = "";
-
 function LoginForm({props}) {
     
     const { control, handleSubmit, errors, setError } = useForm({mode:'onChange'});
@@ -70,11 +66,8 @@ function LoginForm({props}) {
                 if (user) {
                   // User is signed in.
                     console.log('good');
-                    props.navigate('UserAccount');
+                    props.navigate('Profile');
                 } else {
-
-                  user = '';
-                  pass = '';
 
                 }
             });
@@ -97,7 +90,7 @@ function LoginForm({props}) {
       <View style={{ marginBottom: 10 }}>
         <Subheading style={styles.label}>Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} value={user}/>}
+          as={<TextInput style={styles.input} valu/>}
           name="email"
           
           control={control}
@@ -108,7 +101,7 @@ function LoginForm({props}) {
 
         <Subheading style={styles.label}>Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} value={pass} />}
+          as={<TextInput style={styles.input} secureTextEntry={true} />}
           name="password"
           
           control={control}
