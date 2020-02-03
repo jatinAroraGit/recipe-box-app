@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading, Searchbar, List } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
+import { setLightEstimationEnabled } from 'expo/build/AR';
 
 
 const styles = StyleSheet.create({
@@ -54,12 +55,15 @@ const styles = StyleSheet.create({
 });
 
 var more = false;
+var ingredientIt = 0;
 
 function SearchForm({ props }) {
 
-  var ingredientTemplate = <TextInput style={styles.inputIngredient} dense={true} onChangeText={(text) => { results.ingredient1 = text }} />;
-  var ingredientList = ingredientTemplate;
-  var results = { title: '', cuisine: 'none' }
+
+  var ingredientList = [{ name: '' }];
+  const cuisine = ['none', 'italian', 'indian', 'mexican', 'german'];
+  var results = { title: '', cuisine: 'none', ingredients: [{ name: '' }] };
+
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
@@ -85,10 +89,7 @@ function SearchForm({ props }) {
 
       console.log('more')
       more = true;
-
     }
-
-
   }
 
   const setCuisine = (c) => {
@@ -97,11 +98,29 @@ function SearchForm({ props }) {
 
   }
 
-  const addButton = () => {
+  const addIngredient = () => {
 
-    ingredientList = ingredientList + ingredientTemplate;
-
+    ingredientIt++;
+    ingredientList[ingredientIt] = { name: '' };
+    console.log(ingredientList);
   }
+
+  const showCuisine = cuisine.map((c) => {
+
+    //<List.Item key={c + "key"} title={c} onPress={() => {setCuisine({c})}}></List.Item>
+    <Text>{c}</Text>
+  });
+
+  const showIngredients = ingredientList.map((ingredient) => {
+
+    <TextInput key={'ingredient' + ingredientIt.toString()}
+      style={styles.inputIngredient}
+      dense={true}
+      value={ingredient.name}
+      onChangeText={(text) => { ingredientList[ingredientIt].name = text }}
+    />
+
+  });
 
   return (
 
@@ -109,7 +128,7 @@ function SearchForm({ props }) {
       <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Search</Title>
       <View style={{ marginBottom: 10 }}>
         <Controller
-          as={<Searchbar style={styles.input} onIconPress={(t) => results.title = t} />}
+          as={<Searchbar style={styles.input} onChangeText={(text) => results.title = text} />}
           name="search"
           control={control}
           onChange={onChange}
@@ -118,34 +137,24 @@ function SearchForm({ props }) {
         {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
 
         <List.Section>
-          <List.Accordion
-            titleStyle={{ color: '#C62828' }}
-            title='Cuisine'
-          >
-            <List.Item color='#FF00FF' title='None' onPress={() => { setCuisine('none') }}></List.Item>
-            <List.Item title='French' onPress={() => { setCuisine('french') }}></List.Item>
-            <List.Item title='Italian' onPress={() => { setCuisine('italian') }}></List.Item>
-            <List.Item title='Indian' onPress={() => { setCuisine('indian') }}></List.Item>
-            <List.Item title='American' onPress={() => { setCuisine('american') }}></List.Item>
+          <List.Accordion title='Cuisine'>
+            {showCuisine}
           </List.Accordion>
-          <List.Accordion
-            title='Ingredients'>
-            {ingredientList}
-            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addButton()}>Add</Button>
+          <List.Accordion title='Ingredients'>
+            {showIngredients}
+            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
           </List.Accordion>
         </List.Section>
-
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => console.log(results)}>
+          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => console.log(showCuisine)}>
             Search
-                    </Button>
+        </Button>
           <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => toggleFilter()}>
             Filters
-                    </Button>
+        </Button>
         </View>
+        {showCuisine}
       </View>
-
-
     </View>
   );
 }

@@ -47,9 +47,6 @@ const styles = StyleSheet.create({
   }
 });
 
-
-
-
 function LoginForm({props}) {
     
     const { control, handleSubmit, errors, setError } = useForm({mode:'onChange'});
@@ -66,12 +63,18 @@ function LoginForm({props}) {
                 console.log(errorMessage);
             });
             Firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                  // User is signed in.
-                    console.log('good');
-                    props.navigate('UserAccount');
-                }
+
+              if(user){
+                
+                props.navigate("Profile")
+    
+    
+              } else {
+    
+              }
+    
             });
+    
         }
         else{
             console.log('Please fill in both email and password fields');
@@ -91,8 +94,9 @@ function LoginForm({props}) {
       <View style={{ marginBottom: 10 }}>
         <Subheading style={styles.label}>Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} />}
+          as={<TextInput style={styles.input} valu/>}
           name="email"
+          
           control={control}
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
@@ -103,6 +107,7 @@ function LoginForm({props}) {
         <Controller
           as={<TextInput style={styles.input} secureTextEntry={true} />}
           name="password"
+          
           control={control}
           onChange={onChange}
 
@@ -124,17 +129,8 @@ function LoginForm({props}) {
             </Button>
 
         </View>
-        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => {
-            Firebase.auth().signOut().then(function() {
-                // Sign-out successful.
-                console.log('User Logged Out!');
-              }).catch(function(error) {
-                // An error happened.
-                console.log(error);
-              });
-        }/*props.navigate('ForgotPassword')*/}>
+        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => { props.navigate('ForgotPassword')}}>
             Forgot Password ?
-
         </Button>
     </View>
   );

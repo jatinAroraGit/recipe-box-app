@@ -7,7 +7,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
-import UserProfileScreen from '../screens/UserProfileScreen';
+import UserProfileFormScreen from '../screens/UserProfileFormScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
@@ -15,6 +15,8 @@ import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
+import UserProfileScreen from '../screens/UserProfileScreen';
+import VerificationScreen from '../screens/VerificationScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -24,7 +26,7 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-    UserProfile: UserProfileScreen,
+    UserProfile: UserProfileFormScreen,
   },
   config
 );
@@ -47,8 +49,15 @@ const AccountStack = createStackNavigator(
     Login: LoginScreen,
     Register: RegisterScreen,
     ForgotPassword: ForgotPasswordScreen,
-    UserAccount: PageNotFound,
+    UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
+    Profile: UserProfileScreen,
+    Recipes: PageNotFound,
+    Cookbooks: PageNotFound,
+    ChangeEmail: PageNotFound,
+    ChangePassword: PageNotFound,
+    CreateCookbook: PageNotFound,
+    Verification: VerificationScreen,
   },
   config
 );
@@ -97,7 +106,8 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: DevScreen,
+    Options: UserProfileFormScreen,
+    Profile: UserProfileScreen,
   },
   config
 );

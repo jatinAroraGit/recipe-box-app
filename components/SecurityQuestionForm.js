@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginLeft: 0
   },
-  button :{
+  button: {
     marginTop: 40,
     height: 20,
     backgroundColor: '#1DE9B6',
@@ -23,14 +23,14 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#263238',
-    borderRadius:10,
-    height:'auto',
-     ...Platform.select({
+    borderRadius: 10,
+    height: 'auto',
+    ...Platform.select({
       ios: {
         width: 320
       },
       web: {
-        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
       },
       android: {
         width: 320
@@ -47,61 +47,67 @@ const styles = StyleSheet.create({
 });
 
 
-function SecurityQuestionForm({props}) {
-    
-    const { control, handleSubmit, errors } = useForm({mode:'onChange'});
-    const onSubmit = data => {
+function SecurityQuestionForm({ props }) {
 
-        console.log(data);
+  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+  const onSubmit = data => {
 
-        if(data.question && data.question) {
+    console.log(data);
 
-            console.log('good');
-            props.navigate('UserAccount');
+    if (data.question && data.question) {
 
-        } else {
+      if(data.question === data.answer) {
 
-            console.log('bad');
+        setError("same", 'bothSame', "Fields can not be the same!");
 
-        }
-    
+      } else {
+
+      console.log('good');
+      props.navigate('UserAccount');
+      }
+    } else {
+
+      console.log('bad');
+
     }
-    const onChange = args => {
-        return {
-            value: args[0].nativeEvent.text,
-        };
+
+  }
+  const onChange = args => {
+    return {
+      value: args[0].nativeEvent.text,
     };
+  };
 
   return (
 
     <View style={styles.container}>
-        <Title style={{color:'#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center'}}>Security Question</Title>
-        <Subheading style={styles.label}>Question</Subheading>
-        <Controller
-            as={<TextInput style={styles.input} />}
-            name="question"
-            control={control}
-            onChange={onChange}
-            rules={{ required: true}}
-        />
-        {errors.answer && <Subheading style={{color:'#BF360C'}}>You must enter a question.</Subheading>}
+      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Security Question</Title>
+      <Subheading style={styles.label}>Question</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="question"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true }}
+      />
+      {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must enter a question.</Subheading>}
 
-        <Subheading style={styles.label}>Answer</Subheading>
-        <Controller
-            as={<TextInput style={styles.input} />}
-            name="answer"
-            control={control}
-            onChange={onChange}
-            rules={{ required: true}}
-        />
-        {errors.answer && <Subheading style={{color:'#00FFFF'}}>You must provide an answer.</Subheading>}
-        {errors.same && <Subheading style={{color:'#00FFFF'}}>Your Answer cannot be same as the question</Subheading>}
+      <Subheading style={styles.label}>Answer</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="answer"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true }}
+      />
+      {errors.answer && <Subheading style={{ color: '#00FFFF' }}>You must provide an answer.</Subheading>}
+      {errors.same && <Subheading style={{ color: '#00FFFF' }}>Your answer cannot be same as the question.</Subheading>}
 
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Button style={{marginHorizontal: 10, marginTop: 20}} mode="contained" onPress={handleSubmit(onSubmit)}>
-                Register
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+          Register
             </Button>
-        </View>
+      </View>
     </View>
   );
 }
