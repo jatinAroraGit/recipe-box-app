@@ -129,17 +129,8 @@ function LoginForm({props}) {
             </Button>
 
         </View>
-        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => {
-            Firebase.auth().signOut().then(function() {
-                // Sign-out successful.
-                console.log('User Logged Out!');
-              }).catch(function(error) {
-                // An error happened.
-                console.log(error);
-              });
-        }/*props.navigate('ForgotPassword')*/}>
+        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => { props.navigate('ForgotPassword')}}>
             Forgot Password ?
-
         </Button>
     </View>
   );

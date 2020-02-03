@@ -59,7 +59,7 @@ class UserProfileScreen extends React.Component {
       console.log("Unverified");
       console.log(verified);
       return (
-        <VerificationScreen></VerificationScreen>
+        <VerificationScreen props={this.props.navigation}></VerificationScreen>
       )
     } else {
 

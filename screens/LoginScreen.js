@@ -31,12 +31,13 @@ const baseStyle = StyleSheet.create({
   }
 });
 
+var loggedIn = false;
+
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       navigation: this.props.navigation,
-      loggedIn: false,
     }
 
     var user = Firebase.auth().currentUser;
@@ -49,12 +50,12 @@ class LoginScreen extends React.Component {
       
       if(!user.emailVerified) {
         
-        this.setState(this.state, () => {loggedIn = false });
+        loggedIn = false;
         console.log("Unverified")
 
       } else {
 
-        this.setState(this.state, () => {loggedIn = true });
+        loggedIn = true;
         console.log("Verified")
 
       }
@@ -69,11 +70,14 @@ class LoginScreen extends React.Component {
 
   render() {
     
-    if(this.state.loggedIn) {
+    console.log("Logged in?");
+    console.log(loggedIn);
+
+    if(loggedIn) {
 
       return (
         
-        <UserProfileScreen></UserProfileScreen>
+        <UserProfileScreen props={this.props.navigation}></UserProfileScreen>
 
       )
     } else {
