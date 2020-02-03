@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions, FlatList } from 'react-na
 import { Button, TextInput, Title, Subheading, Avatar, Card, List } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import Firebase from '../configure/Firebase';
 
 
 const styles = StyleSheet.create({
@@ -174,9 +175,17 @@ function UserProfile({ props, params }) {
       </View>
 
       <View style={styles.innerContainer} >
-      <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('Login')}>
+      <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => {
+            Firebase.auth().signOut().then(function() {
+                // Sign-out successful.
+                props.navigate('Login')
+              }).catch(function(error) {
+                // An error happened.
+                console.log(error);
+              });
+        }}>
             Logout
-      </Button>
+        </Button>
       </View>
 
     </View>

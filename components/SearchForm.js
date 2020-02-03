@@ -91,10 +91,6 @@ function SearchForm({ props }) {
       more = true;
     }
   }
-  const setCuisine = (c) => {
-
-
-  }
 
   const setCuisine = (c) => {
 

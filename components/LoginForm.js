@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
 });
 
 
-
+const pass = "";
+const user = "";
 
 function LoginForm({props}) {
     
@@ -70,6 +71,11 @@ function LoginForm({props}) {
                   // User is signed in.
                     console.log('good');
                     props.navigate('UserAccount');
+                } else {
+
+                  user = '';
+                  pass = '';
+
                 }
             });
         }
@@ -91,8 +97,9 @@ function LoginForm({props}) {
       <View style={{ marginBottom: 10 }}>
         <Subheading style={styles.label}>Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} />}
+          as={<TextInput style={styles.input} value={user}/>}
           name="email"
+          
           control={control}
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
@@ -101,8 +108,9 @@ function LoginForm({props}) {
 
         <Subheading style={styles.label}>Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
+          as={<TextInput style={styles.input} secureTextEntry={true} value={pass} />}
           name="password"
+          
           control={control}
           onChange={onChange}
 
