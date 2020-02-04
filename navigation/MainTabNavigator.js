@@ -66,6 +66,7 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
     Results: SearchResults,
+    
   },
   config
 );
