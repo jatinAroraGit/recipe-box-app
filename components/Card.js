@@ -5,9 +5,9 @@ import {Thumbnail, Left, Right} from 'native-base';
 export default class Card extends React.PureComponent {
   render() {
     return (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card}  >
           
-          <Image style={styles.cardImage} source={{uri:'https://dynaimage.cdn.cnn.com/cnn/livestory/org/71ba7f52-bdeb-4c6b-9ce8-f561d8c25922.jpg'}} />
+          <Image style={styles.cardImage} source={this.props.item.url} />
           <Text style={styles.cardText}>{this.props.item.title}</Text> 
         </TouchableOpacity> 
     ); 

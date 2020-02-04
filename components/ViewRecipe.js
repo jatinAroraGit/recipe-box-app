@@ -1,15 +1,10 @@
 import React from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, StyleSheet } from "react-native";
 
 function ViewRecipe(props) {
   return (
     <ScrollView>
-      <Image
-        style={styles.cardImage}
-        source={{
-          uri:"https://dynaimage.cdn.cnn.com/cnn/livestory/org/71ba7f52-bdeb-4c6b-9ce8-f561d8c25922.jpg"
-        }}
-      />
+      <Image style={styles.cardImage} source={this.props.item.url}    />
       <Text>{props.item.title}</Text>
 
       {/*as we are not using class, we are not allowed to use 'this'*/}
@@ -25,6 +20,7 @@ function ViewRecipe(props) {
       <Button title="Save"></Button>
       <Button title="Download"></Button>
       <Button title="Print"></Button>
+
     </ScrollView>
   );
 }

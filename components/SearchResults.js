@@ -26,7 +26,7 @@ function SearchResults({props}) {
 
 useEffect(() => { 
   
-  getReceipeData('https://jsonplaceholder.typicode.com/posts') //https://jsonplaceholder.typicode.com/posts
+  getReceipeData('https://jsonplaceholder.typicode.com/photos') //https://jsonplaceholder.typicode.com/posts
     .then((data) => {
       setItems(data);
     });
@@ -51,7 +51,7 @@ async function getReceipeData (endpoint) {
         style={styles.container}
         data={items}
         keyExtractor={(item, index) => index.toString()}
-        onPress={() => props.navigation.navigate('ViewRecipe')} 
+        onPress={() => props.navigate('Recipe')}
         renderItem={({item}) => <Card item={item}/>}
       /> //FlatList does have ScrollView builted in I believe.
 
