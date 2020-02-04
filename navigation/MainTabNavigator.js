@@ -7,15 +7,16 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PageNotFound from '../screens/PageNotFound';
-import UserProfileScreen from '../screens/UserProfileScreen';
+import UserProfileFormScreen from '../screens/UserProfileFormScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import UserProfileScreen from '../screens/UserProfileScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
-
+import VerificationScreen from '../screens/VerificationScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -24,7 +25,6 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-    UserProfile: UserProfileScreen,
   },
   config
 );
@@ -47,8 +47,11 @@ const AccountStack = createStackNavigator(
     Login: LoginScreen,
     Register: RegisterScreen,
     ForgotPassword: ForgotPasswordScreen,
-    UserAccount: PageNotFound,
+    UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
+    UserProfile: UserProfileScreen,
+    Verification: VerificationScreen,
+
   },
   config
 );
@@ -97,7 +100,8 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: DevScreen,
+    Options: UserProfileFormScreen,
+    Profile: UserProfileScreen,
   },
   config
 );

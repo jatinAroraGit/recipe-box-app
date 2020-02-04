@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginLeft: 0
   },
-  button :{
+  button: {
     marginTop: 40,
     height: 20,
     backgroundColor: '#1DE9B6',
@@ -24,14 +24,14 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#263238',
-    borderRadius:10,
-    height:'auto',
-     ...Platform.select({
+    borderRadius: 10,
+    height: 'auto',
+    ...Platform.select({
       ios: {
         width: 320
       },
       web: {
-        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
       },
       android: {
         width: 320
@@ -49,17 +49,17 @@ const styles = StyleSheet.create({
 
 
 
-function SearchResults({props}) {
+function SearchResults({ props }) {
 
   return (
 
     <ScrollView>
       <View style={styles.container}>
-        
-          <Card title='123'></Card>
-          <Card title="abc"></Card>
-          <Card title="321"></Card>
-          <Card title="cba"></Card>
+
+        <Card title='123'></Card>
+        <Card title="abc"></Card>
+        <Card title="321"></Card>
+        <Card title="cba"></Card>
       </View>
     </ScrollView>
   );

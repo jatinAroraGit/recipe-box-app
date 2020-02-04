@@ -5,33 +5,33 @@ import SecurityQuestionForm from '../components/SecurityQuestionForm';
 
 
 class SecurityQuestionScreen extends React.Component {
-   constructor(props) {
+  constructor(props) {
     super(props);
-      this.state = {
-        navigation: this.props.navigation,
-
-      }
-   }
-
-    callbackFunction = (childData) => {
-        this.setState({login: childData});
-        console.log("login complete!")
+    this.state = {
+      navigation: this.props.navigation,
+      registered: false
     }
-  
+  }
+
+  callbackFunction = (childData) => {
+    this.setState({ login: childData });
+    console.log("login complete!")
+  }
+
   render() {
-    
+
     console.log(this.state.navigation);
     //console.log('NAVIGATION USER %%%%%%% ');
     //console.log(this.props.navigation.state.routeName);
     return (
-  
+
       <SafeAreaView style={{ flex: 3 }}>
         <TopNavbar title='Log in'></TopNavbar>
         <ScrollView >
-          <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
-            
-              <SecurityQuestionForm props={this.props.navigation}></SecurityQuestionForm>
-            
+          <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
+            <SecurityQuestionForm props={this.props.navigation}></SecurityQuestionForm>
+
           </View>
         </ScrollView>
       </SafeAreaView>

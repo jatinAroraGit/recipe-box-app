@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground } from 'react-native';
 import { Button, Appbar, Snackbar, Menu, Divider, Provider, Subheading, Title } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
 import { useForm } from 'react-hook-form'
@@ -8,91 +8,122 @@ import UserProfileForm from './UserProfileForm';
 import '../configure/apiKey.json'
 import Firebase from '../configure/Firebase';
 
-
+const baseStyle = StyleSheet.create({
+  scrollViewBase: {
+    //  backgroundColor: '#263238',
+    elevation: 5,
+    margin: 8,
+    marginBottom: 0,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 6,
+    borderColor: 'transparent',
+    borderTopColor: '#EC407A',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  }
+});
 const appbarCustom = StyleSheet.create({
   safeView: {
-     ...Platform.select({
-     ios: { padding: 30 
-     },
-      android: { padding: 30 
-     }
-    }), 
+    ...Platform.select({
+      ios: {
+        padding: 30
+      },
+      android: {
+        padding: 30
+      }
+    }),
   },
   transparentStyle: {
-     ...Platform.select({
-     ios: { backgroundColor: 'rgba(52, 52, 52, 0.0)' 
-     },
-      android: { backgroundColor: 'rgba(52, 52, 52, 0.0)'
-     },
-     web:{
-       backgroundColor: '#000000'
-     }
-    }), 
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+      },
+      android: {
+        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+      },
+      web: {
+        backgroundColor: '#000000'
+      }
+    }),
   }
 })
 
 class DevScreen extends React.Component {
-   constructor(props) {
+  constructor(props) {
     super(props);
-   }
-   state = {
-     recipes : []
-   }
-componentDidMount() {
- // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
-  this.fetchData(this.props.navigation.getParam('searchQuery'));
- 
-  var email="someone@gmail.com";
-  var password="Pa$$word0";
-  
-  //Create User with Email and Password
-  Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode);
-    console.log(errorMessage);
-  });
-  
-}
-componentDidUpdate(prevProps) {
-  this.fetchData(this.props.navigation.getParam('searchQuery'));
-} 
-  fetchData(query){
+  }
+  state = {
+    recipes: []
+  }
+  componentDidMount() {
+    // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
+    this.fetchData(this.props.navigation.getParam('searchQuery'));
+
+    var email = "someone@gmail.com";
+    var password = "Pa$$word0";
+
+    //Create User with Email and Password
+    Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+    });
+
+  }
+  logoutUser = async () => {
+    try {
+      await Firebase.auth().signOut();
+      // await Firebase.auth().currentUser.delete;
+      this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+      this.props.navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  componentDidUpdate(prevProps) {
+    this.fetchData(this.props.navigation.getParam('searchQuery'));
+  }
+  fetchData(query) {
     let apiKey = require('../configure/apiKey.json');
-    if(query){
-      axios.get('https://api.spoonacular.com/recipes/search?apiKey='+apiKey.key+'&query='+query+'&number=40')
-      .then(res => {
-        const recipes = res.data.results;
-        console.log(recipes)
-        this.setState({recipes});
-      })
+    if (query) {
+      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=40')
+        .then(res => {
+          const recipes = res.data.results;
+          console.log(recipes)
+          this.setState({ recipes });
+        })
     }
   }
   render() {
-   
-const { navigation } = this.props.navigation;
-console.log(navigation);
- console.log('NAVIGATION USER %%%%%%% ');
+
+    const { navigation } = this.props.navigation;
+    console.log(navigation);
+    console.log('NAVIGATION USER %%%%%%% ');
     console.log(this.props.navigation.state.routeName);
-return (
-  
-      <SafeAreaView style={{ flex: 3 }}>
- <TopNavbar title={this.props.navigation.state.routeName}></TopNavbar>
-        <ScrollView >
-  <View style={{ backgroundColor:'#81D4FA', marginStart:10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
-  
-  <Title style={{marginBottom:3}}>Results</Title>
-   { this.state.recipes.map(r => <Text>{r.title}</Text>)}
-     
-    
-  </View>
-  </ScrollView>
-  </SafeAreaView>
- );
+    return (
+
+      <SafeAreaView style={{ flex: 3, backgroundColor: '#B2EBF2' }}>
+        <TopNavbar title={this.props.navigation.state.routeName} enableThirdButton={true} iconName={'logout-variant'} customFunction={this.logoutUser} navColor={'#FFFFFF'}></TopNavbar>
+        <ScrollView style={baseStyle.scrollViewBase}>
+
+          <ImageBackground source={require('../assets/images/multicolored_abstract.jpg')} style={{ flex: 3, width: '100%', height: '100%', position: "absolute" }}>
 
 
-  
+            <Title style={{ marginBottom: 3 }}>Results</Title>
+            {this.state.recipes.map(r => <Text>{r.title}</Text>)}
+
+
+          </ImageBackground>
+
+        </ScrollView>
+      </SafeAreaView>
+    );
+
+
+
   }
 }
 

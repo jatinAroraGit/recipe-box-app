@@ -22,9 +22,6 @@ class SearchScreen extends React.Component {
   
   render() {
     
-    console.log(this.state.navigation);
-    //console.log('NAVIGATION USER %%%%%%% ');
-    //console.log(this.props.navigation.state.routeName);
     return (
   
       <SafeAreaView style={{ flex: 3 }}>

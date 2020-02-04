@@ -1,4 +1,5 @@
 import * as React from 'react';
+import firebase from '../configure/Firebase';
 import {
   View,
   StyleSheet,
@@ -11,6 +12,9 @@ import {
 } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
 import LoginForm from '../components/LoginForm';
+import { createPointerEventsContainer } from 'react-navigation-stack';
+import Firebase from '../configure/Firebase';
+import UserProfileScreen from './UserProfileScreen';
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
@@ -28,38 +32,71 @@ const baseStyle = StyleSheet.create({
   }
 });
 
+var loggedIn = false;
+
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       navigation: this.props.navigation,
-
     }
-  }
+
+    var user = Firebase.auth().currentUser;
+
+    console.log('')
+
+    if (user) {
+
+      console.log("Login:");
+
+      if (!user.emailVerified) {
+
+        loggedIn = false;
+        console.log("Unverified")
+
+      } else {
+
+        loggedIn = true;
+        console.log("Verified")
+
+      }
+    }
+
+  };
 
   callbackFunction = (childData) => {
-    this.setState({ login: childData });
-    console.log("login complete!")
-  }
+
+    console.log("login complete!");
+  };
 
   render() {
 
-    console.log(this.state.navigation);
-    //console.log('NAVIGATION USER %%%%%%% ');
-    //console.log(this.props.navigation.state.routeName);
-    return (
+    console.log("Logged in?");
+    console.log(loggedIn);
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
-        <ScrollView style={baseStyle.scrollViewBase}>
-          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+    if (loggedIn) {
 
-            <LoginForm props={this.props.navigation}></LoginForm>
+      return (
 
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
+        <UserProfileScreen props={this.props.navigation}></UserProfileScreen>
+
+      )
+    } else {
+
+      return (
+
+        <SafeAreaView style={{ flex: 3 }}>
+          <TopNavbar title='Log in'></TopNavbar>
+          <ScrollView style={baseStyle.scrollViewBase}>
+            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
+              <LoginForm props={this.props.navigation}></LoginForm>
+
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )
+    };
   }
 }
 
