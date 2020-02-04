@@ -1,18 +1,9 @@
 import React from 'react';
+import ViewRecipe from '../component/ViewRecipe';
 
 
 import { Title, Headline, Subheading, Surface, Button, Drawer, Appbar } from 'react-native-paper';
-import {
-  Image,
-  ImageBackground,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView
-} from 'react-native';
+import { Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView} from 'react-native';
 import TopNavbar from '../components/TopNavbar';
 
 export default function PageNotFound() {

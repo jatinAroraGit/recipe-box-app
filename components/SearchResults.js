@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView } from 'react-native';
 import Card from './Card';
 
+import ViewRecipe from './ViewRecipe';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -53,6 +55,8 @@ async function getReceipeData (endpoint) {
         keyExtractor={(item, index) => index.toString()}
         onPress={() => props.navigate('Recipe')}
         renderItem={({item}) => <Card item={item}/>}
+        
+        renderItem={({item}) => <ViewRecipe item={item}/>}
       /> //FlatList does have ScrollView builted in I believe.
 
     // <ScrollView>
