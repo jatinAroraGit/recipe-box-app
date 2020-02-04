@@ -2,16 +2,10 @@ import * as React from 'react';
 import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Button, Appbar, Snackbar, Menu, Divider, Provider } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
-<<<<<<< HEAD
 import UserProfile from '../components/UserProfile';
 import Firebase from '../configure/Firebase';
 import VerificationScreen from './VerificationScreen';
 
-=======
-import { useForm } from 'react-hook-form'
-import UserProfileForm from './UserProfileForm';
-import Firebase from '../configure/Firebase';
->>>>>>> Adds Code for logout
 
 const appbarCustom = StyleSheet.create({
   safeView: {
@@ -40,26 +34,20 @@ const appbarCustom = StyleSheet.create({
 })
 var verified = false;
 class UserProfileScreen extends React.Component {
-<<<<<<< HEAD
-  
+
   constructor(props) {
     super(props);
 
-    
+
     var user = Firebase.auth().currentUser;
 
-    if(user) {
+    if (user) {
 
       verified = user.emailVerified;
 
     }
 
 
-=======
-  constructor(props) {
-    super(props);
-
->>>>>>> Adds Code for logout
   }
   handleSubmitClick = (color) => {
     console.log('CLICKED %%%');
@@ -77,56 +65,39 @@ class UserProfileScreen extends React.Component {
 
   render() {
 
-<<<<<<< HEAD
-    if(!verified) {
+    if (!verified) {
 
       console.log("Unverified");
       console.log(verified);
       return (
-        <VerificationScreen props={this.props.navigation}></VerificationScreen>
+        <SafeAreaView style={{ flex: 1, maxHeight: 400 }}>
+
+          <VerificationScreen props={this.props.navigation}></VerificationScreen>
+          <Button style={{ backgroundColor: '#E53935', margin: 5, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
+
+        </SafeAreaView>
       )
     } else {
 
       console.log("Verified");
       console.log(verified);
 
-=======
-    const { navigation } = this.props.navigation;
-    console.log(navigation);
-    console.log('NAVIGATION USER %%%%%%% ');
-    console.log(this.props.navigation.state.routeName);
->>>>>>> Adds Code for logout
-    return (
+      return (
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='User Profile'></TopNavbar>
-        <ScrollView >
-          <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
-<<<<<<< HEAD
+        <SafeAreaView style={{ flex: 3 }}>
+          <TopNavbar title='User Profile'></TopNavbar>
+          <ScrollView >
+            <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
-            <UserProfile props={this.props.navigation} ></UserProfile>
-=======
+              <UserProfile props={this.props.navigation} ></UserProfile>
+              <Button style={{ backgroundColor: '#E53935', margin: 5 }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      );
 
-            <Text>User Profile Screen</Text>
-            <UserProfileForm props={this.props.navigation} ></UserProfileForm>
-            <Button onPress={this.logoutUser}>Log Out</Button>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-
->>>>>>> Adds Code for logout
-
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-
-<<<<<<< HEAD
 
     }
-=======
->>>>>>> Adds Code for logout
   }
 }
 

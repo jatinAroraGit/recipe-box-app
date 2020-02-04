@@ -107,7 +107,7 @@ class TopNavbar extends React.Component {
       />
     }
     let ThirdButton;
-    if (this.props.enableThirdButton || this.state.userLoggedIn) {
+    if (this.props.enableThirdButton) {
       if (false)//this.state.userLoggedIn)
         ThirdButton = <Appbar.Action color='#FFFFFF' icon={'logout-variant'} style={{ backgroundColor: '#000000' }
         } onPress={this.logoutUser} />//) ? this.props.customFunction : this.logoutUser} />

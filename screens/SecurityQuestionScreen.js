@@ -19,14 +19,10 @@ class SecurityQuestionScreen extends React.Component {
   }
 
   render() {
-<<<<<<< HEAD
-    
-=======
 
     console.log(this.state.navigation);
     //console.log('NAVIGATION USER %%%%%%% ');
     //console.log(this.props.navigation.state.routeName);
->>>>>>> Adds boiler plate code for logout
     return (
 
       <SafeAreaView style={{ flex: 3 }}>

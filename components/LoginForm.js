@@ -47,39 +47,6 @@ const styles = StyleSheet.create({
   }
 });
 
-<<<<<<< HEAD
-function LoginForm({props}) {
-    
-    const { control, handleSubmit, errors, setError } = useForm({mode:'onChange'});
-    const onSubmit = data => {
-        
-        if(data.email && data.password) {
-
-            Firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;   
-                setError("invalid", 'no match', "Invalid User Details");
-                console.log(errorCode);
-                console.log(errorMessage);
-            });
-            Firebase.auth().onAuthStateChanged(function(user) {
-
-              if(user){
-                
-                props.navigate("Profile")
-    
-    
-              } else {
-    
-              }
-    
-            });
-    
-        }
-        else{
-            console.log('Please fill in both email and password fields');
-=======
 
 
 
@@ -103,7 +70,6 @@ function LoginForm({ props }) {
           // User is signed in.
           console.log('good');
           props.navigate('UserProfile');
->>>>>>> Adds boiler plate code for logout
         }
       });
     }
@@ -125,9 +91,9 @@ function LoginForm({ props }) {
       <View style={{ marginBottom: 10 }}>
         <Subheading style={styles.label}>Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} valu/>}
+          as={<TextInput style={styles.input} valu />}
           name="email"
-          
+
           control={control}
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
@@ -138,7 +104,7 @@ function LoginForm({ props }) {
         <Controller
           as={<TextInput style={styles.input} secureTextEntry={true} />}
           name="password"
-          
+
           control={control}
           onChange={onChange}
 
@@ -159,25 +125,11 @@ function LoginForm({ props }) {
           Register
             </Button>
 
-<<<<<<< HEAD
-        </View>
-        <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => { props.navigate('ForgotPassword')}}>
-            Forgot Password ?
-=======
       </View>
-      <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => {
-        Firebase.auth().signOut().then(function () {
-          // Sign-out successful.
-          console.log('User Logged Out!');
-        }).catch(function (error) {
-          // An error happened.
-          console.log(error);
-        });
-      }/*props.navigate('ForgotPassword')*/}>
+      <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => { props.navigate('ForgotPassword') }}>
         Forgot Password ?
+      </Button>
 
->>>>>>> Adds boiler plate code for logout
-        </Button>
     </View>
   );
 }
