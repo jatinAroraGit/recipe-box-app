@@ -72,9 +72,9 @@ function UserProfile({ props }) {
   }*/
   // Fill with data from API call for user saved recipes  
   const savedRecipes = [
-    { title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1' },
+    /*{ title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1' },
     { title: "Recipe 2", source: 'https://picsum.photos/200', key: 'item2' },
-    { title: "Recipe 3", source: 'https://picsum.photos/200', key: 'item3' }
+    { title: "Recipe 3", source: 'https://picsum.photos/200', key: 'item3' }*/
   ];
 
   // Fill with data from API call for user cookbooks  
@@ -155,8 +155,8 @@ function UserProfile({ props }) {
 
       <View style={styles.innerContainer} >
         <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
-        <Title>No Saved Recipes Found</Title>
-        { /*
+       
+        { 
         <FlatList
           ListEmptyComponent={noSavedRecipes}
           ItemSeparatorComponent={seperator}
@@ -165,7 +165,7 @@ function UserProfile({ props }) {
           data={savedRecipes}
           renderItem={showRecipeCard}
 
-        />*/
+        />
         }
       </View>
 
@@ -181,9 +181,9 @@ function UserProfile({ props }) {
 
         />
       </View>
-
+{/*
       <View style={styles.innerContainer} >
-        {/*
+        
         <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => {
           Firebase.auth().signOut().then(function () {
             // Sign-out successful.
@@ -195,10 +195,10 @@ function UserProfile({ props }) {
         }}>
           Logout
         </Button>
-        */
-        }
+        
       </View>
-
+*/
+}
     </View>
 
   );

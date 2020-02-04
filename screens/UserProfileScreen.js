@@ -38,7 +38,6 @@ class UserProfileScreen extends React.Component {
   constructor(props) {
     super(props);
 
-
     var user = Firebase.auth().currentUser;
 
     if (user) {
@@ -56,7 +55,7 @@ class UserProfileScreen extends React.Component {
     try {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
-      // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+      //this.setState({ user: null }); // Remember to remove the user from your app's state as well
       this.props.navigation.navigate('Login');
     } catch (error) {
       console.error(error);
@@ -73,7 +72,7 @@ class UserProfileScreen extends React.Component {
         <SafeAreaView style={{ flex: 1, maxHeight: 400 }}>
 
           <VerificationScreen props={this.props.navigation}></VerificationScreen>
-          <Button style={{ backgroundColor: '#E53935', margin: 5, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
+          <Button style={{ backgroundColor: '#E53935', margin: 10, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
 
         </SafeAreaView>
       )
@@ -90,7 +89,7 @@ class UserProfileScreen extends React.Component {
             <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
               <UserProfile props={this.props.navigation} ></UserProfile>
-              <Button style={{ backgroundColor: '#E53935', margin: 5 }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
+              <Button style={{ backgroundColor: '#E53935', margin: 5 }} onPress={this.logoutUser}>Logout</Button>
             </View>
           </ScrollView>
         </SafeAreaView>
