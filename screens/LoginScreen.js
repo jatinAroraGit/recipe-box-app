@@ -1,4 +1,5 @@
 import * as React from 'react';
+import firebase from '../configure/Firebase';
 import {
   View,
   StyleSheet,
@@ -44,12 +45,12 @@ class LoginScreen extends React.Component {
 
     console.log('')
 
-    if(user) {
+    if (user) {
 
       console.log("Login:");
-      
-      if(!user.emailVerified) {
-        
+
+      if (!user.emailVerified) {
+
         loggedIn = false;
         console.log("Unverified")
 
@@ -61,40 +62,41 @@ class LoginScreen extends React.Component {
       }
     }
 
-  }
+  };
 
   callbackFunction = (childData) => {
-    this.setState({ login: childData });
-    console.log("login complete!")
-  }
+
+    console.log("login complete!");
+  };
 
   render() {
-    
+
     console.log("Logged in?");
     console.log(loggedIn);
 
-    if(loggedIn) {
+    if (loggedIn) {
 
       return (
-        
+
         <UserProfileScreen props={this.props.navigation}></UserProfileScreen>
 
       )
     } else {
 
-    return (
+      return (
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
-        <ScrollView style={baseStyle.scrollViewBase}>
-          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+        <SafeAreaView style={{ flex: 3 }}>
+          <TopNavbar title='Log in'></TopNavbar>
+          <ScrollView style={baseStyle.scrollViewBase}>
+            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
-            <LoginForm props={this.props.navigation}></LoginForm>
+              <LoginForm props={this.props.navigation}></LoginForm>
 
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    )};
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )
+    };
   }
 }
 

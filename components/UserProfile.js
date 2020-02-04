@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4FC3F7',
     borderRadius: 10,
     height: 'auto',
-    
+
   },
   input: {
     backgroundColor: '#FFFFFF',
@@ -72,9 +72,9 @@ function UserProfile({ props }) {
   }*/
   // Fill with data from API call for user saved recipes  
   const savedRecipes = [
-    {title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1'},
-    {title: "Recipe 2", source: 'https://picsum.photos/200', key: 'item2'},
-    {title: "Recipe 3", source: 'https://picsum.photos/200', key: 'item3'}
+    { title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1' },
+    { title: "Recipe 2", source: 'https://picsum.photos/200', key: 'item2' },
+    { title: "Recipe 3", source: 'https://picsum.photos/200', key: 'item3' }
   ];
 
   // Fill with data from API call for user cookbooks  
@@ -85,40 +85,40 @@ function UserProfile({ props }) {
   ];
 
   // Adds a space between the cards in the Flatlist
-  const seperator = () => { return <View style={{width: 20, height: 20}}/>}
-  
-  // Returns the cards for saved Recipes
-  const showRecipeCard = ({item:item}) => {
+  const seperator = () => { return <View style={{ width: 20, height: 20 }} /> }
 
-    return(
-    <Card key={item.key} style={{width: 200}} onPress={() => props.navigate('Recipes')}>     
-      <Card.Cover source={{uri: item.source}}></Card.Cover>
-      <Card.Content>
-        <Title >{item.  title}</Title>
-      </Card.Content>
-    </Card>);
+  // Returns the cards for saved Recipes
+  const showRecipeCard = ({ item: item }) => {
+
+    return (
+      <Card key={item.key} style={{ width: 200 }} onPress={() => props.navigate('Recipes')}>
+        <Card.Cover source={{ uri: item.source }}></Card.Cover>
+        <Card.Content>
+          <Title >{item.title}</Title>
+        </Card.Content>
+      </Card>);
 
   }
 
   // Returns the cards for Cookbooks
-  const showCookbookCard = ({item:item}) => {
+  const showCookbookCard = ({ item: item }) => {
 
-    return(
-    <Card key={item.key} style={{width: 200}} onPress={() => props.navigate('Cookbook')}>     
-      <Card.Cover source={{uri: item.source}}></Card.Cover>
-      <Card.Content>
-        <Title >{item.  title}</Title>
-      </Card.Content>
-    </Card>);
+    return (
+      <Card key={item.key} style={{ width: 200 }} onPress={() => props.navigate('Cookbook')}>
+        <Card.Cover source={{ uri: item.source }}></Card.Cover>
+        <Card.Content>
+          <Title >{item.title}</Title>
+        </Card.Content>
+      </Card>);
 
   }
 
   // Renders a button to search Recipes if no saved recipes are found
   const noSavedCookbooks = () => {
 
-    return(
+    return (
       <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
-            Create a Cookbook
+        Create a Cookbook
       </Button>
     )
 
@@ -127,9 +127,9 @@ function UserProfile({ props }) {
   // Renders a button to create cookbook if no cookbooks are found
   const noSavedRecipes = () => {
 
-    return(
+    return (
       <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('Search')}>
-            Go to Recipes
+        Go to Recipes
       </Button>
     )
 
@@ -139,62 +139,70 @@ function UserProfile({ props }) {
 
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Avatar.Text color='#EEEEEE' size={150} label={firstName.charAt(0) + lastName.charAt(0)} style={{marginVertical: 20, backgroundColor: '#448AFF'}} ></Avatar.Text>
-        <Text style={{color: '#EEEEEE', fontSize: 30, marginVertical: 10}}> {firstName} {lastName}</Text>
+        <Avatar.Text color='#EEEEEE' size={150} label={firstName.charAt(0) + lastName.charAt(0)} style={{ marginVertical: 20, backgroundColor: '#448AFF' }} ></Avatar.Text>
+        <Text style={{ color: '#EEEEEE', fontSize: 30, marginVertical: 10 }}> {firstName} {lastName}</Text>
       </View>
 
-      
+
       <View style={styles.innerContainer} >
-          <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
-            Change Email
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
+          Change Email
           </Button>
-          <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
-            Change Password
+        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
+          Change Password
           </Button>
       </View>
 
       <View style={styles.innerContainer} >
-        <Subheading style={{color: '#EEEEEE', fontSize: 20, marginVertical: 10}}>Saved Recipes</Subheading>
+        <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
+        <Title>No Saved Recipes Found</Title>
+        { /*
         <FlatList
-          ListEmptyComponent = {noSavedRecipes}
-          ItemSeparatorComponent = {seperator}
-          style={{borderColor: 'green'}}
+          ListEmptyComponent={noSavedRecipes}
+          ItemSeparatorComponent={seperator}
+          style={{ borderColor: 'green' }}
           horizontal={true}
           data={savedRecipes}
           renderItem={showRecipeCard}
-        
-        />
+
+        />*/
+        }
       </View>
 
       <View style={styles.innerContainer} >
-        <Subheading style={{color: '#EEEEEE', fontSize: 20, marginVertical: 10}}>Cookbooks</Subheading>
+        <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Cookbooks</Subheading>
         <FlatList
-          ListEmptyComponent = {noSavedCookbooks}
-          ItemSeparatorComponent = {seperator}
-          style={{borderColor: 'green'}}
+          ListEmptyComponent={noSavedCookbooks}
+          ItemSeparatorComponent={seperator}
+          style={{ borderColor: 'green' }}
           horizontal={true}
           data={savedCookbooks}
           renderItem={showCookbookCard}
-        
+
         />
       </View>
 
       <View style={styles.innerContainer} >
-      <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => {
-            Firebase.auth().signOut().then(function() {
-                // Sign-out successful.
-                props.navigate('Login')
-              }).catch(function(error) {
-                // An error happened.
-                console.log(error);
-              });
+        {/*
+        <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => {
+          Firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+            props.navigate('Login')
+          }).catch(function (error) {
+            // An error happened.
+            console.log(error);
+          });
         }}>
-            Logout
+          Logout
         </Button>
+        */
+        }
       </View>
 
     </View>
-    
+
   );
+
+
 }
 export default UserProfile;

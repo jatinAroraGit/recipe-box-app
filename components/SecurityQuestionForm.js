@@ -56,14 +56,14 @@ function SecurityQuestionForm({ props }) {
 
     if (data.question && data.question) {
 
-      if(data.question === data.answer) {
+      if (data.question === data.answer) {
 
         setError("same", 'bothSame', "Fields can not be the same!");
 
       } else {
 
-      console.log('good');
-      props.navigate('UserAccount');
+        console.log('good');
+        props.navigate('UserAccount');
       }
     } else {
 

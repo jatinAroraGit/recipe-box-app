@@ -6,6 +6,7 @@ import { visible } from 'ansi-colors';
 import Colors from '../constants/Colors';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
+import Firebase from '../configure/Firebase';
 
 
 const appbarCustom = StyleSheet.create({
@@ -40,11 +41,27 @@ class TopNavbar extends React.Component {
     super(props);
     this.state = {
       firstQuery: '',
-      show: false
+      show: false,
+      userLoggedIn: (Firebase.auth().currentUser) ? true : false
     };
+    console.log(Firebase.auth().currentUser);
   }
 
+  componentDidMount() {
 
+    if (Firebase.auth().currentUser) {
+      console.log(Firebase.auth().currentUser);
+      this.setState({ userLoggedIn: true });
+    }
+
+  }
+  componentDidUpdate() {
+    /*
+    if (Firebase.auth().currentUser) {
+      this.setState({ userLoggedIn: true });
+    }
+    */
+  }
   ShowHideComponent = () => {
     if (this.state.show == true) {
       this.setState({ show: false });
@@ -70,6 +87,16 @@ class TopNavbar extends React.Component {
     console.log('Minimize Search Bar search here');
     this.setState({ show: false });
   }
+  logoutUser = async () => {
+    try {
+      await Firebase.auth().signOut();
+      // await Firebase.auth().currentUser.delete;
+      // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+      this.props.navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   render() {
     const { firstQuery } = this.state;
@@ -81,10 +108,16 @@ class TopNavbar extends React.Component {
     }
     let ThirdButton;
     if (this.props.enableThirdButton) {
-      if (this.props.iconName)
-        ThirdButton = <Appbar.Action color='#FFFFFF' icon={this.props.iconName} style={{ backgroundColor: '#000000' }} onPress={this.props.customFunction} />
+      if (false)//this.state.userLoggedIn)
+        ThirdButton = <Appbar.Action color='#FFFFFF' icon={'logout-variant'} style={{ backgroundColor: '#000000' }
+        } onPress={this.logoutUser} />//) ? this.props.customFunction : this.logoutUser} />
       else
-        ThirdButton = <Appbar.Action color='#FFFFFF' icon='settings' style={{ backgroundColor: '#000000' }} onPress={() => { console.log('Pressed') }} />
+        if (this.props.iconName) {
+          ThirdButton = <Appbar.Action color='#FFFFFF' icon={(!this.state.userLoggedIn) ? this.props.iconName : 'logout-variant'} style={{ backgroundColor: '#000000' }
+          } onPress={this.props.customFunction} />//) ? this.props.customFunction : this.logoutUser} />
+        }
+        else
+          ThirdButton = <Appbar.Action color='#FFFFFF' icon='settings' style={{ backgroundColor: '#000000' }} onPress={() => { console.log('Pressed') }} />
 
     }
     return (

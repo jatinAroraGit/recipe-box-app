@@ -10,14 +10,13 @@ import PageNotFound from '../screens/PageNotFound';
 import UserProfileFormScreen from '../screens/UserProfileFormScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import UserProfileScreen from '../screens/UserProfileScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
-import UserProfileScreen from '../screens/UserProfileScreen';
 import VerificationScreen from '../screens/VerificationScreen';
-
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -26,7 +25,6 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-    UserProfile: UserProfileFormScreen,
   },
   config
 );
@@ -51,13 +49,9 @@ const AccountStack = createStackNavigator(
     ForgotPassword: ForgotPasswordScreen,
     UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
-    Profile: UserProfileScreen,
-    Recipes: PageNotFound,
-    Cookbooks: PageNotFound,
-    ChangeEmail: PageNotFound,
-    ChangePassword: PageNotFound,
-    CreateCookbook: PageNotFound,
+    UserProfile: UserProfileScreen,
     Verification: VerificationScreen,
+
   },
   config
 );
