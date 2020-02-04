@@ -155,8 +155,8 @@ function UserProfile({ props }) {
 
       <View style={styles.innerContainer} >
         <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
-        <Title>No Saved Recipes Found</Title>
-        { /*
+       
+        { 
         <FlatList
           ListEmptyComponent={noSavedRecipes}
           ItemSeparatorComponent={seperator}
@@ -165,7 +165,7 @@ function UserProfile({ props }) {
           data={savedRecipes}
           renderItem={showRecipeCard}
 
-        />*/
+        />
         }
       </View>
 
