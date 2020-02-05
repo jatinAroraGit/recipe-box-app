@@ -51,7 +51,7 @@ var errorb = false;
 
 function LoginForm({ props }) {
 
-  
+
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
@@ -60,7 +60,7 @@ function LoginForm({ props }) {
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
 
       if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer) {
- 
+
         errorb = false;
         //Create User with Email and Password
         Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function (error) {
@@ -75,12 +75,12 @@ function LoginForm({ props }) {
           setError("firebase", 'error', errorMessage);
         });
 
-        Firebase.auth().onAuthStateChanged(function(user) {
+        Firebase.auth().onAuthStateChanged(function (user) {
 
-          if(user){
+          if (user) {
             console.log('\n\n\n\n\n\n\n\nhere')
             console.log(user.uid);
-            
+
             props.navigate("Verification")
 
 
@@ -107,13 +107,13 @@ function LoginForm({ props }) {
 
         }
 
-        if(!data.firstName) {
+        if (!data.firstName) {
 
           setError("firstName", 'empty', "Cannot be blank!");
 
         }
 
-        if(!data.lastName) {
+        if (!data.lastName) {
 
           setError("lastName", 'empty', "Cannot be blank!");
 
@@ -142,108 +142,106 @@ function LoginForm({ props }) {
 
   return (
 
-    //<KeyboardAvoidingView behavior='position' >
-    
-      <View style={styles.container}>
-        <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Register</Title>
-        <Subheading style={styles.label}>Email</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          name="email"
-          control={control}
-          onChange={onChange}
-          rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
-        />
-        {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
 
-        <Subheading style={styles.label}>Confirm Email</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          name="confirmEmail"
-          control={control}
-          onChange={onChange}
-          rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
-        />
-        {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
-        {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match</Subheading>}
+    <View style={styles.container}>
+      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Register</Title>
+      <Subheading style={styles.label}>Email</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="email"
+        control={control}
+        onChange={onChange}
+        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
+      />
+      {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
 
-        <Subheading style={styles.label}>Password</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
-          name="password"
-          control={control}
-          onChange={onChange}
-          rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
-        />
-        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+      <Subheading style={styles.label}>Confirm Email</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="confirmEmail"
+        control={control}
+        onChange={onChange}
+        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
+      />
+      {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
+      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match</Subheading>}
 
-        <Subheading style={styles.label}>Confirm Password</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
-          name="confirmPassword"
-          control={control}
-          onChange={onChange}
-          rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
-        />
-        {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-        {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Passwords do not match</Subheading>}
+      <Subheading style={styles.label}>Password</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        name="password"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+      />
+      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
 
-        <Title style={{ color: '#FFFFFF', marginTop: 20 }}>User Details</Title>
-        <Subheading style={styles.label}>First name</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          onChange={onChange}
-          control={control}
-          name="firstName"
-          rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
-        />
-        {errors.firstName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
+      <Subheading style={styles.label}>Confirm Password</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        name="confirmPassword"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+      />
+      {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Passwords do not match</Subheading>}
 
-        <Subheading style={styles.label}>Last name</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          name="lastName"
-          control={control}
-          onChange={onChange}
-          rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
+      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>User Details</Title>
+      <Subheading style={styles.label}>First name</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        onChange={onChange}
+        control={control}
+        name="firstName"
+        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
+      />
+      {errors.firstName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
-        />
-        {errors.lastName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
+      <Subheading style={styles.label}>Last name</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="lastName"
+        control={control}
+        onChange={onChange}
+        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
 
-        <Title style={{ color: '#FFFFFF', marginTop: 20 }}>Security Questions</Title>
-        <Subheading style={styles.label}>Question</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          name="question"
-          control={control}
-          onChange={onChange}
-          rules={{ required: true }}
-        />
-        {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must enter a question.</Subheading>}
+      />
+      {errors.lastName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
-        <Subheading style={styles.label}>Answer</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} />}
-          name="answer"
-          control={control}
-          onChange={onChange}
-          rules={{ required: true }}
-        />
-        {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must provide an answer.</Subheading>}
-        {errors.same && <Subheading style={{ color: '#BF360C' }}>Your answer cannot be same as the question.</Subheading>}
-        {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
+      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>Security Questions</Title>
+      <Subheading style={styles.label}>Question</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="question"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true }}
+      />
+      {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must enter a question.</Subheading>}
 
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
-            Register
+      <Subheading style={styles.label}>Answer</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="answer"
+        control={control}
+        onChange={onChange}
+        rules={{ required: true }}
+      />
+      {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must provide an answer.</Subheading>}
+      {errors.same && <Subheading style={{ color: '#BF360C' }}>Your answer cannot be same as the question.</Subheading>}
+      {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+          Register
             </Button>
-          <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => props.navigate('Login')}>
-            Log in
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => props.navigate('Login')}>
+          Log in
             </Button>
-        </View>
       </View>
-   // </KeyboardAvoidingView>
-  
+    </View>
+
   );
 }
 export default LoginForm;
