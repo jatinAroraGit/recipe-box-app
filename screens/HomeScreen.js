@@ -12,7 +12,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  
+
   SafeAreaView,
   Dimensions
 } from 'react-native';
@@ -65,7 +65,7 @@ const customStyles = StyleSheet.create({
         width: 400
       },
       web: {
-      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
 
 
       }
@@ -86,7 +86,7 @@ const customStyles = StyleSheet.create({
         width: 270
       },
       web: {
-      width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-70): 550,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
 
 
       }
@@ -120,7 +120,7 @@ const customStyles = StyleSheet.create({
         width: 300
       },
       web: {
-       width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
 
 
       }
@@ -264,9 +264,11 @@ class HomeScreen extends React.Component {
             <Button icon="magnify" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Search')}>
               Start Searching
   </Button>
-            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Options')}>
+
+            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Main')}>
               Know More About Recipe Box
   </Button>
+
           </View>
 
         </ScrollView>

@@ -1,8 +1,24 @@
 import * as React from 'react';
-import { View, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
 import RegisterForm from '../components/RegisterForm';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+const baseStyle = StyleSheet.create({
+  scrollViewBase: {
+    backgroundColor: '#263238',
+    elevation: 5,
+    margin: 8,
+    marginBottom: 0,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 6,
+    borderColor: 'transparent',
+    borderTopColor: 'transparent',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  }
+});
 
 class RegisterScreen extends React.Component {
   constructor(props) {
@@ -22,20 +38,20 @@ class RegisterScreen extends React.Component {
 
     return (
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
+      <SafeAreaView style={{ flex: 3, backgroundColor: '#1E88E5' }}>
+        <TopNavbar title='Register'></TopNavbar>
+        <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
 
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "position" : "position"} keyboardVerticalOffset={20} enabled>
-          <ScrollView >
-
+          <ScrollView style={baseStyle.scrollViewBase}>
             <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
 
               <RegisterForm props={this.props.navigation}></RegisterForm>
 
             </View>
 
           </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     );
   }

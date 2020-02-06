@@ -81,7 +81,8 @@ function LoginForm({ props }) {
             console.log('\n\n\n\n\n\n\n\nhere')
             console.log(user.uid);
 
-            props.navigate("Verification")
+            props.navigate("Auth");
+            props.navigate("UserProfile");
 
 
           } else {
@@ -144,7 +145,7 @@ function LoginForm({ props }) {
 
 
     <View style={styles.container}>
-      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Register</Title>
+      <Title style={{ color: '#1E88E5', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Create Account</Title>
       <Subheading style={styles.label}>Email</Subheading>
       <Controller
         as={<TextInput style={styles.input} />}
@@ -233,7 +234,7 @@ function LoginForm({ props }) {
       {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
           Register
             </Button>
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => props.navigate('Login')}>

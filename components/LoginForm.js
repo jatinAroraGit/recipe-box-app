@@ -69,6 +69,9 @@ function LoginForm({ props }) {
         if (user) {
           // User is signed in.
           console.log('good');
+          if (user.emailVerified) {
+            props.navigate('Main');
+          }
           props.navigate('UserProfile');
         }
       });

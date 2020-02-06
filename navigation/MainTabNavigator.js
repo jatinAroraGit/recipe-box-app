@@ -44,12 +44,13 @@ HomeStack.path = '';
 
 const AccountStack = createStackNavigator(
   {
-    Login: LoginScreen,
-    Register: RegisterScreen,
-    ForgotPassword: ForgotPasswordScreen,
-    UserAccount: UserProfileFormScreen,
-    SecurityQuestion: SecurityQuestionScreen,
+    //    Register: RegisterScreen,
     UserProfile: UserProfileScreen,
+    UserAccount: UserProfileFormScreen,
+    ForgotPassword: ForgotPasswordScreen,
+
+    SecurityQuestion: SecurityQuestionScreen,
+
     Verification: VerificationScreen,
     CreateCookbook: PageNotFound,
     ChangeEmail: PageNotFound,
@@ -60,7 +61,7 @@ const AccountStack = createStackNavigator(
 );
 
 AccountStack.navigationOptions = {
-  tabBarLabel: <Text style={{ fontSize: 14 }}> Account </Text>,
+  tabBarLabel: <Text style={{ fontSize: 14 }}> Profile </Text>,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'account'} />
   ),
@@ -103,7 +104,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: UserProfileFormScreen,
+    Options: PageNotFound,
     Profile: UserProfileScreen,
   },
   config
@@ -127,7 +128,7 @@ const tabNavigator = createMaterialBottomTabNavigator({
 }, {
     inactiveColor: '#BDBDBD',
     activeColor: '#FFFFFF',
-    barStyle: { backgroundColor: "#EC407A" }
+    barStyle: { backgroundColor: "#C2185B" }
   });
 
 tabNavigator.path = '';
