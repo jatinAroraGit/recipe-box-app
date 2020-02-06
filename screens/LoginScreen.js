@@ -39,11 +39,10 @@ class LoginScreen extends React.Component {
     super(props);
     this.state = {
       navigation: this.props.navigation,
+      loggedin: false
     }
 
     var user = Firebase.auth().currentUser;
-
-    console.log('')
 
     if (user) {
 
@@ -51,12 +50,12 @@ class LoginScreen extends React.Component {
 
       if (!user.emailVerified) {
 
-        loggedIn = false;
+        this.state.loggedIn = false;
         console.log("Unverified")
 
       } else {
 
-        loggedIn = true;
+        this.state.loggedIn = true;
         console.log("Verified")
 
       }

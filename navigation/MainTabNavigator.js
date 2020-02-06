@@ -51,6 +51,9 @@ const AccountStack = createStackNavigator(
     SecurityQuestion: SecurityQuestionScreen,
     UserProfile: UserProfileScreen,
     Verification: VerificationScreen,
+    CreateCookbook: PageNotFound,
+    ChangeEmail: PageNotFound,
+    ChangePassword: PageNotFound,
 
   },
   config
