@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { useState } from 'react';
+
 import { View, StyleSheet, Platform, Text, Dimensions, FlatList } from 'react-native';
-import { Button, TextInput, Title, Subheading, Avatar, Card, List } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Avatar, Card, List, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
@@ -60,10 +62,12 @@ const styles = StyleSheet.create({
 
 
 
-function UserProfile({ props }) {
-
+function UserProfile({ props, user }) {
+  const [showSnack, setShowSnack] = useState(false);
   var firstName = 'User';
   var lastName = 'Profile';
+  console.log('USER IS ))))))))))) : ')
+  console.log(user);
 
   /*if(params.names) {
 
@@ -145,27 +149,28 @@ function UserProfile({ props }) {
 
 
       <View style={styles.innerContainer} >
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
+        <Title>{user.email}</Title>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
           Change Email
           </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
           Change Password
           </Button>
       </View>
 
       <View style={styles.innerContainer} >
         <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
-       
-        { 
-        <FlatList
-          ListEmptyComponent={noSavedRecipes}
-          ItemSeparatorComponent={seperator}
-          style={{ borderColor: 'green' }}
-          horizontal={true}
-          data={savedRecipes}
-          renderItem={showRecipeCard}
 
-        />
+        {
+          <FlatList
+            ListEmptyComponent={noSavedRecipes}
+            ItemSeparatorComponent={seperator}
+            style={{ borderColor: 'green' }}
+            horizontal={true}
+            data={savedRecipes}
+            renderItem={showRecipeCard}
+
+          />
         }
       </View>
 
@@ -181,24 +186,15 @@ function UserProfile({ props }) {
 
         />
       </View>
-{/*
-      <View style={styles.innerContainer} >
-        
-        <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => {
-          Firebase.auth().signOut().then(function () {
-            // Sign-out successful.
-            props.navigate('Login')
-          }).catch(function (error) {
-            // An error happened.
-            console.log(error);
-          });
-        }}>
-          Logout
-        </Button>
-        
-      </View>
-*/
-}
+
+      <Snackbar
+        visible={showSnack}
+        onDismiss={() => setShowSnack(false)}
+        duration={5000}
+      >
+        Under Development
+        </Snackbar>
+
     </View>
 
   );

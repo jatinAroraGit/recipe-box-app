@@ -42,26 +42,8 @@ class LoginScreen extends React.Component {
       loggedin: false
     }
 
-    var user = Firebase.auth().currentUser;
-
-    if (user) {
-
-      console.log("Login:");
-
-      if (!user.emailVerified) {
-
-        this.state.loggedIn = false;
-        console.log("Unverified")
-
-      } else {
-
-        this.state.loggedIn = true;
-        console.log("Verified")
-
-      }
-    }
-
   };
+
 
   callbackFunction = (childData) => {
 
@@ -72,32 +54,32 @@ class LoginScreen extends React.Component {
 
     console.log("Logged in?");
     console.log(loggedIn);
+    /*
+        if (loggedIn) {
+    
+          return (
+    
+            <UserProfileScreen ></UserProfileScreen>
+    
+          )
+        } else {
+    */
+    return (
 
-    if (loggedIn) {
+      <SafeAreaView style={{ flex: 3 }}>
+        <TopNavbar title='Log in'></TopNavbar>
+        <ScrollView style={baseStyle.scrollViewBase}>
+          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
-      return (
+            <LoginForm props={this.props.navigation}></LoginForm>
 
-        <UserProfileScreen props={this.props.navigation}></UserProfileScreen>
-
-      )
-    } else {
-
-      return (
-
-        <SafeAreaView style={{ flex: 3 }}>
-          <TopNavbar title='Log in'></TopNavbar>
-          <ScrollView style={baseStyle.scrollViewBase}>
-            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
-
-              <LoginForm props={this.props.navigation}></LoginForm>
-
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      )
-    };
-  }
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  };
 }
+
 
 LoginScreen.navigationOptions = {
   header: null,

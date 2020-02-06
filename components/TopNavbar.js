@@ -47,21 +47,6 @@ class TopNavbar extends React.Component {
     console.log(Firebase.auth().currentUser);
   }
 
-  componentDidMount() {
-
-    if (Firebase.auth().currentUser) {
-      console.log(Firebase.auth().currentUser);
-      this.setState({ userLoggedIn: true });
-    }
-
-  }
-  componentDidUpdate() {
-    /*
-    if (Firebase.auth().currentUser) {
-      this.setState({ userLoggedIn: true });
-    }
-    */
-  }
   ShowHideComponent = () => {
     if (this.state.show == true) {
       this.setState({ show: false });
@@ -101,7 +86,8 @@ class TopNavbar extends React.Component {
   render() {
     const { firstQuery } = this.state;
     let BackButton;
-    if (this.props.navigation.dangerouslyGetParent().state.index > 0) {
+    console.log('************ LINK : ' + this.props.navigation.state.routeName)
+    if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login') {
       BackButton = <Appbar.BackAction color='#FFFFFF' style={{ backgroundColor: '#000000', display: ((Platform.OS === 'web') ? 'none' : 'flex') }}
         onPress={() => this.props.navigation.goBack()}
       />
@@ -114,7 +100,7 @@ class TopNavbar extends React.Component {
       else
         if (this.props.iconName) {
           ThirdButton = <Appbar.Action color='#FFFFFF' icon={(!this.state.userLoggedIn) ? this.props.iconName : 'logout-variant'} style={{ backgroundColor: '#000000' }
-          } onPress={this.props.customFunction} />//) ? this.props.customFunction : this.logoutUser} />
+          } onPress={this.props.customFunction} />
         }
         else
           ThirdButton = <Appbar.Action color='#FFFFFF' icon='settings' style={{ backgroundColor: '#000000' }} onPress={() => { console.log('Pressed') }} />
