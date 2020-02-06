@@ -127,11 +127,14 @@ class UserProfileScreen extends React.Component {
         set.user = user;
 
         console.log(set.user.email);
-        set.setState({ currentUser: user, isVerified: user.emailVerified, loading: false });
+        set.setState({ currentUser: user, isVerified: user.emailVerified });
         if (user.emailVerified) {
+          set.setState({ loading: false });
           set.props.navigation.navigate('Main');
+
         }
         else {
+          set.setState({ loading: false });
           set.props.navigation.navigate('Auth')
         }
         set.props.navigation.navigate('UserProfile');
@@ -201,9 +204,7 @@ class UserProfileScreen extends React.Component {
               <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center", position: "relative" }}>
                 <VerificationScreen props={this.props.navigation}></VerificationScreen>
               </View>
-              <View style={{ position: "absolute" }}>
-                <Button style={{ backgroundColor: '#E53935', margin: 5, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
-              </View>
+
             </View>
 
           </SafeAreaView>

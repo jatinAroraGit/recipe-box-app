@@ -70,6 +70,16 @@ class VerificationScreen extends React.Component {
   toggleSnack = () => {
     this.setState({ showSnack: true });
   }
+  logoutUser = async () => {
+    try {
+      await Firebase.auth().signOut();
+      // await Firebase.auth().currentUser.delete;
+      //this.setState({ user: null }); // Remember to remove the user from your app's state as well
+      this.props.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
   sendVerification = async () => {
     var user = await Firebase.auth().currentUser;
     if (!user.emailVerified) {
@@ -105,7 +115,7 @@ class VerificationScreen extends React.Component {
             </Card.Content>
             <Card.Actions style={{ justifyContent: "center", marginTop: 10 }}>
               <Button mode='contained' onPress={this.sendVerification} >Send Verification Again </Button>
-
+              <Button style={{ backgroundColor: '#E53935', margin: 5, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
             </Card.Actions>
             <Snackbar
               visible={this.state.showSnack}
@@ -115,10 +125,6 @@ class VerificationScreen extends React.Component {
               Email Sent
         </Snackbar>
           </Card>
-          <Title style={{ color: '#000000', fontSize: 14 }}>To proceed further, please verify you account</Title>
-
-          <Title style={{ color: '#000000', fontSize: 14 }}>Please check your email for a verification link.</Title>
-
 
         </View>
 
