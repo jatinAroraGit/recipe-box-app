@@ -178,7 +178,9 @@ function SearchForm({ props }) {
 
   }
 
-  const showCuisine = cuisine.map((c) => {
+  const showCuisine = cuisine.map((c, i) => {
+
+    var key = 'cuisine' + i.toString();
 
     return (
       <Controller
@@ -189,7 +191,7 @@ function SearchForm({ props }) {
           status={selectedCuisine === c ? 'checked' : 'unchecked'}
         />
         <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
-        name="cuisine"
+        name={key}
         control={control}
         onChange={onChange}
         />);
@@ -198,16 +200,18 @@ function SearchForm({ props }) {
 
   const showDietary = dietary.map((c, i) => {
 
+    var key = 'dietary' + i.toString();
+
     return (
       <Controller
         as={<View style={{flexDirection: 'row'}}><RadioButton
-          key={c + "key"} 
+          key={key}
           theme={{colors: {text: '#EEEEEE'}}}
           onPress={() => toggleDietary(c, i)}
           status={checkDietary(c) ? 'checked' : 'unchecked'}
         />
         <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
-        name="cuisine"
+        name={key}
         control={control}
         onChange={onChange}
         />);
@@ -254,16 +258,17 @@ function SearchForm({ props }) {
           <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Cuisine'>
             {showCuisine}
           </List.Accordion>
-          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Ingredients'>
-            {showIngredients}
-            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
-          </List.Accordion>
           <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Dietary Restrictions'>
             {showDietary}
           </List.Accordion>
+          <Subheading title="Ingredients" style={{fontSize: 16, marginVertical: 10, marginHorizontal: 15}} theme={{colors: {text: '#EEEEEE'}}}>Ingredients</Subheading>
+            {showIngredients}
+            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
+          
+          
         </List.Section>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={handleSubmit(onSubmit)}>
+          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
             Search
         </Button>
         </View>
