@@ -7,10 +7,6 @@ import Colors from '../constants/Colors';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 import Firebase from '../configure/Firebase';
-<<<<<<< HEAD
-=======
-
->>>>>>> Added logout button to top navbar
 
 
 const appbarCustom = StyleSheet.create({

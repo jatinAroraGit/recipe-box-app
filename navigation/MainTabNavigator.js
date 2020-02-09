@@ -104,12 +104,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-<<<<<<< HEAD
-    Options: PageNotFound,
-    Profile: UserProfileScreen,
-=======
     Options: DevScreen,
->>>>>>> Added logout button to top navbar
   },
   config
 );
