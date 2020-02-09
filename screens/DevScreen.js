@@ -61,7 +61,6 @@ class DevScreen extends React.Component {
 
 
   }
-<<<<<<< HEAD
   logoutUser = async () => {
     try {
       await Firebase.auth().signOut();
@@ -72,8 +71,6 @@ class DevScreen extends React.Component {
       console.error(error);
     }
   };
-=======
->>>>>>> Added logout button to top navbar
   componentDidUpdate(prevProps) {
     this.fetchData(this.props.navigation.getParam('searchQuery'));
   }
