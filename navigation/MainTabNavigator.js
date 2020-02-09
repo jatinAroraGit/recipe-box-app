@@ -13,6 +13,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
@@ -54,7 +55,7 @@ const AccountStack = createStackNavigator(
 
     Verification: VerificationScreen,
     CreateCookbook: PageNotFound,
-    ChangeEmail: PageNotFound,
+    ChangeEmail: ChangeEmailScreen,
     ChangePassword: ChangePasswordScreen,
 
   },
