@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios'
 import '../configure/apiKey.json'
-import Card from './Card';
+import RecipeCards from '../components/RecipeCards';
 
 import ViewRecipe from './ViewRecipe';
 
@@ -63,7 +63,7 @@ useEffect(()=>{}); means "Run every render componentDidUpdate"
         style={styles.container}
         data={items}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => <Card navigation={navigation} oneitem={item}/>}
+        renderItem={({item}) => <RecipeCards navigation={navigation} oneitem={item}/>}
         //renderItem={({item}) => <ViewRecipe item={item}/>}
       /> //FlatList does have ScrollView builted in I believe
   );
