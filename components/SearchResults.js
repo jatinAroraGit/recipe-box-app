@@ -1,67 +1,71 @@
-import * as React from 'react';
-import { View, StyleSheet, Platform, Text, Dimensions, ScrollView } from 'react-native';
-import { Button, TextInput, Title, Subheading } from 'react-native-paper';
-import { useForm, Controller } from 'react-hook-form'
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import React, {useState, useEffect} from 'react';
+import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView } from 'react-native';
+import axios from 'axios'
+import '../configure/apiKey.json'
 import Card from './Card';
+
+import ViewRecipe from './ViewRecipe';
 
 
 const styles = StyleSheet.create({
-  label: {
-    color: '#FFFFFF',
-    margin: 20,
-    marginLeft: 0
-  },
-  button: {
-    marginTop: 40,
-    height: 20,
-    backgroundColor: '#1DE9B6',
-    borderRadius: 4
-  },
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingTop: 3,
-    padding: 8,
-    backgroundColor: '#263238',
-    borderRadius: 10,
-    height: 'auto',
-    ...Platform.select({
-      ios: {
-        width: 320
-      },
-      web: {
-        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
-      },
-      android: {
-        width: 320
-      },
-    })
+    marginTop:20,
+    backgroundColor: '#F5FCFF',
   },
-  input: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 0,
-    height: 30,
-    padding: 5,
-    borderRadius: 4,
+  loader:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
   }
-});
+})
 
 
 
-function SearchResults({ props }) {
+
+function SearchResults({navigation}) {
+
+  const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
+
+
+
+useEffect(() => { 
+  let query = "cheese"
+    let apiKey = require('../configure/apiKey.json');
+    if (query) {
+      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=5')
+        .then(res => {
+          const items = res.data.results;
+          // console.log(items)
+          setItems( items );
+        })
+    }
+
+
+}, []);
+
+
+
+/*
+useEffect(()=>{},[]); means "Run only once, like componentDidMount"
+useEffect(()=>{},[count]); means "Run this effect if count is changed, like componentDidUpdate"
+useEffect(()=>{}); means "Run every render componentDidUpdate"
+*/ 
+
+// async function getReceipeData (endpoint) {
+
+//   const res = await fetch(endpoint);
+//   return await res.json();
+// }
 
   return (
 
-    <ScrollView>
-      <View style={styles.container}>
-
-        <Card title='123'></Card>
-        <Card title="abc"></Card>
-        <Card title="321"></Card>
-        <Card title="cba"></Card>
-      </View>
-    </ScrollView>
+    <FlatList
+        style={styles.container}
+        data={items}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => <Card navigation={navigation} oneitem={item}/>}
+        //renderItem={({item}) => <ViewRecipe item={item}/>}
+      /> //FlatList does have ScrollView builted in I believe
   );
 }
 export default SearchResults;
