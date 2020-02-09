@@ -11,6 +11,7 @@ import UserProfileFormScreen from '../screens/UserProfileFormScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import DeleteUserScreen from '../screens/DeleteUserScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import ChangeEmailScreen from '../screens/ChangeEmailScreen';
@@ -57,6 +58,7 @@ const AccountStack = createStackNavigator(
     CreateCookbook: PageNotFound,
     ChangeEmail: ChangeEmailScreen,
     ChangePassword: ChangePasswordScreen,
+    DeleteUser: DeleteUserScreen,
 
   },
   config
