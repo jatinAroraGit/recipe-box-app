@@ -153,8 +153,11 @@ function UserProfile({ props, user }) {
         <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
           Change Email
           </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
           Change Password
+          </Button>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
+          Delete Account
           </Button>
       </View>
 
