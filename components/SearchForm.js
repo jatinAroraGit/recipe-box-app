@@ -1,9 +1,9 @@
 import * as React from 'react';
+import {useState} from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
-import { Button, TextInput, Title, Subheading, Searchbar, List } from 'react-native-paper';
-import { useForm, Controller } from 'react-hook-form'
+import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton } from 'react-native-paper';
+import { useForm, Controller } from 'react-hook-form';
 import { setLightEstimationEnabled } from 'expo/build/AR';
-
 
 const styles = StyleSheet.create({
   label: {
@@ -49,27 +49,49 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     height: 20,
     padding: 5,
+    marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 4,
   },
 });
 
-var more = false;
-var ingredientIt = 0;
 
 function SearchForm({ props }) {
 
-
-  var ingredientList = [{ name: '' }];
-  const cuisine = ['none', 'italian', 'indian', 'mexican', 'german'];
-  var results = { title: '', cuisine: 'none', ingredients: [{ name: '' }] };
-
+  const ingre = {name: ''};
+  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [selectedDietary, setSelectedDietary] = useState([]);
+  const [ingredients, setIngredients] = useState([ingre]);
+  const cuisine = ['None', 'Italian', 'Indian', 'Mexican', 'German'];
+  const dietary = ['Pork', 'Beef', 'Vegetatrian', 'Vegan', 'Dairy']
+  //var selectedCuisine = '';
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
+    data.ingredients = [];  
+    for(var i in ingredients) {
+
+      
+      if(ingredients[i].name != '') {
+
+        data.ingredients[i] = ingredients[i].name;
+      }
+    }
+
+    if(selectedCuisine != '') {
+
+      data.cuisine = selectedCuisine;
+
+    }
+
+    if(selectedDietary != []) {
+
+      data.dietary = selectedDietary;
+
+    }
+
     console.log(data);
-    props.navigate('Results')
 
   }
   const onChange = args => {
@@ -78,48 +100,145 @@ function SearchForm({ props }) {
     };
   };
 
-  const toggleFilter = () => {
-
-    if (more) {
-
-      console.log('less')
-      more = false;
-
-    } else {
-
-      console.log('more')
-      more = true;
-    }
-  }
-
   const setCuisine = (c) => {
 
-    results.cuisine = c;
+    setSelectedCuisine(c);
 
   }
 
   const addIngredient = () => {
 
-    ingredientIt++;
-    ingredientList[ingredientIt] = { name: '' };
-    console.log(ingredientList);
+    setIngredients(ingredients.concat(ingre));
+
   }
 
-  const showCuisine = cuisine.map((c) => {
+  const checkDietary = (c) => {
 
-    //<List.Item key={c + "key"} title={c} onPress={() => {setCuisine({c})}}></List.Item>
-    <Text>{c}</Text>
+    var selected = false;
+
+    for(var i in selectedDietary) {
+
+      if(selectedDietary[i] == c) {
+
+        selected = true;
+
+      }
+
+    }
+
+    return selected;
+
+  }
+
+  const toggleDietary = (d, i) => {
+
+    var toggled = false;
+
+
+    for(var i in selectedDietary) {
+
+      if(selectedDietary[i] == d) {
+
+        let temp = [...selectedDietary];
+        temp.splice(i, 1);
+        console.log("temp")
+        console.log(temp);
+        setSelectedDietary(temp);
+
+        toggled = true;
+      }
+
+    }
+    console.log(toggled)
+    if(!toggled) {
+
+      setSelectedDietary(selectedDietary.concat(d));
+      console.log("!")
+      console.log(selectedDietary);
+
+    }
+    
+    console.log(selectedDietary);
+
+  }
+
+  /*const removeIngrdient = (i) => {
+
+    setIngredients(ingredients.splice(i, 1))
+
+  }*/
+
+  const updateIngredient = (name, i) => {
+
+    let temp = [...ingredients];
+    let item = {...temp[i]};
+    item.name = name;
+    temp[i] = item;
+    setIngredients(temp);
+
+  }
+
+  const showCuisine = cuisine.map((c, i) => {
+
+    var key = 'cuisine' + i.toString();
+
+    return (
+      <Controller
+        as={<View style={{flexDirection: 'row'}}><RadioButton
+          key={c + "key"} 
+          theme={{colors: {text: '#EEEEEE'}}}
+          onPress={() => setCuisine(c)}
+          status={selectedCuisine === c ? 'checked' : 'unchecked'}
+        />
+        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
+        name={key}
+        control={control}
+        onChange={onChange}
+        />);
+        
   });
 
-  const showIngredients = ingredientList.map((ingredient) => {
+  const showDietary = dietary.map((c, i) => {
 
-    <TextInput key={'ingredient' + ingredientIt.toString()}
-      style={styles.inputIngredient}
-      dense={true}
-      value={ingredient.name}
-      onChangeText={(text) => { ingredientList[ingredientIt].name = text }}
-    />
+    var key = 'dietary' + i.toString();
 
+    return (
+      <Controller
+        as={<View style={{flexDirection: 'row'}}><RadioButton
+          key={key}
+          theme={{colors: {text: '#EEEEEE'}}}
+          onPress={() => toggleDietary(c, i)}
+          status={checkDietary(c) ? 'checked' : 'unchecked'}
+        />
+        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
+        name={key}
+        control={control}
+        onChange={onChange}
+        />);
+        
+  });
+
+  const showIngredients = ingredients.map((c, i) => {
+
+    var key = 'ingreident' + i.toString();
+
+    return (
+      <Controller
+        as={<View style={{flexDirection: 'row', marginVertical: 5}}><TextInput 
+          style={styles.inputIngredient , {flex: 4}} 
+          theme={{colors: {text: '#000000'}}}
+          key={key}
+          dense={true}
+          onChangeText={(text) => {updateIngredient(text, i)}}
+        />
+        {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
+        }
+        </View>}
+        name={key}
+        control={control}
+        onChange={onChange}
+      />);
+        
   });
 
   return (
@@ -128,32 +247,31 @@ function SearchForm({ props }) {
       <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Search</Title>
       <View style={{ marginBottom: 10 }}>
         <Controller
-          as={<Searchbar style={styles.input} onChangeText={(text) => results.title = text} />}
+          as={<Searchbar style={styles.input} />}
           name="search"
           control={control}
           onChange={onChange}
-          rules={{ required: true }}
         />
         {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
 
         <List.Section>
-          <List.Accordion title='Cuisine'>
+          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Cuisine'>
             {showCuisine}
           </List.Accordion>
-          <List.Accordion title='Ingredients'>
+          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Dietary Restrictions'>
+            {showDietary}
+          </List.Accordion>
+          <Subheading title="Ingredients" style={{fontSize: 16, marginVertical: 10, marginHorizontal: 15}} theme={{colors: {text: '#EEEEEE'}}}>Ingredients</Subheading>
             {showIngredients}
             <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
-          </List.Accordion>
+          
+          
         </List.Section>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => console.log(showCuisine)}>
+          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
             Search
         </Button>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => toggleFilter()}>
-            Filters
-        </Button>
         </View>
-        {showCuisine}
       </View>
     </View>
   );

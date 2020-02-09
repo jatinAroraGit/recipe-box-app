@@ -15,7 +15,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
-import SearchResults from '../components/SearchResults';
+import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -72,7 +72,7 @@ AccountStack.path = '';
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-    Results: SearchResults,
+    Results: SearchResultScreen,
   },
   config
 );
