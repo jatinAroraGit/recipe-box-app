@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import UserProfileForm from './UserProfileForm';
 import '../configure/apiKey.json'
-import Firebase from '../configure/Firebase';
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
@@ -60,17 +59,6 @@ class DevScreen extends React.Component {
     // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
     this.fetchData(this.props.navigation.getParam('searchQuery'));
 
-    var email = "someone@gmail.com";
-    var password = "Pa$$word0";
-
-    //Create User with Email and Password
-    Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-    });
 
   }
   logoutUser = async () => {
@@ -106,7 +94,7 @@ class DevScreen extends React.Component {
     return (
 
       <SafeAreaView style={{ flex: 3, backgroundColor: '#B2EBF2' }}>
-        <TopNavbar title={this.props.navigation.state.routeName} enableThirdButton={true} iconName={'logout-variant'} customFunction={this.logoutUser} navColor={'#FFFFFF'}></TopNavbar>
+        <TopNavbar title={this.props.navigation.state.routeName}></TopNavbar>
         <ScrollView style={baseStyle.scrollViewBase}>
 
           <ImageBackground source={require('../assets/images/multicolored_abstract.jpg')} style={{ flex: 3, width: '100%', height: '100%', position: "absolute" }}>

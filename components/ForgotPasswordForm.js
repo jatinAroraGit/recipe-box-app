@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import Firebase from '../configure/Firebase';
 
 const styles = StyleSheet.create({
   label: {
@@ -47,19 +48,47 @@ const styles = StyleSheet.create({
 
 
 function ForgotPasswordForm({ props }) {
-
-  const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
+  var auth = Firebase.auth();
+  var securityQuestion = "What is my favorite color? (Red)";
+  var securityAnswer = "Red";
+  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
     console.log(data);
 
-    if (data.email) {
+    if (data.email && data.answer) {
+      console.log('Valid email entered.');
 
-      console.log('good');
+      if(data.answer == securityAnswer){//TODO change 'true' to checking for the email in the database.
+      //TODO read security questions from database instead of hardcoding.
+        console.log('Valid security question answer');
 
+      
+        auth.sendPasswordResetEmail(data.email).then(function() {
+          // Email sent.
+        console.log('password recovery email sent');
+        props.navigate('Home');
+
+        }).catch(function(error) {
+          // An error happened.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+          
+      console.log('No user');
+      setError("noUser", 'no user', "no account uses this email");
+        });
+
+      } else {
+        console.log('Invalid security question answer');
+        setError("wrongAnswer", 'wrong answer', "security question answer is incorrect");
+
+      }
     } else {
 
-      console.log('bad');
+      console.log('Please fill all fields');
+      setError("missingData", 'missing data', "some fields were left blank");
 
     }
 
@@ -80,9 +109,21 @@ function ForgotPasswordForm({ props }) {
         name="email"
         control={control}
         onChange={onChange}
-        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
+        rules={{ required: true, pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
       {errors.email && <Subheading style={{ color: '#BF360C' }}>Invalid Email.</Subheading>}
+      {errors.noUser && <Subheading style={{ color: '#BF360C' }}>No account exists using that email.</Subheading>}
+      
+      <Subheading style={styles.label}>Security Question</Subheading>
+      <Subheading style={styles.label}>{securityQuestion}</Subheading>
+      <Controller
+        as={<TextInput style={styles.input} />}
+        name="answer"
+        control={control}
+        onChange={onChange}
+      />
+      {errors.wrongAnswer && <Subheading style={{ color: '#BF360C' }}>Answer is incorrect.</Subheading>}
+      {errors.missingData && <Subheading style={{ color: '#BF360C' }}>Please fill in both fields.</Subheading>}
 
       <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
         Send

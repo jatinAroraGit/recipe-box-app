@@ -11,7 +11,10 @@ import UserProfileFormScreen from '../screens/UserProfileFormScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import DeleteUserScreen from '../screens/DeleteUserScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
@@ -53,8 +56,9 @@ const AccountStack = createStackNavigator(
 
     Verification: VerificationScreen,
     CreateCookbook: PageNotFound,
-    ChangeEmail: PageNotFound,
-    ChangePassword: PageNotFound,
+    ChangeEmail: ChangeEmailScreen,
+    ChangePassword: ChangePasswordScreen,
+    DeleteUser: DeleteUserScreen,
 
   },
   config
@@ -104,8 +108,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: PageNotFound,
-    Profile: UserProfileScreen,
+    Options: DevScreen,
   },
   config
 );

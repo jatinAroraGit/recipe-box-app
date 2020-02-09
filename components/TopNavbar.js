@@ -58,7 +58,6 @@ class TopNavbar extends React.Component {
   thirdButtonFunction() {
     console.log('PRESSED');
   }
-
   handleSearch = (keyPress, query) => {
     console.log(keyPress.keyboardWillHide);
     // if(keyPress.nativeEvent.key=='Enter'){
@@ -85,6 +84,7 @@ class TopNavbar extends React.Component {
 
   render() {
     const { firstQuery } = this.state;
+    const { navigation } = this.props.navigation;
     let BackButton;
     console.log('************ LINK : ' + this.props.navigation.state.routeName)
     if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login') {
@@ -133,6 +133,7 @@ class TopNavbar extends React.Component {
                 subtitle={this.props.subtitle}
               />
               <Appbar.Action icon="magnify" color='#FFFFFF' style={{ backgroundColor: '#000000' }} onPress={() => this.ShowHideComponent()} />
+
               {ThirdButton}
             </Appbar.Header>
           )
