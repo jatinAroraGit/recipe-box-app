@@ -153,7 +153,7 @@ function UserProfile({ props, user }) {
         <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
           Change Email
           </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
           Change Password
           </Button>
       </View>

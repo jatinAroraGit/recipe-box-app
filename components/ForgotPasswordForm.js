@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import Firebase from '../configure/Firebase';
 
 const styles = StyleSheet.create({
   label: {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
 
 
 function ForgotPasswordForm({ props }) {
-
+  var auth = Firebase.auth();
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
@@ -55,11 +56,22 @@ function ForgotPasswordForm({ props }) {
 
     if (data.email) {
 
-      console.log('good');
-
+      console.log('Valid email entered.');
+      //TODO:  implement security questions here before email gets sent.
+      auth.sendPasswordResetEmail(data.email).then(function() {
+        // Email sent.
+      console.log('password recovery email sent');
+      }).catch(function(error) {
+        // An error happened.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+      
     } else {
 
-      console.log('bad');
+      console.log('No email entered');
 
     }
 
