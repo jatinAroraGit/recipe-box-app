@@ -27,13 +27,8 @@ class SearchScreen extends React.Component {
       <SafeAreaView style={{ flex: 3 }}>
         <TopNavbar title='Search'></TopNavbar>
         <ScrollView >
-          <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
-            
-              <SearchForm props={this.props.navigation}></SearchForm>
-              <Button color='#FFFFFF' style={{alignSelf: 'center',backgroundColor:'grey', margin: 20}} onPress={() => this.props.navigation.navigate('Results')}>
-                        Results
-                    </Button>
-            
+          <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>  
+            <SearchForm props={this.props.navigation}></SearchForm>
           </View>
         </ScrollView>
       </SafeAreaView>
