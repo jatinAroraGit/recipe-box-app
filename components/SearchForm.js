@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   },
 });
 
+var results = {};
 
 function SearchForm({ props }) {
 
@@ -62,36 +63,59 @@ function SearchForm({ props }) {
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [ingredients, setIngredients] = useState([ingre]);
-  const cuisine = ['None', 'Italian', 'Indian', 'Mexican', 'German'];
-  const dietary = ['Pork', 'Beef', 'Vegetatrian', 'Vegan', 'Dairy']
-  //var selectedCuisine = '';
+  const cuisine = ['None', 'African', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
+  const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood' , 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
+  
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
-    data.ingredients = [];  
-    for(var i in ingredients) {
+    if(ingredients.length < 2 && ingredients[0].name != "") {
 
-      
-      if(ingredients[i].name != '') {
+      results.includeIngredients = "";  
+      for(var i in ingredients) {
 
-        data.ingredients[i] = ingredients[i].name;
+        if(i > 0 && ingredients[i].name != "") {
+
+          results.includeIngredients += ',';
+
+        }
+        if(ingredients[i].name != '') {
+
+          results.includeIngredients += ingredients[i].name;
+        }
       }
     }
 
     if(selectedCuisine != '') {
 
-      data.cuisine = selectedCuisine;
+      results.cuisine = selectedCuisine;
 
     }
 
-    if(selectedDietary != []) {
+    if(data.query != undefined) {
 
-      data.dietary = selectedDietary;
+      results.query = data.query;
 
     }
 
-    console.log(data);
+    if(selectedDietary.length != 0) {
+
+      results.intolerances = "";  
+      for(var i in selectedDietary) {
+
+        if(i > 0 && selectedDietary[i] != "") {
+
+          results.intolerances += ',';
+
+        }
+        if(selectedDietary[i] != '') {
+
+          results.intolerances += selectedDietary[i];
+        }
+      }
+    }
+    console.log(results);
 
   }
   const onChange = args => {
@@ -248,7 +272,7 @@ function SearchForm({ props }) {
       <View style={{ marginBottom: 10 }}>
         <Controller
           as={<Searchbar style={styles.input} />}
-          name="search"
+          name="query"
           control={control}
           onChange={onChange}
         />
@@ -263,12 +287,12 @@ function SearchForm({ props }) {
           </List.Accordion>
           <Subheading title="Ingredients" style={{fontSize: 16, marginVertical: 10, marginHorizontal: 15}} theme={{colors: {text: '#EEEEEE'}}}>Ingredients</Subheading>
             {showIngredients}
-            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
+            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#0288D1', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
           
           
         </List.Section>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'purple', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
+          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
             Search
         </Button>
         </View>
