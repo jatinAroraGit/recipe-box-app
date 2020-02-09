@@ -115,7 +115,11 @@ function SearchForm({ props }) {
         }
       }
     }
-    console.log(results);
+
+    var test = JSON.stringify({results: results})
+
+    //console.log(test);
+    props.navigate("Results", {results: test});
 
   }
   const onChange = args => {
