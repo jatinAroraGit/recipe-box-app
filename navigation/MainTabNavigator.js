@@ -20,6 +20,9 @@ import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
+import SearchResults from '../components/SearchResults';
+import ViewRecipe from '../components/ViewRecipe';
+
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -76,7 +79,9 @@ AccountStack.path = '';
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-    Results: SearchResultScreen,
+    Results: SearchResults,
+    Recipe: ViewRecipe,
+
   },
   config
 );
