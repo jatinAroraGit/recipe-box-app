@@ -7,6 +7,10 @@ import Colors from '../constants/Colors';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 import Firebase from '../configure/Firebase';
+<<<<<<< HEAD
+=======
+
+>>>>>>> Added logout button to top navbar
 
 
 const appbarCustom = StyleSheet.create({
@@ -58,7 +62,16 @@ class TopNavbar extends React.Component {
   thirdButtonFunction() {
     console.log('PRESSED');
   }
-
+  logoutButtonFunction = () => {
+    const navigation = this.props.navigation;
+  Firebase.auth().signOut().then(function() {
+    console.log('User Logged Out!');
+    navigation.navigate('Home');// {notifyLogOut: true}); TODO pass the value properly
+  }).catch(function(error) {
+    // An error happened.
+    console.log(error);
+  });
+  }
   handleSearch = (keyPress, query) => {
     console.log(keyPress.keyboardWillHide);
     // if(keyPress.nativeEvent.key=='Enter'){
@@ -85,6 +98,7 @@ class TopNavbar extends React.Component {
 
   render() {
     const { firstQuery } = this.state;
+    const { navigation } = this.props.navigation;
     let BackButton;
     console.log('************ LINK : ' + this.props.navigation.state.routeName)
     if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login') {
@@ -106,6 +120,9 @@ class TopNavbar extends React.Component {
           ThirdButton = <Appbar.Action color='#FFFFFF' icon='settings' style={{ backgroundColor: '#000000' }} onPress={() => { console.log('Pressed') }} />
 
     }
+    let LogoutButton;
+        LogoutButton = <Appbar.Action color='#FFFFFF' icon='logout-variant' style={{ backgroundColor: '#000000' }} onPress={() => this.logoutButtonFunction() } />
+
     return (
       <View>
         {this.state.show ? (
@@ -133,6 +150,7 @@ class TopNavbar extends React.Component {
                 subtitle={this.props.subtitle}
               />
               <Appbar.Action icon="magnify" color='#FFFFFF' style={{ backgroundColor: '#000000' }} onPress={() => this.ShowHideComponent()} />
+              {LogoutButton}
               {ThirdButton}
             </Appbar.Header>
           )
