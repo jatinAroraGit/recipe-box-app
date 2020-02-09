@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
 });
 
 
-function ChangePasswordForm({ props }) {
+function ChangeEmailForm({ props }) {
 
   var auth = Firebase.auth();
   let user = auth.currentUser;//retrieving current user
@@ -56,17 +56,17 @@ function ChangePasswordForm({ props }) {
 
     console.log(data);
 
-    if (data.password && data.newPassword && data.confirmNewPassword) {
+    if (data.password && data.newEmail && data.confirmNewEmail) {
       console.log('required data entered');
 
-      if (data.newPassword == data.confirmNewPassword) {
-        console.log('new passwords match');
+      if (data.newEmail == data.confirmNewEmail) {
+        console.log('new emails match');
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function() {
             console.log('User verified');
 
-            user.updatePassword(data.newPassword).then(function() {
-              console.log('Password updated');
+            user.updateEmail(data.newEmail).then(function() {
+              console.log('Email updated');
               props.navigate('UserProfile');
 
             }).catch(function(error) {
@@ -86,8 +86,8 @@ function ChangePasswordForm({ props }) {
 
       } else {
 
-        console.log("passwords do not match");
-        setError("matchPassword", 'no pmatch', "Passwords do not match");
+        console.log("emails do not match");
+        setError("matchEmail", 'no ematch', "Emails do not match");
 
       }
       
@@ -107,8 +107,8 @@ function ChangePasswordForm({ props }) {
   return (
 
     <View style={styles.container}>
-      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Password</Title>
-      <Subheading style={styles.label}>Current Password</Subheading>
+      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Email</Title>
+      <Subheading style={styles.label}>Password</Subheading>
         <Controller
           as={<TextInput style={styles.input} secureTextEntry={true} />}
           name="password"
@@ -121,34 +121,35 @@ function ChangePasswordForm({ props }) {
         {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
         {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Wrong password.</Subheading>}
 
-      <Subheading style={styles.label}>New Password</Subheading>
+      <Subheading style={styles.label}>New Email</Subheading>
       <Controller
-        as={<TextInput style={styles.input} secureTextEntry={true} />}
-        name="newPassword"
+        as={<TextInput style={styles.input} />}
+        name="newEmail"
         control={control}
         onChange={onChange}
-        rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.newPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+      {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
 
-      <Subheading style={styles.label}>Confirm New Password</Subheading>
+      <Subheading style={styles.label}>Confirm New Email</Subheading>
       <Controller
-        as={<TextInput style={styles.input} secureTextEntry={true} />}
-        name="confirmNewPassword"
+        as={<TextInput style={styles.input} />}
+        name="confirmNewEmail"
         control={control}
         onChange={onChange}
-        rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.confirmNewPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Passwords do not match</Subheading>}
+      {errors.confirmNewEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
+      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match.</Subheading>}
 
       <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
-        Change Password
+        Change Email
         </Button>
       <Button style={{ marginHorizontal: 10, marginTop: 12, marginBottom: 6 }} mode="contained" onPress={() => props.navigate('UserProfile')}>
         Return to user profile
         </Button>
+
     </View>
   );
 }
-export default ChangePasswordForm;
+export default ChangeEmailForm;
