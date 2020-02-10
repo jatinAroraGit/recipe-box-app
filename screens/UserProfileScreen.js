@@ -249,7 +249,7 @@ class UserProfileScreen extends React.Component {
               <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
                 <UserProfile props={this.props.navigation} user={this.state.currentUser}></UserProfile>
-                <Button style={{ backgroundColor: '#E53935', margin: 5 }} color='#FFFFFF' onPress={this.logoutUserOutOfStack}>Logout</Button>
+                <Button icon="logout-variant" style={{ backgroundColor: '#E53935', margin: 5 }} color='#FFFFFF' onPress={this.logoutUserOutOfStack}>Logout</Button>
               </View>
             </ScrollView>
           </SafeAreaView>

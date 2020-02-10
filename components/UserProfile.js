@@ -47,9 +47,18 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     margin: 10,
-    backgroundColor: '#4FC3F7',
+    backgroundColor: '#F48FB1',
     borderRadius: 10,
     height: 'auto',
+    shadowColor: "#D81B60",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.33,
+    shadowRadius: 8.62,
+
+    elevation: 8,
 
   },
   input: {
@@ -124,7 +133,7 @@ function UserProfile({ props, user }) {
   const noSavedCookbooks = () => {
 
     return (
-      <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
         Create a Cookbook
       </Button>
     )
@@ -135,7 +144,7 @@ function UserProfile({ props, user }) {
   const noSavedRecipes = () => {
 
     return (
-      <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('Search')}>
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('Search')}>
         Go to Recipes
       </Button>
     )
@@ -158,30 +167,24 @@ function UserProfile({ props, user }) {
       >
         Under Development
       </Banner>
-
+      <View style={styles.innerContainer}>
+        <Title>Welcome, {user.email}</Title>
+      </View>
       <View style={styles.innerContainer} >
-        <Title>{user.email}</Title>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
+        <Title>Account Settings</Title>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
           Change Email
           </Button>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
           Change Password
           </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#B71C1C' }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
           Delete Account
           </Button>
       </View>
 
 
-      <View style={styles.innerContainer} >
-        <Title>{user.email}</Title>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
-          Change Email
-          </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
-          Change Password
-          </Button>
-      </View>
+
 
       <View style={styles.innerContainer} >
         <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
