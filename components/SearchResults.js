@@ -4,9 +4,6 @@ import axios from 'axios'
 import '../configure/apiKey.json'
 import RecipeCards from '../components/RecipeCards';
 
-import ViewRecipe from './ViewRecipe';
-
-
 const styles = StyleSheet.create({
   container: {
     marginTop:20,
@@ -19,17 +16,24 @@ const styles = StyleSheet.create({
   }
 })
 
+var query;
 
-
-
-function SearchResults({navigation}) {
+function SearchResults({ params, props }) {
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
 
+  const results = JSON.parse(params.results); 
 
+  console.log("SearchResults");
+  console.log(results);
+
+  if(results.query != undefined) {
+
+    query = results.query;
+
+  }
 
 useEffect(() => { 
-  let query = "cheese"
     let apiKey = require('../configure/apiKey.json');
     if (query) {
       axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=5')
@@ -63,7 +67,7 @@ useEffect(()=>{}); means "Run every render componentDidUpdate"
         style={styles.container}
         data={items}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => <RecipeCards navigation={navigation} oneitem={item}/>}
+        renderItem={({item}) => <RecipeCards navigation={props} oneitem={item}/>}
         //renderItem={({item}) => <ViewRecipe item={item}/>}
       /> //FlatList does have ScrollView builted in I believe
   );

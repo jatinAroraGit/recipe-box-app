@@ -116,10 +116,9 @@ function SearchForm({ props }) {
       }
     }
 
-    var test = JSON.stringify({results: results})
+    const result = JSON.stringify(results);
 
-    //console.log(test);
-    props.navigate("Results", {results: test});
+    props.navigate("Results", {results: result});
 
   }
   const onChange = args => {
@@ -220,6 +219,7 @@ function SearchForm({ props }) {
         />
         <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
         name={key}
+        key={c + "key"} 
         control={control}
         onChange={onChange}
         />);
@@ -240,6 +240,7 @@ function SearchForm({ props }) {
         />
         <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
         name={key}
+        key={c + "key"} 
         control={control}
         onChange={onChange}
         />);
@@ -263,6 +264,7 @@ function SearchForm({ props }) {
         }
         </View>}
         name={key}
+        key={c + "key"} 
         control={control}
         onChange={onChange}
       />);

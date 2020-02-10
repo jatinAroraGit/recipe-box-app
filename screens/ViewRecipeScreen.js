@@ -1,46 +1,42 @@
-import React from 'react';
-<<<<<<< HEAD
-
-
-import { Title, Headline, Subheading, Surface, Button, Drawer, Appbar } from 'react-native-paper';
-import {
-  Image,
-  ImageBackground,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView
-} from 'react-native';
-=======
-import ViewRecipe from '../component/ViewRecipe';
-
-
-import { Title, Headline, Subheading, Surface, Button, Drawer, Appbar } from 'react-native-paper';
-import { Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView} from 'react-native';
->>>>>>> 56a0e331ee5b0d503b1ce37fcb362ead19f96178
+import * as React from 'react';
+import { View, StyleSheet, Platform, SafeAreaView, ScrollView, Dimensions, Text } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
+import ViewRecipe from '../components/ViewRecipe';
 
-export default function PageNotFound() {
-  return (
-    <SafeAreaView style={{flex:3}}>
-  <TopNavbar title='Home'></TopNavbar>
-    <ScrollView>
-      <ViewRecipe style={{margin:10}}>Not Found. Check back later.</ViewRecipe>
-    </ScrollView>
-    </SafeAreaView>
-  );
+
+class DeleteUserScreen extends React.Component {
+   constructor(props) {
+    super(props);
+      this.state = {
+        navigation: this.props.navigation,
+
+      }
+   }
+
+    callbackFunction = (childData) => {
+        this.setState({login: childData});
+        console.log("login complete!")
+    }
+  
+  render() {
+
+    return (
+  
+      <SafeAreaView style={{ flex: 3 }}>
+        <TopNavbar title='Recipe'></TopNavbar>
+        <ScrollView >
+          <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
+            
+              <ViewRecipe params={this.props.navigation.state.params} props={this.props.navigation}></ViewRecipe>
+            
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 }
 
-PageNotFound.navigationOptions = {
+DeleteUserScreen.navigationOptions = {
   header: null,
 };
-
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-  },
-});
+export default DeleteUserScreen;

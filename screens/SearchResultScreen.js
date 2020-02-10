@@ -11,6 +11,8 @@ class SearchResultScreen extends React.Component {
         navigation: this.props.navigation,
 
       }
+      console.log("SRSCREEN%%%%%%%")
+    console.log(this.props.navigation.state)
    }
 
     callbackFunction = (childData) => {
@@ -20,6 +22,9 @@ class SearchResultScreen extends React.Component {
   
   render() {
     
+    console.log("SRSCREEN%%%%%%%")
+    console.log(this.props.navigation)
+
     return (
   
       <SafeAreaView style={{ flex: 3 }}>
@@ -27,7 +32,7 @@ class SearchResultScreen extends React.Component {
         <ScrollView >
           <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
             
-              <SearchResults props={this.props.navigation}></SearchResults>
+              <SearchResults params={this.props.navigation.state.params} props={this.props.navigation}></SearchResults>
             
           </View>
         </ScrollView>

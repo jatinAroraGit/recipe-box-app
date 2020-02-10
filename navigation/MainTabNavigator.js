@@ -18,10 +18,9 @@ import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
-import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
-import SearchResults from '../components/SearchResults';
-import ViewRecipe from '../components/ViewRecipe';
+import SearchResultScreen from '../screens/SearchResultScreen';
+import ViewRecipe from '../screens/ViewRecipeScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -79,7 +78,7 @@ AccountStack.path = '';
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-    Results: SearchResults,
+    Results: SearchResultScreen,
     Recipe: ViewRecipe,
 
   },
