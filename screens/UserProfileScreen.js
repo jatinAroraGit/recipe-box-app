@@ -202,7 +202,7 @@ class UserProfileScreen extends React.Component {
 
             <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center", position: "relative" }}>
               <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center", position: "relative" }}>
-                <VerificationScreen props={this.props.navigation}></VerificationScreen>
+                <VerificationScreen nav={this.props.navigation}></VerificationScreen>
               </View>
 
             </View>

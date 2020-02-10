@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Button, Title, Card, Subheading, Snackbar } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
+import { withNavigation, NavigationActions } from 'react-navigation';
 
 import Firebase from '../configure/Firebase';
 import { thisTypeAnnotation } from '@babel/types';
@@ -75,7 +76,7 @@ class VerificationScreen extends React.Component {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
       //this.setState({ user: null }); // Remember to remove the user from your app's state as well
-      this.props.navigate('Login');
+      this.props.navigation.navigate('Login');
     } catch (error) {
       console.error(error);
     }
@@ -137,4 +138,4 @@ class VerificationScreen extends React.Component {
 VerificationScreen.navigationOptions = {
   header: null,
 };
-export default VerificationScreen;
+export default withNavigation(VerificationScreen);
