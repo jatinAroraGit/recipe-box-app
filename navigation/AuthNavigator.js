@@ -17,6 +17,9 @@ import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
 import VerificationScreen from '../screens/VerificationScreen';
+import SearchResultScreen from '../screens/SearchResultScreen';
+import ViewRecipe from '../components/ViewRecipe';
+import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -68,7 +71,9 @@ AuthAccountStack.path = '';
 const AuthSearchStack = createStackNavigator(
   {
     SimpleSearch: SearchScreen,
-    Results: SearchResults,
+    //Results: SearchResults,
+    Results: SearchResultScreen,
+    ViewRecipe: ViewRecipeScreen,
   },
   config
 );

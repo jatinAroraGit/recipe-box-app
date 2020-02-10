@@ -107,7 +107,7 @@ function LoginForm({ props }) {
       <View style={{ marginBottom: 10 }}>
         <Subheading style={styles.label}>Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} valu />}
+          as={<TextInput style={styles.input} />}
           name="email"
 
           control={control}

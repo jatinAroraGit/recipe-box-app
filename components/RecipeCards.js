@@ -5,22 +5,24 @@ import { StyleSheet, TouchableOpacity, Image, Text, View } from 'react-native';
 export default class RecipeCards extends React.PureComponent {
   constructor(props) {
     super(props)
+    console.log('EACH CARD GOT $$$$$$$$$$$$$$$$ ');
 
+    console.log();
     this.state = {
       baseUri: `https://spoonacular.com/recipeImages/`
       // navigation: this.props.navigation,
     }
 
   }
-
+  // source={`${this.state.baseUri}${this.props.oneitem.image}`} 
   render() {
     return (
       <View>
-        <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('Options', { id: 'yo' })}>
+        <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewRecipe', { id: 'yo' })}>
           {console.log('start')}
           {console.log(`${this.state.baseUri}${this.props.oneitem}`)}
           {console.log('end')}
-          <Image style={styles.cardImage} source={`${this.state.baseUri}${this.props.oneitem.image}`} />
+          <Image style={styles.cardImage} source={require('../assets/images/burger.jpg')} />
           <Text style={styles.cardText}>{this.props.oneitem.title}</Text>
         </TouchableOpacity>
 

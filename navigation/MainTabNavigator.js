@@ -21,9 +21,10 @@ import SearchScreen from '../screens/SearchScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 import SearchResults from '../components/SearchResults';
-import ViewRecipe from '../components/ViewRecipe';
+//import ViewRecipe from '../components/ViewRecipe';
 
 import Loading from '../screens/Loading';
+import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -81,7 +82,8 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
     Results: SearchResults,
-    Recipe: ViewRecipe,
+    //Recipe: ViewRecipe,
+    ViewAdvancedRecipe: ViewRecipeScreen,
 
   },
   config
