@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Image, Text, View } from 'react-native';
 //import {NavigationContainer} from '@react-navigation/navigate';
-import { Thumbnail, Left, Right } from 'native-base';
 
 export default class RecipeCards extends React.PureComponent {
   constructor(props) {
