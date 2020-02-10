@@ -5,30 +5,30 @@ import SearchResults from '../components/SearchResults';
 
 
 class SearchResultScreen extends React.Component {
-   constructor(props) {
+  constructor(props) {
     super(props);
-      this.state = {
-        navigation: this.props.navigation,
+    this.state = {
+      navigation: this.props.navigation,
 
-      }
-   }
-
-    callbackFunction = (childData) => {
-        this.setState({login: childData});
-        console.log("login complete!")
     }
-  
+  }
+
+  callbackFunction = (childData) => {
+    this.setState({ login: childData });
+    console.log("login complete!")
+  }
+
   render() {
-    
+
     return (
-  
+
       <SafeAreaView style={{ flex: 3 }}>
         <TopNavbar title='Log in'></TopNavbar>
         <ScrollView >
-          <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
-            
-              <SearchResults props={this.props.navigation}></SearchResults>
-            
+          <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
+            <SearchResults navigation={this.props.navigation}></SearchResults>
+
           </View>
         </ScrollView>
       </SafeAreaView>
