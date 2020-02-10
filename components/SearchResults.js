@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView, SafeAreaView } from 'react-native';
 import axios from 'axios'
 import '../configure/apiKey.json'
 import RecipeCards from '../components/RecipeCards';
@@ -23,14 +23,14 @@ const styles = StyleSheet.create({
 
 
 
-function SearchResults({navigation, ingredQuery}) {
+function SearchResults({ navigation, ingredQuery }) {
 
-  
+
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');
 
-//  console.log(navigation.state.params);
+  //  console.log(navigation.state.params);
   var results = JSON.parse(navigation.state.params.results);
   console.log(results);
   var query = "";
@@ -39,9 +39,9 @@ function SearchResults({navigation, ingredQuery}) {
 
     console.log("######getQuery() results")
     console.log(results);
-    
 
-    if(results.query != "") {
+
+    if (results.query != "") {
 
       console.log("good");
       queryLength++;
@@ -49,7 +49,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.cuisine != "") {
+    if (results.cuisine != "") {
 
       console.log("good");
       queryLength++;
@@ -57,7 +57,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.intolerances != "") {
+    if (results.intolerances != "") {
 
       console.log("good");
       queryLength++;
@@ -65,7 +65,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.includeIngredients != "") {
+    if (results.includeIngredients != "") {
 
       console.log("good");
       queryLength++;
@@ -73,12 +73,12 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
     let apiKey = require('../configure/apiKey.json');
-   // if(queryLength == 1) {
+    // if(queryLength == 1) {
     //  console.log(query);
     //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
     //} else if(queryLength > 1) {
-      console.log(query);
-      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
+    console.log(query);
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
 
     //}
     console.log("######getQuery() query")
@@ -87,7 +87,7 @@ function SearchResults({navigation, ingredQuery}) {
   }
 
   useEffect(() => {
-    
+
     var url = getQuery();
     if (queryLength == 1) {
       axios.get(url)
@@ -116,15 +116,15 @@ function SearchResults({navigation, ingredQuery}) {
   // }
 
   return (
-      <FlatList
-        style={styles.container}
-        data={items}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
-      //renderItem={({item}) => <ViewRecipe item={item}/>}
-      />
+    <FlatList
+      style={styles.container}
+      data={items}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+    //renderItem={({item}) => <ViewRecipe item={item}/>}
+    />
 
-      
+
   );
 }
 export default SearchResults;

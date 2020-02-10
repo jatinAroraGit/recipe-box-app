@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
@@ -59,13 +59,13 @@ var results = {};
 
 function SearchForm({ props }) {
 
-  const ingre = {name: ''};
+  const ingre = { name: '' };
   const [empty, setEmpty] = useState(false);
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [ingredients, setIngredients] = useState([ingre]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
-  const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood' , 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
+  const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
@@ -73,48 +73,48 @@ function SearchForm({ props }) {
     results.includeIngredients = "";
     results.cuisine = "";
     results.query = "";
-    results.intolerances = "";  
+    results.intolerances = "";
     setEmpty(true);
-    if(ingredients.length < 2 && ingredients[0].name != "") {
+    if (ingredients.length < 2 && ingredients[0].name != "") {
       setEmpty(false);
-        
-      for(var i in ingredients) {
 
-        if(i > 0 && ingredients[i].name != "") {
+      for (var i in ingredients) {
+
+        if (i > 0 && ingredients[i].name != "") {
 
           results.includeIngredients += ',';
 
         }
-        if(ingredients[i].name != '') {
+        if (ingredients[i].name != '') {
 
           results.includeIngredients += ingredients[i].name;
         }
       }
     }
 
-    if(selectedCuisine != '') {
+    if (selectedCuisine != '') {
       setEmpty(false);
       results.cuisine = selectedCuisine;
 
     }
 
-    if(data.query != undefined) {
+    if (data.query != undefined) {
       setEmpty(false);
       results.query = data.query;
 
     }
 
-    if(selectedDietary.length != 0) {
+    if (selectedDietary.length != 0) {
       setEmpty(false);
-      
-      for(var i in selectedDietary) {
 
-        if(i > 0 && selectedDietary[i] != "") {
+      for (var i in selectedDietary) {
+
+        if (i > 0 && selectedDietary[i] != "") {
 
           results.intolerances += ',';
 
         }
-        if(selectedDietary[i] != '') {
+        if (selectedDietary[i] != '') {
 
           results.intolerances += selectedDietary[i];
         }
@@ -123,7 +123,7 @@ function SearchForm({ props }) {
 
     const result = JSON.stringify(results);
 
-    props.navigate("Results", {results: result});
+    props.navigate("Results", { results: result });
 
   }
   const onChange = args => {
@@ -151,9 +151,9 @@ function SearchForm({ props }) {
 
     var selected = false;
 
-    for(var i in selectedDietary) {
+    for (var i in selectedDietary) {
 
-      if(selectedDietary[i] == c) {
+      if (selectedDietary[i] == c) {
 
         selected = true;
 
@@ -170,9 +170,9 @@ function SearchForm({ props }) {
     var toggled = false;
 
 
-    for(var i in selectedDietary) {
+    for (var i in selectedDietary) {
 
-      if(selectedDietary[i] == d) {
+      if (selectedDietary[i] == d) {
 
         let temp = [...selectedDietary];
         temp.splice(i, 1);
@@ -185,14 +185,14 @@ function SearchForm({ props }) {
 
     }
     console.log(toggled)
-    if(!toggled) {
+    if (!toggled) {
 
       setSelectedDietary(selectedDietary.concat(d));
       console.log("!")
       console.log(selectedDietary);
 
     }
-    
+
     console.log(selectedDietary);
 
   }
@@ -206,7 +206,7 @@ function SearchForm({ props }) {
   const updateIngredient = (name, i) => {
 
     let temp = [...ingredients];
-    let item = {...temp[i]};
+    let item = { ...temp[i] };
     item.name = name;
     temp[i] = item;
     setIngredients(temp);
@@ -219,19 +219,19 @@ function SearchForm({ props }) {
 
     return (
       <Controller
-        as={<View style={{flexDirection: 'row'}}><RadioButton
-          key={c + "key"} 
-          theme={{colors: {text: '#EEEEEE'}}}
+        as={<View style={{ flexDirection: 'row' }}><RadioButton
+          key={c + "key"}
+          theme={{ colors: { text: '#EEEEEE' } }}
           onPress={() => setCuisine(c)}
           status={selectedCuisine === c ? 'checked' : 'unchecked'}
         />
-        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
+          <Text style={{ marginTop: 10, marginHorizontal: 10, color: '#EEEEEE' }}>{c}</Text></View>}
         name={key}
-        key={c + "key"} 
+        key={c + "key"}
         control={control}
         onChange={onChange}
-        />);
-        
+      />);
+
   });
 
   const showDietary = dietary.map((c, i) => {
@@ -240,19 +240,19 @@ function SearchForm({ props }) {
 
     return (
       <Controller
-        as={<View style={{flexDirection: 'row'}}><RadioButton
+        as={<View style={{ flexDirection: 'row' }}><RadioButton
           key={key}
-          theme={{colors: {text: '#EEEEEE'}}}
+          theme={{ colors: { text: '#EEEEEE' } }}
           onPress={() => toggleDietary(c, i)}
           status={checkDietary(c) ? 'checked' : 'unchecked'}
         />
-        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
+          <Text style={{ marginTop: 10, marginHorizontal: 10, color: '#EEEEEE' }}>{c}</Text></View>}
         name={key}
-        key={c + "key"} 
+        key={c + "key"}
         control={control}
         onChange={onChange}
-        />);
-        
+      />);
+
   });
 
   const showIngredients = ingredients.map((c, i) => {
@@ -261,22 +261,22 @@ function SearchForm({ props }) {
 
     return (
       <Controller
-        as={<View style={{flexDirection: 'row', marginVertical: 5}}><TextInput 
-          style={styles.inputIngredient , {flex: 4}} 
-          theme={{colors: {text: '#000000'}}}
+        as={<View style={{ flexDirection: 'row', marginVertical: 5 }}><TextInput
+          style={styles.inputIngredient}
+          theme={{ colors: { text: '#000000' } }}
           key={key}
           dense={true}
-          onChangeText={(text) => {updateIngredient(text, i)}}
+          onChangeText={(text) => { updateIngredient(text, i) }}
         />
-        {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
-        }
+          {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
+          }
         </View>}
         name={key}
-        key={c + "key"} 
+        key={c + "key"}
         control={control}
         onChange={onChange}
       />);
-        
+
   });
 
   return (
@@ -289,21 +289,22 @@ function SearchForm({ props }) {
           name="query"
           control={control}
           onChange={onChange}
+          defaultValue=""
         />
         {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
 
         <List.Section>
-          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Cuisine'>
+          <List.Accordion theme={{ colors: { text: '#EEEEEE' } }} title='Cuisine'>
             {showCuisine}
           </List.Accordion>
-          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Dietary Restrictions'>
+          <List.Accordion theme={{ colors: { text: '#EEEEEE' } }} title='Dietary Restrictions'>
             {showDietary}
           </List.Accordion>
-          <Subheading title="Ingredients" style={{fontSize: 16, marginVertical: 10, marginHorizontal: 15}} theme={{colors: {text: '#EEEEEE'}}}>Ingredients</Subheading>
-            {showIngredients}
-            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#0288D1', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
-          
-          
+          <Subheading title="Ingredients" style={{ fontSize: 16, marginVertical: 10, marginHorizontal: 15 }} theme={{ colors: { text: '#EEEEEE' } }}>Ingredients</Subheading>
+          {showIngredients}
+          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#0288D1', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
+
+
         </List.Section>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
           <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>

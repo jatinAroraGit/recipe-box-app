@@ -9,7 +9,7 @@ import {
   Text,
   ImageBackground
 } from 'react-native';
-import { Button, Title, Card, Subheading, Snackbar } from 'react-native-paper';
+import { Button, Title, Card, Subheading, Snackbar, Banner } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
 import { withNavigation, NavigationActions } from 'react-navigation';
 
@@ -44,16 +44,18 @@ const styles = StyleSheet.create({
     }),
   }
 });
-
 class VerificationScreen extends React.Component {
+
   constructor(props) {
     console.log('VERIFICATION SCREEN: ******')
 
     super(props);
-    this.state = {
-      showSnack: false,
-      currentUser: null
-    }
+
+  }
+  state = {
+    showSnack: false,
+    currentUser: null,
+    message: "Oops!, something went wrong. Try again later."
   }
 
   logoutUser = async () => {
@@ -72,16 +74,21 @@ class VerificationScreen extends React.Component {
   }
   sendVerification = async () => {
     var user = await Firebase.auth().currentUser;
+
     if (!user.emailVerified) {
       user.sendEmailVerification().then(function () {
+        this.setState({ message: "A verification email has been sent to" });
+        //this.setState
         this.setState({ currentUser: user });
         this.setState({ showSnack: true });
+
         console.log(' Email sent to : ' + user.email);
 
       }).catch(function (error) {
         console.log(' Already Verified.');
         console.log(error);
       });
+      this.setState({ showSnack: true });
     }
   }
 
@@ -95,7 +102,23 @@ class VerificationScreen extends React.Component {
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
+        <Banner
+          visible={this.state.showSnack}
+          style={{ backgroundColor: '#FFEE58', borderRadius: 10, margin: 10 }}
+          contentStyle={{ height: 'auto' }}
+          icon='information'
+          actions={[
+            {
+              label: 'CLOSE',
+              onPress: () => { this.setState({ showSnack: false }) },
+              mode: 'contained',
 
+            }
+          ]}
+
+        >
+          <Subheading>{this.state.message}</Subheading><Subheading style={{ color: '#E91E63' }}>{(this.state.currentUser) ? (this.state.currentUser.email) : ''}</Subheading>
+        </Banner>
         <View style={{ flex: 3, width: 'auto', maxHeight: 400, marginStart: 10, marginTop: 20, marginEnd: 10, marginBottom: 90, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden", alignSelf: 'center', padding: 11 }}>
           <Card styles={styles.nestedCardStyle}>
             <Card.Title subtitleStyle={{ color: '#F9A825', fontSize: 20 }} subtitle="Information" />
@@ -110,18 +133,11 @@ class VerificationScreen extends React.Component {
             </Card.Actions>
 
           </Card>
-          <Snackbar
 
-            visible={this.state.showSnack}
-            onDismiss={() => this.setState({ showSnack: false })}
-            duration={5000}
-          >
-            Email Sent to {(this.state.currentUser) ? (this.state.currentUser.email) : ''}
-          </Snackbar>
         </View>
 
 
-      </SafeAreaView>
+      </SafeAreaView >
     );
   }
 }
