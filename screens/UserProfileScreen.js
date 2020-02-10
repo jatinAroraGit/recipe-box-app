@@ -6,6 +6,7 @@ import UserProfile from '../components/UserProfile';
 import Firebase from '../configure/Firebase';
 import VerificationScreen from './VerificationScreen';
 import { PulseIndicator } from 'react-native-indicators';
+import { NavigationActions, StackActions } from 'react-navigation'
 const styles = StyleSheet.create({
   buttonOuterLayout: {
     flex: 1,
@@ -108,9 +109,14 @@ const baseStyle = StyleSheet.create({
 var verified = false;
 
 class UserProfileScreen extends React.Component {
+
   _isMounted = false;
-  user;
+
   constructor(props) {
+
+
+    console.log('USER PROFILE SCREEN: ******')
+
     super(props);
     this.state = { currentUser: [], isVerified: false, loading: true };
 
@@ -118,7 +124,9 @@ class UserProfileScreen extends React.Component {
 
 
   componentDidMount() {
-
+    const params = this.props.navigation.state;
+    const isUserVerfied = params.verified;
+    console.log(params);
     let set = this;
     this.unsubscribe = Firebase.auth().onAuthStateChanged(user => {
       console.log('FIRING AUTH CHANGED &&&&&&&&');
@@ -130,20 +138,33 @@ class UserProfileScreen extends React.Component {
         set.setState({ currentUser: user, isVerified: user.emailVerified });
         if (user.emailVerified) {
           set.setState({ loading: false });
-          set.props.navigation.navigate('Main');
+          //set.props.navigation.navigate('Home', {},S StackActions.replace('UserProfile'));
+
+          set.props.navigation.navigate('UserProfile');
+          set.props.navigation.navigate(NavigationActions.navigate({
+
+            action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
+          }));
 
         }
+
         else {
           set.setState({ loading: false });
-          set.props.navigation.navigate('Auth')
+          set.props.navigation.navigate('UserProfile');
+          /*
+          set.props.navigation.navigate(NavigationActions.navigate({
+            action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
+          }));
+*/
         }
-        set.props.navigation.navigate('UserProfile');
+
       }
       else {
         set.setState({ isVerified: false });
         set.props.navigation.navigate('Login');
       }
     });
+    this.unsubscribe();
   }
 
 
@@ -169,8 +190,14 @@ class UserProfileScreen extends React.Component {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
       // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
-      this.props.navigation.navigate('Auth');
-      this.props.navigation.navigate('Login');
+
+      // this.props.navigation.navigate('Auth');
+      // this.props.navigation.navigate('Login');
+
+      this.props.navigation.navigate(NavigationActions.navigate({
+        routeName: 'Auth',
+        action: NavigationActions.navigate({ routeName: 'Login' })
+      }));
     } catch (error) {
       console.error(error);
     }

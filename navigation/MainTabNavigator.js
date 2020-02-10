@@ -23,6 +23,7 @@ import VerificationScreen from '../screens/VerificationScreen';
 import SearchResults from '../components/SearchResults';
 import ViewRecipe from '../components/ViewRecipe';
 
+import Loading from '../screens/Loading';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -30,7 +31,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: HomeScreen
   },
   config
 );

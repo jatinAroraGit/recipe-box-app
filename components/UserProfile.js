@@ -2,10 +2,11 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { View, StyleSheet, Platform, Text, Dimensions, FlatList } from 'react-native';
-import { Button, TextInput, Title, Subheading, Avatar, Card, List, Snackbar } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Avatar, Card, List, Snackbar, Banner } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableHighlight, ScrollView } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import SafeAreaView from 'react-native-safe-area-view';
 
 
 const styles = StyleSheet.create({
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    //position: "relative",
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#263238',
@@ -63,6 +64,8 @@ const styles = StyleSheet.create({
 
 
 function UserProfile({ props, user }) {
+  console.log('USER PROFLE: ******')
+
   const [showSnack, setShowSnack] = useState(false);
   var firstName = 'User';
   var lastName = 'Profile';
@@ -140,13 +143,21 @@ function UserProfile({ props, user }) {
   }
 
   return (
+    <SafeAreaView style={{ flex: 3 }}>
 
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Avatar.Text color='#EEEEEE' size={150} label={firstName.charAt(0) + lastName.charAt(0)} style={{ marginVertical: 20, backgroundColor: '#448AFF' }} ></Avatar.Text>
-        <Text style={{ color: '#EEEEEE', fontSize: 30, marginVertical: 10 }}> {firstName} {lastName}</Text>
-      </View>
+      <Banner
+        visible={showSnack}
+        style={{ backgroundColor: '#EEEEEE' }}
+        actions={[
+          {
+            label: 'Dismiss',
+            onPress: () => { setShowSnack(false) },
+          }
+        ]}
 
+      >
+        Under Development
+      </Banner>
 
       <View style={styles.innerContainer} >
         <Title>{user.email}</Title>
@@ -158,6 +169,17 @@ function UserProfile({ props, user }) {
           </Button>
         <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
           Delete Account
+          </Button>
+      </View>
+
+
+      <View style={styles.innerContainer} >
+        <Title>{user.email}</Title>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
+          Change Email
+          </Button>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => setShowSnack(true)}>
+          Change Password
           </Button>
       </View>
 
@@ -189,16 +211,7 @@ function UserProfile({ props, user }) {
 
         />
       </View>
-
-      <Snackbar
-        visible={showSnack}
-        onDismiss={() => setShowSnack(false)}
-        duration={5000}
-      >
-        Under Development
-        </Snackbar>
-
-    </View>
+    </SafeAreaView>
 
   );
 
