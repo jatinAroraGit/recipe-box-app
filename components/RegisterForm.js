@@ -4,6 +4,7 @@ import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import { NavigationActions } from 'react-navigation'
 
 const styles = StyleSheet.create({
   label: {
@@ -49,9 +50,10 @@ const styles = StyleSheet.create({
 var errorb = false;
 
 
-function LoginForm({ props }) {
+function RegisterForm({ nav }) {
 
-
+  const navigation = nav;
+  console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
@@ -75,14 +77,32 @@ function LoginForm({ props }) {
           setError("firebase", 'error', errorMessage);
         });
 
+
+
+
         Firebase.auth().onAuthStateChanged(function (user) {
 
           if (user) {
+
+            if (!user.emailVerified) {
+              user.sendEmailVerification().then(function () {
+
+                console.log('First Email sent to : ' + user.email);
+
+              }).catch(function (error) {
+                console.log(' Already Verified.');
+                console.log(error);
+              });
+            }
+
             console.log('\n\n\n\n\n\n\n\nhere')
             console.log(user.uid);
-
-            props.navigate("Auth");
-            props.navigate("UserProfile");
+            navigation.navigate(NavigationActions.navigate({
+              routeName: 'Auth',
+              action: NavigationActions.navigate({ routeName: 'UserProfile' })
+            }))
+            //    props.navigate("Auth");
+            //   props.navigate("UserProfile");
 
 
           } else {
@@ -245,4 +265,4 @@ function LoginForm({ props }) {
 
   );
 }
-export default LoginForm;
+export default RegisterForm;

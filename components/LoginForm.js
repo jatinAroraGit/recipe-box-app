@@ -4,6 +4,7 @@ import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 
 const styles = StyleSheet.create({
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
 
 
 function LoginForm({ props }) {
+  console.log('LOGIN FORM: ******')
 
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
@@ -70,9 +72,20 @@ function LoginForm({ props }) {
           // User is signed in.
           console.log('good');
           if (user.emailVerified) {
-            props.navigate('Main');
+            //  props.navigate('Home', undefined, StackActions.replace('UserProfile'));
+
+            props.navigate(NavigationActions.navigate({
+              routeName: 'Main',
+              action: NavigationActions.navigate({ routeName: 'UserProfile' })
+            }));
+
           }
-          props.navigate('UserProfile');
+          else {
+            props.navigate(NavigationActions.navigate({
+              routeName: 'Auth',
+              action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
+            }));
+          }
         }
       });
     }
