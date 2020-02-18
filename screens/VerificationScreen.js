@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Button, Title, Card, Subheading, Snackbar, Banner } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
-import { withNavigation, NavigationActions } from 'react-navigation';
+import { withNavigation, NavigationActions, StackActions } from 'react-navigation';
 
 import Firebase from '../configure/Firebase';
 import { thisTypeAnnotation } from '@babel/types';
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   }
 });
 class VerificationScreen extends React.Component {
-
+  notifyMessage = "Oops!, something went wrong. Try again later.";
   constructor(props) {
     console.log('VERIFICATION SCREEN: ******')
 
@@ -64,10 +64,21 @@ class VerificationScreen extends React.Component {
       // await Firebase.auth().currentUser.delete;
       //this.setState({ user: null }); // Remember to remove the user from your app's state as well
       this.props.navigation.navigate('Login');
+      /*
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Login' })
+        ]
+      });
+      this.props.navigation.dispatch(resetAction);
+      */
     } catch (error) {
       console.error(error);
     }
+
   };
+
   toggleSnack = async () => {
     var user = await Firebase.auth().currentUser;
     this.setState({ showSnack: true, currentUser: user });
@@ -76,20 +87,28 @@ class VerificationScreen extends React.Component {
     var user = await Firebase.auth().currentUser;
 
     if (!user.emailVerified) {
+      let sentEmail = false;
       user.sendEmailVerification().then(function () {
-        this.setState({ message: "A verification email has been sent to" });
+        sentEmail = true;
+        // this.notifyMessage = "A verification email has been sent to";
+        // this.setState({ message: "A verification email has been sent to" });
         //this.setState
-        this.setState({ currentUser: user });
-        this.setState({ showSnack: true });
+
+        // this.setState({ showSnack: true });
 
         console.log(' Email sent to : ' + user.email);
 
       }).catch(function (error) {
-        console.log(' Already Verified.');
+
         console.log(error);
       });
-      this.setState({ showSnack: true });
+      if (sentEmail) {
+        this.notifyMessage = "A verification email has been sent to";
+        this.setState({ currentUser: user });
+      }
+
     }
+    this.setState({ showSnack: true });
   }
 
   callbackFunction = (childData) => {
@@ -117,7 +136,7 @@ class VerificationScreen extends React.Component {
           ]}
 
         >
-          <Subheading>{this.state.message}</Subheading><Subheading style={{ color: '#E91E63' }}>{(this.state.currentUser) ? (this.state.currentUser.email) : ''}</Subheading>
+          <Subheading>{this.notifyMessage}</Subheading><Subheading style={{ color: '#E91E63' }}>{(this.state.currentUser) ? (this.state.currentUser.email) : ''}</Subheading>
         </Banner>
         <View style={{ flex: 3, width: 'auto', maxHeight: 400, marginStart: 10, marginTop: 20, marginEnd: 10, marginBottom: 90, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden", alignSelf: 'center', padding: 11 }}>
           <Card styles={styles.nestedCardStyle}>
