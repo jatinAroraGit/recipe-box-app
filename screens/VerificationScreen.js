@@ -50,13 +50,13 @@ class VerificationScreen extends React.Component {
     console.log('VERIFICATION SCREEN: ******')
 
     super(props);
+    this.state = {
+      showSnack: false,
+      currentUser: null,
+      message: "An email has been sent to ",
+    }
+  }
 
-  }
-  state = {
-    showSnack: false,
-    currentUser: null,
-    message: "Oops!, something went wrong. Try again later."
-  }
 
   logoutUser = async () => {
     try {
@@ -87,9 +87,11 @@ class VerificationScreen extends React.Component {
     var user = await Firebase.auth().currentUser;
 
     if (!user.emailVerified) {
-      let sentEmail = false;
+      //  l sentEmail = true;
+      this.setState({ currentUser: user });
       user.sendEmailVerification().then(function () {
-        sentEmail = true;
+        // sentEmail = true;
+        //this.setState({ currentUser: user });
         // this.notifyMessage = "A verification email has been sent to";
         // this.setState({ message: "A verification email has been sent to" });
         //this.setState
@@ -99,13 +101,15 @@ class VerificationScreen extends React.Component {
         console.log(' Email sent to : ' + user.email);
 
       }).catch(function (error) {
-
+        //  sentEmail = true;
+        //   this.setState({ message: "A verification email has been sent to" })
         console.log(error);
       });
-      if (sentEmail) {
-        this.notifyMessage = "A verification email has been sent to";
-        this.setState({ currentUser: user });
-      }
+      //  if (sentEmail) {
+      //  this.setState({ message: "A verification email has been sent to" })
+      //  this.notifyMessage = "A verification email has been sent to";
+      //   this.setState({ currentUser: user });
+      //  }
 
     }
     this.setState({ showSnack: true });
@@ -136,7 +140,7 @@ class VerificationScreen extends React.Component {
           ]}
 
         >
-          <Subheading>{this.notifyMessage}</Subheading><Subheading style={{ color: '#E91E63' }}>{(this.state.currentUser) ? (this.state.currentUser.email) : ''}</Subheading>
+          <Subheading>{this.state.message}</Subheading><Subheading style={{ color: '#E91E63' }}>{(this.state.currentUser) ? (this.state.currentUser.email) : ''}</Subheading>
         </Banner>
         <View style={{ flex: 3, width: 'auto', maxHeight: 400, marginStart: 10, marginTop: 20, marginEnd: 10, marginBottom: 90, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden", alignSelf: 'center', padding: 11 }}>
           <Card styles={styles.nestedCardStyle}>
