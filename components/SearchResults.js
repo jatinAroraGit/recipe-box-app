@@ -22,19 +22,20 @@ const styles = StyleSheet.create({
 
 
 
-function SearchResults({ navigation }) {
+function SearchResults({navigation, ingredQuery}) {
+
+  
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');
 
   console.log(navigation);
 
-
   useEffect(() => {
-    let query = "cheese"
+    let query = ingredQuery;
     let apiKey = require('../configure/apiKey.json');
     if (query) {
-      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=5')
+      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=30')
         .then(res => {
           const items = res.data.results;
           // console.log(items)

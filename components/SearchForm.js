@@ -116,10 +116,14 @@ function SearchForm({ props }) {
       }
     }
 
-    var test = JSON.stringify({results: results})
+    console.log('Hi Results');
+    console.log(results);
+    console.log('Bye Results');
 
-    //console.log(test);
-    props.navigate("Results", {results: test});
+    var test = results;
+    console.log('HIhELLO')
+    console.log(test); //test is object
+    props.navigate("Results", test); //send object to Results page, which is SearchResult screen
 
   }
   const onChange = args => {
@@ -137,6 +141,9 @@ function SearchForm({ props }) {
   const addIngredient = () => {
 
     setIngredients(ingredients.concat(ingre));
+    console.log('Hi concat');
+    console.log(ingredients);
+    console.log('Bye concat');
 
   }
 

@@ -20,7 +20,7 @@ import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
-import SearchResults from '../components/SearchResults';
+import ShoppingListScreen from '../screens/ShoppingListScreen';
 //import ViewRecipe from '../components/ViewRecipe';
 
 import Loading from '../screens/Loading';
@@ -81,8 +81,8 @@ AccountStack.path = '';
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-    Results: SearchResults,
-    //Recipe: ViewRecipe,
+    Results: SearchResultScreen,
+    Shopping: ShoppingListScreen,
     ViewAdvancedRecipe: ViewRecipeScreen,
 
   },

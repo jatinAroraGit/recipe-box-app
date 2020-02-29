@@ -2,21 +2,13 @@ import React from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image, ScrollView} from "react-native";
 import {Ionicons, MaterialIcons} from '@expo/vector-icons'
 
-function ViewRecipe({route, navigation}) {
-    
-    //console.log(route)    
-     console.log('start - yo');
-     const {id} = route.params; 
-     console.log(id);
-    // console.log('middle')
-     //console.log(route.params)
-     console.log('end')
-     
-    //  const uri = props.navigation.getParam('uri', []); 
-    //  console.log(one);
+function ViewRecipe({navigation, recipeDetail}) {
+      
+    const baseUri = `https://spoonacular.com/recipeImages/`;
 
-    //  const {uri} = route.params;
-    // console.log(route);
+     console.log('start - yo');
+     console.log(recipeDetail.image);
+     console.log('end - yo')
 
     return(
         <SafeAreaView style={styles.container}>
@@ -28,7 +20,7 @@ function ViewRecipe({route, navigation}) {
 
                 <View style={{alignSelf: "center"}}>
                     <View style={styles.profileImage}>
-                        <Image source={`${uri}${one.image}`} style={styles.image} resizeMode="center"></Image> 
+                        <Image source={`${baseUri}${recipeDetail.image}`} style={styles.image} resizeMode="center"></Image> 
                     </View>
                     <View style={styles.dm}>
                         <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -41,7 +33,7 @@ function ViewRecipe({route, navigation}) {
 
 
                 <View style={styles.infoContainer}>
-                    <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>{one.title}</Text>
+                    <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>{recipeDetail.title}</Text>
                     <Text style={[styles.text, {color: "#AEB5BC", fontSize: 14}]}>World Best!</Text>
                 </View>
 
@@ -103,7 +95,7 @@ function ViewRecipe({route, navigation}) {
                             </Text>
                         </View>
                     </View>
-                    <Button title="Go to Home" onPress={() => navigation.navigate('Results')} />
+                    {/* <Button title="Go to Home" onPress={() => navigation.navigate('Results')} /> */}
                 </View>
             </ScrollView>
         </SafeAreaView>
