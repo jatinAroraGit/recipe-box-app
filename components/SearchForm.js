@@ -60,19 +60,24 @@ var results = {};
 function SearchForm({ props }) {
 
   const ingre = {name: ''};
+  const [empty, setEmpty] = useState(false);
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [ingredients, setIngredients] = useState([ingre]);
-  const cuisine = ['None', 'African', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
+  const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood' , 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
-  
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
+    results.includeIngredients = "";
+    results.cuisine = "";
+    results.query = "";
+    results.intolerances = "";  
+    setEmpty(true);
     if(ingredients.length < 2 && ingredients[0].name != "") {
-
-      results.includeIngredients = "";  
+      setEmpty(false);
+        
       for(var i in ingredients) {
 
         if(i > 0 && ingredients[i].name != "") {
@@ -88,20 +93,20 @@ function SearchForm({ props }) {
     }
 
     if(selectedCuisine != '') {
-
+      setEmpty(false);
       results.cuisine = selectedCuisine;
 
     }
 
     if(data.query != undefined) {
-
+      setEmpty(false);
       results.query = data.query;
 
     }
 
     if(selectedDietary.length != 0) {
-
-      results.intolerances = "";  
+      setEmpty(false);
+      
       for(var i in selectedDietary) {
 
         if(i > 0 && selectedDietary[i] != "") {
@@ -117,10 +122,9 @@ function SearchForm({ props }) {
     }
 
     var test = JSON.stringify({results: results})
-
-    //console.log(test);
+    
     props.navigate("Results", {results: test});
-
+    
   }
   const onChange = args => {
     return {
