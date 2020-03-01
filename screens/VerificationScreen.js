@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Button, Title, Card, Subheading, Snackbar } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
+import { withNavigation, NavigationActions } from 'react-navigation';
 
 import Firebase from '../configure/Firebase';
 import { thisTypeAnnotation } from '@babel/types';
@@ -18,17 +19,21 @@ import { AuthSession } from 'expo';
 
 const styles = StyleSheet.create({
   nestedCardStyle: {
-    padding: 0,
+    flex: 1,
+    margin: 15,
+    padding: 10,
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
     margin: 5,
-    height: 'auto',
+    height: 200,
+    marginBottom: 20,
     ...Platform.select({
       ios: {
         width: 270
       },
       android: {
-        width: 270
+        width: 270,
+
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
@@ -41,49 +46,35 @@ const styles = StyleSheet.create({
 });
 
 class VerificationScreen extends React.Component {
-
   constructor(props) {
+    console.log('VERIFICATION SCREEN: ******')
+
     super(props);
     this.state = {
-      navigation: this.props.navigation,
       showSnack: false,
+      currentUser: null
     }
-
-    var user = Firebase.auth().currentUser;
-
-    if (user) {
-
-      if (!user.emailVerified) {
-        user.sendEmailVerification().then(function () {
-          console.log(' Email sent.');
-
-        }).catch(function (error) {
-          console.log(' Already Verified.');
-          console.log(user.emailVerified);
-        });
-      }
-    }
-
-
   }
 
-  toggleSnack = () => {
-    this.setState({ showSnack: true });
-  }
   logoutUser = async () => {
     try {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
       //this.setState({ user: null }); // Remember to remove the user from your app's state as well
-      this.props.navigate('Login');
+      this.props.navigation.navigate('Login');
     } catch (error) {
       console.error(error);
     }
   };
+  toggleSnack = async () => {
+    var user = await Firebase.auth().currentUser;
+    this.setState({ showSnack: true, currentUser: user });
+  }
   sendVerification = async () => {
     var user = await Firebase.auth().currentUser;
     if (!user.emailVerified) {
       user.sendEmailVerification().then(function () {
+        this.setState({ currentUser: user });
         this.setState({ showSnack: true });
         console.log(' Email sent to : ' + user.email);
 
@@ -103,9 +94,9 @@ class VerificationScreen extends React.Component {
     //backgroundColor: '#FFF9C4',
     return (
 
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 3 }}>
 
-        <View style={{ flex: 1, width: 'auto', marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden", alignSelf: 'center', padding: 15 }}>
+        <View style={{ flex: 3, width: 'auto', maxHeight: 400, marginStart: 10, marginTop: 20, marginEnd: 10, marginBottom: 90, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden", alignSelf: 'center', padding: 11 }}>
           <Card styles={styles.nestedCardStyle}>
             <Card.Title subtitleStyle={{ color: '#F9A825', fontSize: 20 }} subtitle="Information" />
             <Card.Content>
@@ -117,15 +108,16 @@ class VerificationScreen extends React.Component {
               <Button mode='contained' onPress={this.sendVerification} >Send Verification Again </Button>
               <Button style={{ backgroundColor: '#E53935', margin: 5, position: 'relative' }} color='#FFFFFF' onPress={this.logoutUser}>Logout</Button>
             </Card.Actions>
-            <Snackbar
-              visible={this.state.showSnack}
-              onDismiss={() => this.setState({ showSnack: false })}
-              duration={5000}
-            >
-              Email Sent
-        </Snackbar>
-          </Card>
 
+          </Card>
+          <Snackbar
+
+            visible={this.state.showSnack}
+            onDismiss={() => this.setState({ showSnack: false })}
+            duration={5000}
+          >
+            Email Sent to {(this.state.currentUser) ? (this.state.currentUser.email) : ''}
+          </Snackbar>
         </View>
 
 
@@ -137,4 +129,4 @@ class VerificationScreen extends React.Component {
 VerificationScreen.navigationOptions = {
   header: null,
 };
-export default VerificationScreen;
+export default withNavigation(VerificationScreen);

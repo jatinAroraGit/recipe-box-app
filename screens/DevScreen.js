@@ -66,7 +66,7 @@ class DevScreen extends React.Component {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
       this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
-      this.props.navigation.navigate('Login');
+      // this.props.navigation.navigate('Login');
     } catch (error) {
       console.error(error);
     }

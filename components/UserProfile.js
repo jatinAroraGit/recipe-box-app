@@ -2,10 +2,11 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { View, StyleSheet, Platform, Text, Dimensions, FlatList } from 'react-native';
-import { Button, TextInput, Title, Subheading, Avatar, Card, List, Snackbar } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Avatar, Card, List, Snackbar, Banner } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableHighlight, ScrollView } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import SafeAreaView from 'react-native-safe-area-view';
 
 
 const styles = StyleSheet.create({
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    //position: "relative",
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#263238',
@@ -46,9 +47,18 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     margin: 10,
-    backgroundColor: '#4FC3F7',
+    backgroundColor: '#F48FB1',
     borderRadius: 10,
     height: 'auto',
+    shadowColor: "#D81B60",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.33,
+    shadowRadius: 8.62,
+
+    elevation: 8,
 
   },
   input: {
@@ -63,6 +73,8 @@ const styles = StyleSheet.create({
 
 
 function UserProfile({ props, user }) {
+  console.log('USER PROFLE: ******')
+
   const [showSnack, setShowSnack] = useState(false);
   var firstName = 'User';
   var lastName = 'Profile';
@@ -121,7 +133,7 @@ function UserProfile({ props, user }) {
   const noSavedCookbooks = () => {
 
     return (
-      <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
         Create a Cookbook
       </Button>
     )
@@ -132,7 +144,7 @@ function UserProfile({ props, user }) {
   const noSavedRecipes = () => {
 
     return (
-      <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('Search')}>
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('Search')}>
         Go to Recipes
       </Button>
     )
@@ -140,26 +152,39 @@ function UserProfile({ props, user }) {
   }
 
   return (
+    <SafeAreaView style={{ flex: 3 }}>
 
-    <View style={styles.container}>
+      <Banner
+        visible={showSnack}
+        style={{ backgroundColor: '#EEEEEE' }}
+        actions={[
+          {
+            label: 'Dismiss',
+            onPress: () => { setShowSnack(false) },
+          }
+        ]}
+
+      >
+        Under Development
+      </Banner>
       <View style={styles.innerContainer}>
-        <Avatar.Text color='#EEEEEE' size={150} label={firstName.charAt(0) + lastName.charAt(0)} style={{ marginVertical: 20, backgroundColor: '#448AFF' }} ></Avatar.Text>
-        <Text style={{ color: '#EEEEEE', fontSize: 30, marginVertical: 10 }}> {firstName} {lastName}</Text>
+        <Title>Welcome, {user.email}</Title>
       </View>
-
-
       <View style={styles.innerContainer} >
-        <Title>{user.email}</Title>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
+        <Title>Account Settings</Title>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
           Change Email
           </Button>
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('ChangePassword')}>
           Change Password
           </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20 }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#B71C1C' }} mode="contained" onPress={() => props.navigate('DeleteUser')}>
           Delete Account
           </Button>
       </View>
+
+
+
 
       <View style={styles.innerContainer} >
         <Subheading style={{ color: '#EEEEEE', fontSize: 20, marginVertical: 10 }}>Saved Recipes</Subheading>
@@ -189,16 +214,7 @@ function UserProfile({ props, user }) {
 
         />
       </View>
-
-      <Snackbar
-        visible={showSnack}
-        onDismiss={() => setShowSnack(false)}
-        duration={5000}
-      >
-        Under Development
-        </Snackbar>
-
-    </View>
+    </SafeAreaView>
 
   );
 

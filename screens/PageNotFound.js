@@ -22,7 +22,7 @@ export default function PageNotFound() {
       <TopNavbar title='Home'></TopNavbar>
 
       <View style={{ marginStart: 10, marginEnd: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
-        <PulseIndicator animationDuration={2200} style={{ position: "absolute" }} animating={true} size={180} color='#2196F3' />
+        <PulseIndicator style={{ position: "absolute" }} animating={true} size={180} color='#2196F3' />
         <Title style={{ position: "relative" }}>In Dev</Title>
 
       </View>

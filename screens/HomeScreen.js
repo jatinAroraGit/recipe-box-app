@@ -266,7 +266,10 @@ class HomeScreen extends React.Component {
   </Button>
 
             <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Main')}>
-              Know More About Recipe Box
+              Quick Dev Login
+  </Button>
+            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Auth')}>
+              Quick Dev Logout
   </Button>
 
           </View>

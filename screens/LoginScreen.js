@@ -36,6 +36,8 @@ var loggedIn = false;
 
 class LoginScreen extends React.Component {
   constructor(props) {
+    console.log('LOGIN SCREEN: ******')
+
     super(props);
     this.state = {
       navigation: this.props.navigation,
