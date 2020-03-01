@@ -10,9 +10,9 @@ class SearchResultScreen extends React.Component {
     this.state = {
       navigation: this.props.navigation,
 
-    }
-  }
-
+      
+   }
+}
   callbackFunction = (childData) => {
     this.setState({ login: childData });
     console.log("login complete!")
@@ -20,11 +20,13 @@ class SearchResultScreen extends React.Component {
 
   render() {
 
+
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
         <TopNavbar title='Log in'></TopNavbar>
         <ScrollView >
+
           <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 
             <SearchResults navigation={this.props.navigation}></SearchResults>
