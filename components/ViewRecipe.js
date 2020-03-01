@@ -1,19 +1,27 @@
 import React from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image, ScrollView} from "react-native";
+import {Button} from 'react-native-paper';
 import {Ionicons, MaterialIcons} from '@expo/vector-icons'
 
-function ViewRecipe({route, navigation}) {
+function ViewRecipe({params, navigation}) {
     
     //console.log(route)    
-     console.log('start - yo');
-     const {id} = route.params; 
-     console.log(id);
+     //console.log('start - yo');
+     //const id = params.id; 
+     //console.log(params);
+     const one = JSON.parse(params.item)
+     //console.log(one)
+     const id = one.id;
     // console.log('middle')
      //console.log(route.params)
-     console.log('end')
+     //console.log('end')
      
     //  const uri = props.navigation.getParam('uri', []); 
     //  console.log(one);
+
+    
+
+    const uri = `https://spoonacular.com/recipeImages/`;
 
     //  const {uri} = route.params;
     // console.log(route);
