@@ -63,10 +63,17 @@ function RegisterForm({ nav }) {
 
       if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer) {
 
+        var name = data.firstName + " " + data.lastName;
         errorb = false;
         //Create User with Email and Password
-        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function (error) {
+        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function(result) {
+
+          return result.user.updateProfile({ displayName: name})
+
+        }).catch(function (error) {
           // Handle Errors here.
+
+          
           var errorCode = error.code;
           errorb = true;
           var errorMessage = error.message;

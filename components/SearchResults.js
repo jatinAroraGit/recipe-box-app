@@ -27,14 +27,32 @@ function SearchResults({ navigation }) {
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');
 
-  console.log(navigation);
+  var results = JSON.parse(navigation.state.params.results).results;
+  console.log(results);
 
+  function getQuery() {
 
+    var query = "";
+
+    if(results.query != "") {
+
+      console.log("good");
+      query += "&query=" + results.query;
+
+    } else {
+
+      console.log("bad");
+
+    }
+    return query;
+  }
+
+  getQuery();
   useEffect(() => {
     let query = "cheese"
     let apiKey = require('../configure/apiKey.json');
     if (query) {
-      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=5')
+      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + getQuery() + '&number=5')
         .then(res => {
           const items = res.data.results;
           // console.log(items)
