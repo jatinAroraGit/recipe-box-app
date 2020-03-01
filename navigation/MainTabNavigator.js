@@ -79,7 +79,6 @@ AccountStack.path = '';
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-
     Results: SearchResultScreen,
     //Recipe: ViewRecipe,
     ViewAdvancedRecipe: ViewRecipeScreen,

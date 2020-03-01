@@ -28,7 +28,8 @@ function SearchResults({ navigation }) {
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');
 
-  var results = JSON.parse(navigation.state.params.results).results;
+//  console.log(navigation.state.params);
+  var results = JSON.parse(navigation.state.params.results);
   console.log(results);
   var query = "";
   var queryLength = 0;

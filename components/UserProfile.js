@@ -168,7 +168,7 @@ function UserProfile({ props, user }) {
         Under Development
       </Banner>
       <View style={styles.innerContainer}>
-        <Title>Welcome, {user.email}</Title>
+        <Title>Welcome, {user.displayName}</Title>
       </View>
       <View style={styles.innerContainer} >
         <Title>Account Settings</Title>
