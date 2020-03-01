@@ -5,6 +5,7 @@ import '../configure/apiKey.json'
 import RecipeCards from '../components/RecipeCards';
 
 import ViewRecipe from './ViewRecipe';
+import { Button } from 'react-native-paper';
 
 
 const styles = StyleSheet.create({
@@ -29,16 +30,70 @@ function SearchResults({navigation, ingredQuery}) {
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');
 
-  console.log(navigation);
+//  console.log(navigation.state.params);
+  var results = JSON.parse(navigation.state.params.results);
+  console.log(results);
+  var query = "";
+  var queryLength = 0;
+  function getQuery() {
+
+    console.log("######getQuery() results")
+    console.log(results);
+    
+
+    if(results.query != "") {
+
+      console.log("good");
+      queryLength++;
+      query += "&query=" + results.query;
+
+    }
+
+    if(results.cuisine != "") {
+
+      console.log("good");
+      queryLength++;
+      query += "&cuisine=" + results.cuisine;
+
+    }
+
+    if(results.intolerances != "") {
+
+      console.log("good");
+      queryLength++;
+      query += "&intolerances=" + results.intolerances;
+
+    }
+
+    if(results.includeIngredients != "") {
+
+      console.log("good");
+      queryLength++;
+      query += "&includeIngredients=" + results.includeIngredients;
+
+    }
+    let apiKey = require('../configure/apiKey.json');
+   // if(queryLength == 1) {
+    //  console.log(query);
+    //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
+    //} else if(queryLength > 1) {
+      console.log(query);
+      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=5';
+
+    //}
+    console.log("######getQuery() query")
+    console.log(query);
+    return query;
+  }
 
   useEffect(() => {
-    let query = ingredQuery;
-    let apiKey = require('../configure/apiKey.json');
-    if (query) {
-      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=30')
+    
+    var url = getQuery();
+    if (queryLength == 1) {
+      axios.get(url)
         .then(res => {
           const items = res.data.results;
-          // console.log(items)
+          console.log(items)
           setItems(items);
         })
     }
@@ -61,14 +116,15 @@ function SearchResults({navigation, ingredQuery}) {
   // }
 
   return (
+      <FlatList
+        style={styles.container}
+        data={items}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+      //renderItem={({item}) => <ViewRecipe item={item}/>}
+      />
 
-    <FlatList
-      style={styles.container}
-      data={items}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
-    //renderItem={({item}) => <ViewRecipe item={item}/>}
-    /> //FlatList does have ScrollView builted in I believe
+      
   );
 }
 export default SearchResults;

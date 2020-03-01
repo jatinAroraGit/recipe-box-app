@@ -18,9 +18,9 @@ import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
-import SearchResultScreen from '../screens/SearchResultScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 import ShoppingListScreen from '../screens/ShoppingListScreen';
+import SearchResultScreen from '../screens/SearchResultScreen';
 //import ViewRecipe from '../components/ViewRecipe';
 
 import Loading from '../screens/Loading';
@@ -84,6 +84,7 @@ const SearchStack = createStackNavigator(
     Results: SearchResultScreen,
     Shopping: ShoppingListScreen,
     ViewAdvancedRecipe: ViewRecipeScreen,
+
 
   },
   config

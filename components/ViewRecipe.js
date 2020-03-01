@@ -4,13 +4,13 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import axios from 'axios';
 
 function ViewRecipe({ navigation, recipeDetail }) {
-
+    recipeDetail = JSON.parse(recipeDetail.props);
     // console.log('navigation in ViewRecipe - start');
     // console.log(navigation);
     // console.log('navigation in ViewRecipe - end')
 
     console.log('Showing the id of the recipe - start');
-    console.log(recipeDetail.id)
+    console.log(recipeDetail)
     console.log('Showing the id of the recipe - end')
 
     const baseUri = `https://spoonacular.com/recipeImages/`;
@@ -20,6 +20,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
     useEffect(() => {
         console.log('useEffect has been called');
+        console.log(recipeDetail);
         let ingredients = "apples,+flour,+sugar"
         let apiKey = require('../configure/apiKey.json');
         let recipeId = recipeDetail.id;
