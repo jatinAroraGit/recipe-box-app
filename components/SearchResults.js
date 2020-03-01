@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
 
 
 
-function SearchResults({ navigation }) {
+function SearchResults({navigation, ingredQuery}) {
+
+  
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   console.log('I GOT ::::::::::');

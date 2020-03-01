@@ -141,6 +141,9 @@ function SearchForm({ props }) {
   const addIngredient = () => {
 
     setIngredients(ingredients.concat(ingre));
+    console.log('Hi concat');
+    console.log(ingredients);
+    console.log('Bye concat');
 
   }
 
