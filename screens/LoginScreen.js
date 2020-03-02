@@ -43,7 +43,24 @@ class LoginScreen extends React.Component {
       navigation: this.props.navigation,
       loggedin: false
     }
+    this._retrieveData();
 
+  };
+  componentDidMount() {
+
+    this._retrieveData();
+  }
+
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('uid');
+      if (value !== null) {
+        this.setState({ loggedIn: true })
+        console.log(value);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
 
@@ -56,32 +73,32 @@ class LoginScreen extends React.Component {
 
     console.log("Logged in?");
     console.log(loggedIn);
-    /*
-        if (loggedIn) {
-    
-          return (
-    
-            <UserProfileScreen ></UserProfileScreen>
-    
-          )
-        } else {
-    */
-    return (
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
-        <ScrollView style={baseStyle.scrollViewBase}>
-          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+    if (this.state.loggedIn) {
 
-            <LoginForm props={this.props.navigation}></LoginForm>
+      return (
 
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    )
-  };
+        <UserProfileScreen ></UserProfileScreen>
+
+      )
+    } else {
+
+      return (
+
+        <SafeAreaView style={{ flex: 3 }}>
+          <TopNavbar title='Log in'></TopNavbar>
+          <ScrollView style={baseStyle.scrollViewBase}>
+            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+
+              <LoginForm props={this.props.navigation}></LoginForm>
+
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )
+    };
+  }
 }
-
 
 LoginScreen.navigationOptions = {
   header: null,

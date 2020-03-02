@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -62,21 +62,21 @@ function ChangeEmailForm({ props }) {
       if (data.newEmail == data.confirmNewEmail) {
         console.log('new emails match');
 
-        auth.signInWithEmailAndPassword(user.email, data.password).then(function() {
-            console.log('User verified');
+        auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
+          console.log('User verified');
 
-            user.updateEmail(data.newEmail).then(function() {
-              console.log('Email updated');
-              props.navigate('UserProfile');
+          user.updateEmail(data.newEmail).then(function () {
+            console.log('Email updated');
+            props.navigate('UserProfile');
 
-            }).catch(function(error) {
-              var errorCode = error.code;
-              var errorMessage = error.message;
-              console.log(errorCode);
-              console.log(errorMessage);
-            });
+          }).catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+          });
 
-            }).catch(function (error) {
+        }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
@@ -90,7 +90,7 @@ function ChangeEmailForm({ props }) {
         setError("matchEmail", 'no ematch', "Emails do not match");
 
       }
-      
+
     } else {
 
       console.log('Please fill in all fields');
@@ -105,10 +105,10 @@ function ChangeEmailForm({ props }) {
   };
 
   return (
-
-    <View style={styles.container}>
-      <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Email</Title>
-      <Subheading style={styles.label}>Password</Subheading>
+    <KeyboardAvoidingView >
+      <View style={styles.container}>
+        <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Email</Title>
+        <Subheading style={styles.label}>Password</Subheading>
         <Controller
           as={<TextInput style={styles.input} secureTextEntry={true} />}
           name="password"
@@ -121,35 +121,36 @@ function ChangeEmailForm({ props }) {
         {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
         {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Wrong password.</Subheading>}
 
-      <Subheading style={styles.label}>New Email</Subheading>
-      <Controller
-        as={<TextInput style={styles.input} />}
-        name="newEmail"
-        control={control}
-        onChange={onChange}
-        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
-      />
-      {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
+        <Subheading style={styles.label}>New Email</Subheading>
+        <Controller
+          as={<TextInput style={styles.input} />}
+          name="newEmail"
+          control={control}
+          onChange={onChange}
+          rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
+        />
+        {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
 
-      <Subheading style={styles.label}>Confirm New Email</Subheading>
-      <Controller
-        as={<TextInput style={styles.input} />}
-        name="confirmNewEmail"
-        control={control}
-        onChange={onChange}
-        rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
-      />
-      {errors.confirmNewEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
-      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match.</Subheading>}
+        <Subheading style={styles.label}>Confirm New Email</Subheading>
+        <Controller
+          as={<TextInput style={styles.input} />}
+          name="confirmNewEmail"
+          control={control}
+          onChange={onChange}
+          rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
+        />
+        {errors.confirmNewEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
+        {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match.</Subheading>}
 
-      <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
-        Change Email
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+          Change Email
         </Button>
-      <Button style={{ marginHorizontal: 10, marginTop: 12, marginBottom: 6 }} mode="contained" onPress={() => props.navigate('UserProfile')}>
-        Return to user profile
+        <Button style={{ marginHorizontal: 10, marginTop: 12, marginBottom: 6 }} mode="contained" onPress={() => props.navigate('UserProfile')}>
+          Return to user profile
         </Button>
 
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 export default ChangeEmailForm;

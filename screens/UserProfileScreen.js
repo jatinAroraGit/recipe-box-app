@@ -151,11 +151,11 @@ class UserProfileScreen extends React.Component {
         else {
           set.setState({ loading: false });
           set.props.navigation.navigate('UserProfile');
-          /*
+
           set.props.navigation.navigate(NavigationActions.navigate({
             action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
           }));
-*/
+
         }
 
       }
@@ -180,6 +180,7 @@ class UserProfileScreen extends React.Component {
       await Firebase.auth().signOut();
       // await Firebase.auth().currentUser.delete;
       //this.setState({ user: null }); // Remember to remove the user from your app's state as well
+      this.props.navigation.navigate('Auth');
       this.props.navigation.navigate('Login');
     } catch (error) {
       console.error(error);
@@ -193,11 +194,18 @@ class UserProfileScreen extends React.Component {
 
       // this.props.navigation.navigate('Auth');
       // this.props.navigation.navigate('Login');
-
+      const resetAction = StackActions.replace({
+        key: 'AuthHome',
+        routeName: 'AuthHome',
+        newKey: 'Login',
+      });
+      this.props.navigation.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+      /*
       this.props.navigation.navigate(NavigationActions.navigate({
         routeName: 'Auth',
         action: NavigationActions.navigate({ routeName: 'Login' })
       }));
+      */
     } catch (error) {
       console.error(error);
     }

@@ -15,7 +15,7 @@ export default class Loading extends React.Component {
           this.props.navigation.navigate('Main');
         else
           this.props.navigation.navigate(NavigationActions.navigate({
-            routeName: 'Auth',
+            routeName: 'Main',
             action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
           }))
       }
@@ -25,36 +25,29 @@ export default class Loading extends React.Component {
   }
   componentDidMount() {
     Firebase.auth().onAuthStateChanged(user => {
-      /*
+      console.log('STORING IN DB ^^^^^^^^^^^^^^^^');
       _storeData = async () => {
         try {
-          await AsyncStorage.setItem(user.uid, user);
+          await AsyncStorage.setItem(uid, user.email);
         } catch (error) {
-          // Error saving data
+          console.log(error);
         }
       };
       _retrieveData = async () => {
         try {
-          const value = await AsyncStorage.getItem('TASKS');
+          const value = await AsyncStorage.getItem('uid');
           if (value !== null) {
             // We have data!!
             console.log(value);
           }
         } catch (error) {
-          // Error retrieving data
+          console.log(error);
         }
       };
-      */
+
       //this.props.navigation.navigate(user && user.emailVerified ? 'Main' : 'Auth')
 
     });
-    _storeData = async () => {
-      try {
-        await AsyncStorage.setItem('user');
-      } catch (error) {
-        // Error saving data
-      }
-    };
   }
   render() {
     return (
