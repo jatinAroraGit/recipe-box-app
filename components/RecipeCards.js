@@ -33,7 +33,7 @@ export default class RecipeCards extends React.PureComponent {
           {console.log(this.props.oneitem.image)}
           {console.log('This is the image - end')}
           <Text style={styles.cardText}>{this.props.oneitem.title}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> 
 
       </View>
     );
