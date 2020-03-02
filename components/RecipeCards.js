@@ -27,8 +27,8 @@ export default class RecipeCards extends React.PureComponent {
     return (
       <View>
         <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewRecipe', { props:  id})}>
-          {/* <Image style={{width: 400, height: 400}} source={{uri: 'https://spoonacular.com/recipeImages/' + this.props.oneitem.image}}></Image>  */}
-          <Image style={styles.cardImage} source={this.props.oneitem.image} />
+          <Image style={styles.cardImage} source={{uri:this.props.oneitem.image}}></Image> 
+          {/* <Image style={styles.cardImage} source={this.props.oneitem.image} /> */}
           {console.log('This is the image - start')}
           {console.log(this.props.oneitem.image)}
           {console.log('This is the image - end')}
