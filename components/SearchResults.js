@@ -3,16 +3,33 @@ import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView, Saf
 import axios from 'axios'
 import '../configure/apiKey.json'
 import RecipeCards from '../components/RecipeCards';
-
+import { PulseIndicator } from 'react-native-indicators';
 import ViewRecipe from './ViewRecipe';
-import { Button } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#69F0AE',
+    ...Platform.select({
+      ios: {
+        width: 320
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 800,
+      },
+      android: {
+        width: 320
+      },
+    }),
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 10,
+
   },
+
+
   loader: {
     flex: 1,
     alignItems: 'center',
@@ -28,6 +45,8 @@ function SearchResults({ navigation, ingredQuery }) {
 
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
+  const [itemCount, setItemCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   console.log('I GOT ::::::::::');
 
   //  console.log(navigation.state.params);
@@ -95,6 +114,8 @@ function SearchResults({ navigation, ingredQuery }) {
           const items = res.data.results;
           console.log(items)
           setItems(items);
+          setItemCount(items.length);
+          setLoading(false);
         })
     }
 
@@ -114,17 +135,41 @@ function SearchResults({ navigation, ingredQuery }) {
   //   const res = await fetch(endpoint);
   //   return await res.json();
   // }
-
-  return (
-    <FlatList
-      style={styles.container}
-      data={items}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
-    //renderItem={({item}) => <ViewRecipe item={item}/>}
-    />
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 3 }}>
 
 
-  );
+        <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
+
+      </SafeAreaView>
+    )
+  } else if (items.length > 0) {
+    return (
+      <SafeAreaView>
+
+        <FlatList
+          style={styles.container}
+
+          snapToAlignment={"center"}
+          data={items}
+          ListHeaderComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+
+        //renderItem={({item}) => <ViewRecipe item={item}/>}
+        />
+      </SafeAreaView>
+
+    );
+  }
+  else if (items.length == 0) {
+    return (
+      <SafeAreaView>
+        <Title>No results found for your search</Title>
+      </SafeAreaView>
+
+    );
+  }
 }
 export default SearchResults;
