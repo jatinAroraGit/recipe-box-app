@@ -78,7 +78,7 @@ function SearchResults({navigation, ingredQuery}) {
     //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
     //} else if(queryLength > 1) {
       console.log(query);
-      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=5';
+      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
 
     //}
     console.log("######getQuery() query")
