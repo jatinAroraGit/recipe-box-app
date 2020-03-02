@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
-import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton, Provider, Portal, Modal } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
 import { setLightEstimationEnabled } from 'expo/build/AR';
+import { PulseIndicator } from 'react-native-indicators';
+import DevScreen from '../screens/DevScreen';
 
 const styles = StyleSheet.create({
   label: {
@@ -64,10 +66,17 @@ function SearchForm({ props }) {
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [ingredients, setIngredients] = useState([ingre]);
+  const [visibleModal, setVisibleModal] = useState(false);
+
+
+  const _showModal = () => { setVisibleModal(true) };
+  const _hideModal = () => { setVisibleModal(false) };
+
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
 
   const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
+
   const onSubmit = data => {
 
     results.includeIngredients = "";
@@ -257,27 +266,43 @@ function SearchForm({ props }) {
 
   const showIngredients = ingredients.map((c, i) => {
 
-    var key = 'ingreident' + i.toString();
+    var key = 'ingredient' + i.toString();
 
     return (
-      <Controller
-        as={<View style={{ flexDirection: 'row', marginVertical: 5 }}><TextInput
-          style={styles.inputIngredient}
-          theme={{ colors: { text: '#000000' } }}
-          key={key}
-          dense={true}
-          onChangeText={(text) => { updateIngredient(text, i) }}
+      <Provider>
+        <Controller
+          as={<View style={{ flexDirection: 'row', marginVertical: 5 }}><TextInput
+            style={styles.inputIngredient}
+            theme={{ colors: { text: '#000000' } }}
+            key={key}
+            dense={true}
+            onChangeText={(text) => { updateIngredient(text, i) }}
+          />
+            {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
+            }
+          </View>}
+          name={key}
+          key={c + "key"}
+          control={control}
+          onChange={onChange}
         />
-          {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
-          }
-        </View>}
-        name={key}
-        key={c + "key"}
-        control={control}
-        onChange={onChange}
-      />);
+
+        <Portal>
+          <Modal visible={visibleModal} children={<Provider ><PulseIndicator style={{ position: "relative" }} animating={true} size={280} color='#FF4081' /> <Title>Under Dev</Title> <Button onPress={_hideModal}>Close Modal</Button> </Provider>} contentContainerStyle={{ backgroundColor: '#FFFFFF', position: "absolute", zIndex: 1900 }} onDismiss={_hideModal}>
+
+          </Modal>
+          <Button
+            style={{ position: "relative", backgroundColor: '#FFFFFF' }}
+            onPress={_showModal}
+          >
+            Show Modal
+           </Button>
+        </Portal>
+      </Provider >
+    );
 
   });
+
 
   return (
 

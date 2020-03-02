@@ -124,6 +124,7 @@ class UserProfileScreen extends React.Component {
 
 
   componentDidMount() {
+    console.log('USER PROFILE Mounted');
     const params = this.props.navigation.state;
     const isUserVerfied = params.verified;
     console.log(params);
@@ -164,9 +165,13 @@ class UserProfileScreen extends React.Component {
         set.props.navigation.navigate('Login');
       }
     });
-    this.unsubscribe();
-  }
 
+    this.unsubscribe();
+    this.setState({ loading: false });
+  }
+  componentDidUpdate() {
+    console.log('USER PROFILE UPDATING');
+  }
 
   componentWillUnmount() {
     this.unsubscribe();
