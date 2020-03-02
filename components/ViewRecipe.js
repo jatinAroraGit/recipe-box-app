@@ -127,7 +127,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
-                        <Image source={`${baseUri}${recipeDetail.image}`} style={styles.image} resizeMode="center"></Image>
+                        <Image source={`${recipeDetail.image}`} style={styles.image} resizeMode="center"></Image>
                     </View>
                     <View style={styles.dm}>
                         <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -185,7 +185,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                     {ingred.map((oneIngred, index) => {
                         return (
-                            <View key={oneIngred.id}>
+                            <View key={oneIngred.id} style={{flexDirection: "row"}}>
                                 <Text>{index + 1}: {oneIngred.name}</Text>
                                 <Button title='-' onPress={() => {
                                     decrementCountHandler(oneIngred);

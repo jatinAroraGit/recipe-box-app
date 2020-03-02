@@ -89,8 +89,9 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
       {noZero.map((oneIngred) => {
         return (
-          <View key={oneIngred.id}>
+          <View key={oneIngred.id} style={{flexDirection: "row"}}>
             <Text>{oneIngred.name}</Text>
+            <Text> : </Text>
             <Text>{oneIngred.count}</Text>
           </View>
 

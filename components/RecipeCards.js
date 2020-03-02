@@ -19,12 +19,19 @@ export default class RecipeCards extends React.PureComponent {
     console.log('This is the RecipeCards.js this.props');
     console.log(this.props)
     var id = JSON.stringify(this.props.oneitem);
+    console.log('This is oneitem - start');
+    console.log(id);
+    console.log('This is oneitem - end');
   
 
     return (
       <View>
         <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewRecipe', { props:  id})}>
-          <Image style={styles.cardImage} source={"https://spoonacular.com/recipeImages/" + this.props.oneitem.image} />
+          {/* <Image style={{width: 400, height: 400}} source={{uri: 'https://spoonacular.com/recipeImages/' + this.props.oneitem.image}}></Image>  */}
+          <Image style={styles.cardImage} source={this.props.oneitem.image} />
+          {console.log('This is the image - start')}
+          {console.log(this.props.oneitem.image)}
+          {console.log('This is the image - end')}
           <Text style={styles.cardText}>{this.props.oneitem.title}</Text>
         </TouchableOpacity>
 
