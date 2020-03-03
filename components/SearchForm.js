@@ -1,9 +1,8 @@
 import * as React from 'react';
 import {useState} from 'react';
-import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Platform, Text, Dimensions, Picker } from 'react-native';
 import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
-import { setLightEstimationEnabled } from 'expo/build/AR';
 
 const styles = StyleSheet.create({
   label: {
@@ -246,6 +245,24 @@ function SearchForm({ props }) {
         
   });
 
+  const showCuisinePicker = cuisine.map((c, i) => {
+
+    var key = 'cuisine' + i.toString();
+
+    return (
+
+      <Controller
+        as={<Picker.Item label={c} value={c}/>}
+        name={key}
+        key={c + "key"} 
+        control={control}
+        onChange={onChange}
+        />
+
+    );
+
+  })
+
   const showIngredients = ingredients.map((c, i) => {
 
     var key = 'ingreident' + i.toString();
@@ -283,6 +300,10 @@ function SearchForm({ props }) {
         />
         {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
 
+        <Picker style={{margin: 20}}selectedValue={selectedCuisine} onValueChange={(value) => {setCuisine(value)}}>
+          {showCuisinePicker}
+        </Picker>
+          
         <List.Section>
           <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Cuisine'>
             {showCuisine}
