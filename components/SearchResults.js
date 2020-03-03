@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
 function SearchResults({navigation, ingredQuery}) {
 
   
-
+  var offset = 0;
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
+  const [totalItems, setTotalItems] = useState(0);
   console.log('I GOT ::::::::::');
 
 //  console.log(navigation.state.params);
   var results = JSON.parse(navigation.state.params.results);
-  console.log(results);
   var query = "";
   var queryLength = 0;
   function getQuery() {
@@ -73,30 +73,24 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
     let apiKey = require('../configure/apiKey.json');
-   // if(queryLength == 1) {
-    //  console.log(query);
-    //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
-    //} else if(queryLength > 1) {
-      console.log(query);
-      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
-
-    //}
-    console.log("######getQuery() query")
-    console.log(query);
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&offset=' + offset + '&number=10&instructionsRequired=true';
     return query;
   }
 
   useEffect(() => {
     
     var url = getQuery();
-    if (queryLength == 1) {
+    console.log("URL");
+    console.log(url); 
       axios.get(url)
         .then(res => {
+          console.log(res);
           const items = res.data.results;
-          console.log(items)
+          console.log(items);
+          setTotalItems(res.data.totalResults);
           setItems(items);
         })
-    }
+    
 
 
   }, []);
@@ -114,17 +108,25 @@ function SearchResults({navigation, ingredQuery}) {
   //   const res = await fetch(endpoint);
   //   return await res.json();
   // }
+  if(totalItems > 0) {
+    return (
+      <View>
+        <FlatList
+          style={styles.container}
+          data={items}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+        />
+      <Text>Total Results: {totalItems}</Text>
+      </View>
+        
+    );
+  } else {
 
-  return (
-      <FlatList
-        style={styles.container}
-        data={items}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
-      //renderItem={({item}) => <ViewRecipe item={item}/>}
-      />
+    return (
+      <Text>No Results Found.</Text>
+    )
 
-      
-  );
+  }
 }
 export default SearchResults;

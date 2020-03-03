@@ -141,9 +141,6 @@ function SearchForm({ props }) {
   const addIngredient = () => {
 
     setIngredients(ingredients.concat(ingre));
-    console.log('Hi concat');
-    console.log(ingredients);
-    console.log('Bye concat');
 
   }
 
@@ -176,8 +173,6 @@ function SearchForm({ props }) {
 
         let temp = [...selectedDietary];
         temp.splice(i, 1);
-        console.log("temp")
-        console.log(temp);
         setSelectedDietary(temp);
 
         toggled = true;
@@ -188,12 +183,8 @@ function SearchForm({ props }) {
     if(!toggled) {
 
       setSelectedDietary(selectedDietary.concat(d));
-      console.log("!")
-      console.log(selectedDietary);
 
     }
-    
-    console.log(selectedDietary);
 
   }
 
