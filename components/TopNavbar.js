@@ -87,7 +87,7 @@ class TopNavbar extends React.Component {
     const { navigation } = this.props.navigation;
     let BackButton;
     console.log('************ LINK : ' + this.props.navigation.state.routeName)
-    if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login') {
+    if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login' && this.props.navigation.state.routeName != 'UserProfile') {
       BackButton = <Appbar.BackAction color='#FFFFFF' style={{ backgroundColor: '#000000', display: ((Platform.OS === 'web') ? 'none' : 'flex') }}
         onPress={() => this.props.navigation.goBack()}
       />

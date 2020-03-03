@@ -19,9 +19,12 @@ import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
 import DevScreen from '../screens/DevScreen';
 import SearchScreen from '../screens/SearchScreen';
 import VerificationScreen from '../screens/VerificationScreen';
+import ShoppingListScreen from '../screens/ShoppingListScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
-import ViewRecipe from '../screens/ViewRecipeScreen';
+//import ViewRecipe from '../components/ViewRecipe';
 
+import Loading from '../screens/Loading';
+import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -29,7 +32,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: HomeScreen
   },
   config
 );
@@ -79,7 +82,9 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
     Results: SearchResultScreen,
-    Recipe: ViewRecipe,
+    Shopping: ShoppingListScreen,
+    ViewAdvancedRecipe: ViewRecipeScreen,
+
 
   },
   config

@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Image, Text, View} from 'react-native';
 //import {NavigationContainer} from '@react-navigation/navigate';
-import {Thumbnail, Left, Right} from 'native-base';
+//import {Thumbnail, Left, Right} from 'native-base';
 
 export default class RecipeCards extends React.PureComponent {
   constructor(props) {
@@ -14,24 +14,21 @@ export default class RecipeCards extends React.PureComponent {
     }
 
   }
-
+  // source={`${this.state.baseUri}${this.props.oneitem.image}`} 
   render() {
 
-    console.log(this.props)
-
+    var id = JSON.stringify(this.props.oneitem);
+  
     return (
       <View>
-        <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('Recipe', {item: this.state.sendItem})}>
-          {console.log('start')}
-          {console.log(`${this.state.baseUri}${this.props.oneitem}`)}
-          {console.log('end')}
-          <Image style={styles.cardImage} source={`${this.state.baseUri}${this.props.oneitem.image}`} />
-          <Text style={styles.cardText}>{this.props.oneitem.title}</Text>  
+        <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewRecipe', { props:  id})}>
+          <Image style={styles.cardImage} source={{uri:this.props.oneitem.image}}></Image> 
+          <Text style={styles.cardText}>{this.props.oneitem.title}</Text>
         </TouchableOpacity> 
-    
-       </View>
-    ); 
-  } 
+
+      </View>
+    );
+  }
 }
 // I don not know the reason why but when I tried to wraip the Thumbnail component with the Left component, It aligns the image on the middle of the cardlists.
 
