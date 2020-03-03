@@ -287,17 +287,6 @@ function SearchForm({ props }) {
           onChange={onChange}
         />
 
-        <Portal>
-          <Modal visible={visibleModal} children={<Provider ><PulseIndicator style={{ position: "relative" }} animating={true} size={280} color='#FF4081' /> <Title>Under Dev</Title> <Button onPress={_hideModal}>Close Modal</Button> </Provider>} contentContainerStyle={{ backgroundColor: '#FFFFFF', position: "absolute", zIndex: 1900 }} onDismiss={_hideModal}>
-
-          </Modal>
-          <Button
-            style={{ position: "relative", backgroundColor: '#FFFFFF' }}
-            onPress={_showModal}
-          >
-            Show Modal
-           </Button>
-        </Portal>
       </Provider >
     );
 

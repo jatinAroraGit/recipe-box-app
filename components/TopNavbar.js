@@ -63,7 +63,7 @@ class TopNavbar extends React.Component {
     // if(keyPress.nativeEvent.key=='Enter'){
     console.log(query);
 
-    this.props.navigation.navigate('Options', { searchQuery: query });
+    this.props.navigation.navigate('SearchResults', { searchQuery: query });
     //}
   };
 

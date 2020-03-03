@@ -50,6 +50,8 @@ function SearchResults({ navigation, ingredQuery }) {
   console.log('I GOT ::::::::::');
 
   //  console.log(navigation.state.params);
+  var basicQuery = navigation.getParam('searchQuery');
+  console.log("BASIC QUERY: " + basicQuery);
   var results = JSON.parse(navigation.state.params.results);
   console.log(results);
   var query = "";

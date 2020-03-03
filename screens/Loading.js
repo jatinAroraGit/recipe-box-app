@@ -8,8 +8,11 @@ import { NavigationActions } from 'react-navigation';
 
 export default class Loading extends React.Component {
   constructor(props) {
+    console.log('LOAD -- ');
     super(props);
     Firebase.auth().onAuthStateChanged(user => {
+      console.log('LOADING USER -- ')
+      console.log(user);
       if (user) {
         if (user.emailVerified)
           this.props.navigation.navigate('Main');

@@ -56,7 +56,9 @@ function RegisterForm({ nav }) {
   console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
-
+    console.log("Form Data = ")
+    //  JSON.
+    JSON.stringify(data);
     console.log(data);
 
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
@@ -66,14 +68,14 @@ function RegisterForm({ nav }) {
         var name = data.firstName + " " + data.lastName;
         errorb = false;
         //Create User with Email and Password
-        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function(result) {
+        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function (result) {
 
-          return result.user.updateProfile({ displayName: name})
+          return result.user.updateProfile({ displayName: name })
 
         }).catch(function (error) {
           // Handle Errors here.
 
-          
+
           var errorCode = error.code;
           errorb = true;
           var errorMessage = error.message;
@@ -264,9 +266,7 @@ function RegisterForm({ nav }) {
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
           Register
             </Button>
-        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => props.navigate('Login')}>
-          Log in
-            </Button>
+
       </View>
     </View>
 

@@ -4,6 +4,8 @@ import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import { jsxOpeningElement } from '@babel/types';
+import Axios from 'axios';
 
 const styles = StyleSheet.create({
   label: {
@@ -54,8 +56,9 @@ function ChangePasswordForm({ props }) {
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
-    console.log(data);
-
+    console.log("JSON FORM DATA :::::::::::");
+    const sendData = JSON.stringify(data);
+    console.log(sendData);
     if (data.password && data.newPassword && data.confirmNewPassword) {
       console.log('required data entered');
 
@@ -64,7 +67,10 @@ function ChangePasswordForm({ props }) {
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
           console.log('User verified');
-
+          console.log('DB REQ SENT');
+          Axios.post('http://localhost:8082/rest-api/recipe/example', sendData).then(() => {
+            console.log('Success');
+          });
           user.updatePassword(data.newPassword).then(function () {
             console.log('Password updated');
             props.navigate('UserProfile');
