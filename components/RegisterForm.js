@@ -198,7 +198,7 @@ function RegisterForm({ nav }) {
 
       <Subheading style={styles.label}>Password</Subheading>
       <Controller
-        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
         name="password"
         control={control}
         onChange={onChange}
@@ -208,7 +208,7 @@ function RegisterForm({ nav }) {
 
       <Subheading style={styles.label}>Confirm Password</Subheading>
       <Controller
-        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
         name="confirmPassword"
         control={control}
         onChange={onChange}
@@ -220,7 +220,7 @@ function RegisterForm({ nav }) {
       <Title style={{ color: '#FFFFFF', marginTop: 20 }}>User Details</Title>
       <Subheading style={styles.label}>First name</Subheading>
       <Controller
-        as={<TextInput style={styles.input} />}
+        as={<TextInput maxLength={30} style={styles.input} />}
         onChange={onChange}
         control={control}
         name="firstName"
@@ -230,7 +230,7 @@ function RegisterForm({ nav }) {
 
       <Subheading style={styles.label}>Last name</Subheading>
       <Controller
-        as={<TextInput style={styles.input} />}
+        as={<TextInput maxLength={30} style={styles.input} />}
         name="lastName"
         control={control}
         onChange={onChange}

@@ -4,6 +4,9 @@ import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import Axios from 'axios';
+const apiKey = require('../configure/apiKey.json');
+import { NavigationActions, StackActions } from 'react-navigation'
 
 const styles = StyleSheet.create({
   label: {
@@ -48,7 +51,7 @@ const styles = StyleSheet.create({
 
 
 function ChangeEmailForm({ props }) {
-
+  let isEmailValid = false;
   var auth = Firebase.auth();
   let user = auth.currentUser;//retrieving current user
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
@@ -64,18 +67,60 @@ function ChangeEmailForm({ props }) {
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
           console.log('User verified');
+          Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.newEmail + "&smtp=1&format=1").then(res => {
+            console.log('axios for validator');
 
-          user.updateEmail(data.newEmail).then(function () {
-            console.log('Email updated');
-            props.navigate('UserProfile');
+            console.log(res.data);
+            console.log('HiBye');
+            if (!(res.data.smtp_check))
+              setError("newEmail", "invalid");
+            else {
+              user.updateEmail(data.newEmail).then(function () {
+                console.log('Email updated');
 
-          }).catch(function (error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
+                user.sendEmailVerification().then(function () {
+
+                  console.log('First Email sent to : ' + user.email);
+
+
+                  Firebase.auth().signOut();
+                  // await Firebase.auth().currentUser.delete;
+                  // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+
+                  // this.props.navigation.navigate('Auth');
+                  // this.props.navigation.navigate('Login');
+                  const resetAction = StackActions.replace({
+                    key: 'AuthHome',
+                    routeName: 'AuthHome',
+                    newKey: 'Login',
+                  });
+                  props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+
+
+                });
+
+
+
+              });
+            }
+            // console.log(items)
           });
 
+
+
+
+          /*
+                    user.updateEmail(data.newEmail).then(function () {
+                      console.log('Email updated');
+                      props.navigate('UserProfile');
+          
+                    }).catch(function (error) {
+                      var errorCode = error.code;
+                      var errorMessage = error.message;
+                      console.log(errorCode);
+                      console.log(errorMessage);
+                    });
+          */
         }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -110,13 +155,13 @@ function ChangeEmailForm({ props }) {
         <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Email</Title>
         <Subheading style={styles.label}>Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
+          as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
           name="password"
 
           control={control}
           onChange={onChange}
 
-          rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+          rules={{ required: true, maxLength: 25, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
         />
         {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
         {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Wrong password.</Subheading>}
@@ -129,7 +174,8 @@ function ChangeEmailForm({ props }) {
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
         />
-        {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
+
+        {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email Address</Subheading>}
 
         <Subheading style={styles.label}>Confirm New Email</Subheading>
         <Controller

@@ -130,6 +130,7 @@ class UserProfileScreen extends React.Component {
     console.log(params);
     let set = this;
     this.unsubscribe = Firebase.auth().onAuthStateChanged(user => {
+      this.setState({ loading: false })
       console.log('FIRING AUTH CHANGED &&&&&&&&');
       if (user) {
 
@@ -170,7 +171,36 @@ class UserProfileScreen extends React.Component {
     this.setState({ loading: false });
   }
   componentDidUpdate() {
+    //  this.setState({ loading: true })
+
     console.log('USER PROFILE UPDATING');
+
+    Firebase.auth().onAuthStateChanged(user => {
+      console.log("UPDATED USER VERIFIED: " + user.emailVerified);
+      if (user.emailVerified) {
+        //set.props.navigation.navigate('Home', {},S StackActions.replace('UserProfile'));
+
+        set.props.navigation.navigate('UserProfile');
+        set.props.navigation.navigate(NavigationActions.navigate({
+
+          action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
+        }));
+
+      }
+
+      else {
+
+        set.props.navigation.navigate('UserProfile');
+
+        set.props.navigation.navigate(NavigationActions.navigate({
+          action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
+        }));
+
+      }
+
+    });
+
+
   }
 
   componentWillUnmount() {
