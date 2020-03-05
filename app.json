@@ -5,6 +5,7 @@
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "primaryColor": "#F06292",
+    "scheme": "recipebox",
     "platforms": [
       "ios",
       "android",

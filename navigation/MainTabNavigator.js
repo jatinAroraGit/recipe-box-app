@@ -140,7 +140,7 @@ const tabNavigator = createMaterialBottomTabNavigator({
 }, {
     inactiveColor: '#BDBDBD',
     activeColor: '#FFFFFF',
-    barStyle: { backgroundColor: "#C2185B" }
+    barStyle: { backgroundColor: "#F06292" }
   });
 
 tabNavigator.path = '';

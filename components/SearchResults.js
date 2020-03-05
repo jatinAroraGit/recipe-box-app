@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView, SafeAreaView } from 'react-native';
 import axios from 'axios'
 import '../configure/apiKey.json'
 import RecipeCards from '../components/RecipeCards';
-
+import { PulseIndicator } from 'react-native-indicators';
 import ViewRecipe from './ViewRecipe';
-import { Button } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#69F0AE',
+    ...Platform.select({
+      ios: {
+        width: 320
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 800,
+      },
+      android: {
+        width: 320
+      },
+    }),
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 10,
+
   },
+
+
   loader: {
     flex: 1,
     alignItems: 'center',
@@ -23,14 +40,18 @@ const styles = StyleSheet.create({
 
 
 
-function SearchResults({navigation, ingredQuery}) {
+function SearchResults({ navigation, ingredQuery }) {
 
-  
+
 
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
+  const [itemCount, setItemCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   console.log('I GOT ::::::::::');
 
-//  console.log(navigation.state.params);
+  //  console.log(navigation.state.params);
+  var basicQuery = navigation.getParam('searchQuery');
+  console.log("BASIC QUERY: " + basicQuery);
   var results = JSON.parse(navigation.state.params.results);
   console.log(results);
   var query = "";
@@ -39,9 +60,9 @@ function SearchResults({navigation, ingredQuery}) {
 
     console.log("######getQuery() results")
     console.log(results);
-    
 
-    if(results.query != "") {
+
+    if (results.query != "") {
 
       console.log("good");
       queryLength++;
@@ -49,7 +70,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.cuisine != "") {
+    if (results.cuisine != "") {
 
       console.log("good");
       queryLength++;
@@ -57,7 +78,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.intolerances != "") {
+    if (results.intolerances != "") {
 
       console.log("good");
       queryLength++;
@@ -65,7 +86,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
 
-    if(results.includeIngredients != "") {
+    if (results.includeIngredients != "") {
 
       console.log("good");
       queryLength++;
@@ -73,12 +94,12 @@ function SearchResults({navigation, ingredQuery}) {
 
     }
     let apiKey = require('../configure/apiKey.json');
-   // if(queryLength == 1) {
+    // if(queryLength == 1) {
     //  console.log(query);
     //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
     //} else if(queryLength > 1) {
-      console.log(query);
-      query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
+    console.log(query);
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
 
     //}
     console.log("######getQuery() query")
@@ -87,7 +108,7 @@ function SearchResults({navigation, ingredQuery}) {
   }
 
   useEffect(() => {
-    
+
     var url = getQuery();
     if (queryLength == 1) {
       axios.get(url)
@@ -95,6 +116,8 @@ function SearchResults({navigation, ingredQuery}) {
           const items = res.data.results;
           console.log(items)
           setItems(items);
+          setItemCount(items.length);
+          setLoading(false);
         })
     }
 
@@ -114,17 +137,41 @@ function SearchResults({navigation, ingredQuery}) {
   //   const res = await fetch(endpoint);
   //   return await res.json();
   // }
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 3 }}>
 
-  return (
-      <FlatList
-        style={styles.container}
-        data={items}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
-      //renderItem={({item}) => <ViewRecipe item={item}/>}
-      />
 
-      
-  );
+        <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
+
+      </SafeAreaView>
+    )
+  } else if (items.length > 0) {
+    return (
+      <SafeAreaView>
+
+        <FlatList
+          style={styles.container}
+
+          snapToAlignment={"center"}
+          data={items}
+          ListHeaderComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+
+        //renderItem={({item}) => <ViewRecipe item={item}/>}
+        />
+      </SafeAreaView>
+
+    );
+  }
+  else if (items.length == 0) {
+    return (
+      <SafeAreaView>
+        <Title>No results found for your search</Title>
+      </SafeAreaView>
+
+    );
+  }
 }
 export default SearchResults;

@@ -20,6 +20,9 @@ import VerificationScreen from '../screens/VerificationScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
 import ViewRecipe from '../components/ViewRecipe';
 import ViewRecipeScreen from '../screens/ViewRecipeScreen';
+
+
+
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -46,14 +49,16 @@ AuthHomeStack.navigationOptions = {
 AuthHomeStack.path = '';
 
 const AuthAccountStack = createStackNavigator(
+
   {
-    Login: LoginScreen,
+
+    Login: (true) ? LoginScreen : VerificationScreen,
     Register: RegisterScreen,
     ForgotPassword: ForgotPasswordScreen,
     UserAccount: UserProfileFormScreen,
     SecurityQuestion: SecurityQuestionScreen,
     UserProfile: UserProfileScreen,
-    Verification: VerificationScreen,
+    // Verification: VerificationScreen,
 
   },
   config
@@ -64,7 +69,7 @@ AuthAccountStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'account'} />
   ),
-  tabBarColor: '#0097A7'
+  tabBarColor: '#5C6BC0'
 };
 
 AuthAccountStack.path = '';
