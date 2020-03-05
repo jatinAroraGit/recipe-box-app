@@ -18,17 +18,17 @@ import UserProfileScreen from './UserProfileScreen';
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
-    backgroundColor: '#263238',
+    //backgroundColor: '#C2185B',
     elevation: 5,
     margin: 8,
     marginBottom: 0,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#EC407A',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    // borderLeftWidth: 1,
+    // borderRightWidth: 1,
+    // borderTopWidth: 6,
+    //borderColor: 'transparent',
+    // borderTopColor: '#EC407A',
+    // borderTopLeftRadius: 30,
+    // borderTopRightRadius: 30,
   }
 });
 
@@ -43,25 +43,14 @@ class LoginScreen extends React.Component {
       navigation: this.props.navigation,
       loggedin: false
     }
-    this._retrieveData();
+
 
   };
   componentDidMount() {
 
-    this._retrieveData();
   }
 
-  _retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('uid');
-      if (value !== null) {
-        this.setState({ loggedIn: true })
-        console.log(value);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
 
   callbackFunction = (childData) => {
@@ -74,7 +63,7 @@ class LoginScreen extends React.Component {
     console.log("Logged in?");
     console.log(loggedIn);
 
-    if (this.state.loggedIn) {
+    if (false) {
 
       return (
 
@@ -85,10 +74,10 @@ class LoginScreen extends React.Component {
 
       return (
 
-        <SafeAreaView style={{ flex: 3 }}>
+        <SafeAreaView style={{ flex: 3, backgroundColor: '#7986CB' }}>
           <TopNavbar title='Log in'></TopNavbar>
           <ScrollView style={baseStyle.scrollViewBase}>
-            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, overflow: "hidden" }}>
 
               <LoginForm props={this.props.navigation}></LoginForm>
 

@@ -8,7 +8,7 @@ import { NavigationActions } from 'react-navigation'
 
 const styles = StyleSheet.create({
   label: {
-    color: '#FFFFFF',
+    color: '#000000',
     margin: 20,
     marginLeft: 0
   },
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 8,
-    backgroundColor: '#263238',
+    padding: 4,
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
     height: 'auto',
     ...Platform.select({
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     })
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#90CAF9',
     borderWidth: 0,
     height: 30,
     padding: 5,
@@ -183,7 +183,7 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
+      {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Email.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Email</Subheading>
       <Controller
@@ -193,8 +193,8 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
-      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match</Subheading>}
+      {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Invalid Email.</Subheading>}
+      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Emails do not match</Subheading>}
 
       <Subheading style={styles.label}>Password</Subheading>
       <Controller
@@ -204,7 +204,7 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
-      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Password</Subheading>
       <Controller
@@ -214,10 +214,10 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
-      {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Passwords do not match</Subheading>}
+      {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
+      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Passwords do not match</Subheading>}
 
-      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>User Details</Title>
+      <Title style={{ color: '#1E88E5', marginTop: 20 }}>User Details</Title>
       <Subheading style={styles.label}>First name</Subheading>
       <Controller
         as={<TextInput maxLength={30} style={styles.input} />}
@@ -239,7 +239,7 @@ function RegisterForm({ nav }) {
       />
       {errors.lastName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
-      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>Security Questions</Title>
+      <Title style={{ color: '#1E88E5', marginTop: 20 }}>Security Questions</Title>
       <Subheading style={styles.label}>Question</Subheading>
       <Controller
         as={<TextInput style={styles.input} />}

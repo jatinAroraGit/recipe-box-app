@@ -305,7 +305,7 @@ function SearchForm({ props }) {
           onChange={onChange}
           defaultValue=""
         />
-        {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
+        {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Search.</Subheading>}
 
         <List.Section>
           <List.Accordion theme={{ colors: { text: '#EEEEEE' } }} title='Cuisine'>

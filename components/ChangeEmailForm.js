@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { useState } from 'react';
+
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Title, Subheading } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Provider, Modal, Portal, Card } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
@@ -46,17 +48,42 @@ const styles = StyleSheet.create({
     height: 30,
     padding: 5,
     borderRadius: 4,
+  },
+  modalStyle: {
+    flex: 3,
+    justifyContent: 'center',
+    paddingTop: 3,
+    padding: 8,
+    backgroundColor: '#FFFFFF',
+
+    ...Platform.select({
+      ios: {
+        //  width: (Dimensions.get('screen').width - 50),
+        // height: (Dimensions.get('screen').height - 50)
+      },
+      web: {
+        //  width: (Dimensions.get('window').width - 50),
+        //  height: (Dimensions.get('window').height - 50)
+      },
+      android: {
+        // width: (Dimensions.get('screen').width - 50),
+        // height: (Dimensions.get('screen').height - 50)
+      },
+    })
   }
 });
 
 
 function ChangeEmailForm({ props }) {
+
   let isEmailValid = false;
   var auth = Firebase.auth();
   let user = auth.currentUser;//retrieving current user
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
-
+    setLoading(true);
     console.log(data);
 
     if (data.password && data.newEmail && data.confirmNewEmail) {
@@ -72,8 +99,11 @@ function ChangeEmailForm({ props }) {
 
             console.log(res.data);
             console.log('HiBye');
-            if (!(res.data.smtp_check))
+            if (!(res.data.smtp_check)) {
+              setLoading(false);
+
               setError("newEmail", "invalid");
+            }
             else {
               user.updateEmail(data.newEmail).then(function () {
                 console.log('Email updated');
@@ -82,8 +112,9 @@ function ChangeEmailForm({ props }) {
 
                   console.log('First Email sent to : ' + user.email);
 
+                  setLoading(false);
+                  setShowModal(true)
 
-                  Firebase.auth().signOut();
                   // await Firebase.auth().currentUser.delete;
                   // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
 
@@ -94,7 +125,9 @@ function ChangeEmailForm({ props }) {
                     routeName: 'AuthHome',
                     newKey: 'Login',
                   });
-                  props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+
+
+                  //props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
 
 
                 });
@@ -103,6 +136,7 @@ function ChangeEmailForm({ props }) {
 
               });
             }
+            onVerification();
             // console.log(items)
           });
 
@@ -143,6 +177,14 @@ function ChangeEmailForm({ props }) {
     }
 
   }
+
+  const logoutOfStack = () => {
+    Firebase.auth().signOut();
+    props.navigate('Login');
+  }
+  const onVerification = () => {
+    //setShowModal(true);
+  }
   const onChange = args => {
     return {
       value: args[0].nativeEvent.text,
@@ -155,7 +197,7 @@ function ChangeEmailForm({ props }) {
         <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Email</Title>
         <Subheading style={styles.label}>Password</Subheading>
         <Controller
-          as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
+          as={<TextInput disabled={loading} maxLength={25} style={styles.input} secureTextEntry={true} />}
           name="password"
 
           control={control}
@@ -163,39 +205,56 @@ function ChangeEmailForm({ props }) {
 
           rules={{ required: true, maxLength: 25, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
         />
-        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-        {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Wrong password.</Subheading>}
+        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
+        {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Wrong password.</Subheading>}
 
         <Subheading style={styles.label}>New Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} />}
+          as={<TextInput disabled={loading} style={styles.input} />}
           name="newEmail"
           control={control}
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
         />
 
-        {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email Address</Subheading>}
+        {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Email Address</Subheading>}
 
         <Subheading style={styles.label}>Confirm New Email</Subheading>
         <Controller
-          as={<TextInput style={styles.input} />}
+          as={<TextInput disabled={loading} style={styles.input} />}
           name="confirmNewEmail"
           control={control}
           onChange={onChange}
           rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
         />
-        {errors.confirmNewEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
-        {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match.</Subheading>}
+        {errors.confirmNewEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Invalid Email.</Subheading>}
+        {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Emails do not match.</Subheading>}
 
-        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+        <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" loading={loading} onPress={handleSubmit(onSubmit)}>
           Change Email
         </Button>
-        <Button style={{ marginHorizontal: 10, marginTop: 12, marginBottom: 6 }} mode="contained" onPress={() => props.navigate('UserProfile')}>
+        <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 12, marginBottom: 6 }} mode="contained" onPress={() => props.navigate('UserProfile')}>
           Return to user profile
         </Button>
 
       </View>
+      <Provider>
+        <Portal>
+          <Modal visible={showModal} contentContainerStyle={styles.modalStyle}>
+            <View >
+              <Card.Content>
+                <Title style={{ fontSize: 30 }}>Verification Required</Title>
+                <Subheading style={{ fontSize: 20, color: '#000000', marginTop: 10 }}>You need to verify your account to proceed further</Subheading>
+                <Subheading style={{ fontSize: 20, color: '#E91E63', marginTop: 10 }}>A verification email has been sent to your email.
+                </Subheading>
+                <Subheading style={{ fontSize: 20, color: '#E91E63', marginTop: 10 }}>Email: {user.email} </Subheading>
+                <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained" onPress={logoutOfStack}>Close and ReLogin </Button>
+              </Card.Content>
+            </View>
+          </Modal>
+
+        </Portal>
+      </Provider>
     </KeyboardAvoidingView>
   );
 }

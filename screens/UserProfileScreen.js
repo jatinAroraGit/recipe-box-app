@@ -124,6 +124,7 @@ class UserProfileScreen extends React.Component {
 
 
   componentDidMount() {
+    this._isMounted = true;
     console.log('USER PROFILE Mounted');
     const params = this.props.navigation.state;
     const isUserVerfied = params.verified;
@@ -132,39 +133,17 @@ class UserProfileScreen extends React.Component {
     this.unsubscribe = Firebase.auth().onAuthStateChanged(user => {
       this.setState({ loading: false })
       console.log('FIRING AUTH CHANGED &&&&&&&&');
-      if (user) {
+      if (user.emailVerified) {
 
         set.user = user;
 
         console.log(set.user.email);
-        set.setState({ currentUser: user, isVerified: user.emailVerified });
-        if (user.emailVerified) {
-          set.setState({ loading: false });
-          //set.props.navigation.navigate('Home', {},S StackActions.replace('UserProfile'));
+        if (user.emailVerified)
+          set.setState({ currentUser: user });
 
-          set.props.navigation.navigate('UserProfile');
-          set.props.navigation.navigate(NavigationActions.navigate({
-
-            action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
-          }));
-
-        }
-
-        else {
-          set.setState({ loading: false });
-          set.props.navigation.navigate('UserProfile');
-
-          set.props.navigation.navigate(NavigationActions.navigate({
-            action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
-          }));
-
-        }
 
       }
-      else {
-        set.setState({ isVerified: false });
-        set.props.navigation.navigate('Login');
-      }
+
     });
 
     this.unsubscribe();
@@ -175,35 +154,12 @@ class UserProfileScreen extends React.Component {
 
     console.log('USER PROFILE UPDATING');
 
-    Firebase.auth().onAuthStateChanged(user => {
-      console.log("UPDATED USER VERIFIED: " + user.emailVerified);
-      if (user.emailVerified) {
-        //set.props.navigation.navigate('Home', {},S StackActions.replace('UserProfile'));
-
-        set.props.navigation.navigate('UserProfile');
-        set.props.navigation.navigate(NavigationActions.navigate({
-
-          action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
-        }));
-
-      }
-
-      else {
-
-        set.props.navigation.navigate('UserProfile');
-
-        set.props.navigation.navigate(NavigationActions.navigate({
-          action: NavigationActions.navigate({ routeName: 'UserProfile' }, { params: { verified: false } })
-        }));
-
-      }
-
-    });
 
 
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe();
     //this.setState({ currentUser: null, isVerified: false, loading: true });
   }
@@ -223,18 +179,21 @@ class UserProfileScreen extends React.Component {
   };
   logoutUserOutOfStack = async () => {
     try {
-      await Firebase.auth().signOut();
+      await Firebase.auth().signOut().then(() => {
+        const resetAction = StackActions.replace({
+          key: 'AuthHome',
+          routeName: 'AuthHome',
+          newKey: 'Login',
+        });
+
+        this.props.navigation.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+      });
       // await Firebase.auth().currentUser.delete;
       // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
-
+      // await Firebase.auth().currentUser.reload();
       // this.props.navigation.navigate('Auth');
       // this.props.navigation.navigate('Login');
-      const resetAction = StackActions.replace({
-        key: 'AuthHome',
-        routeName: 'AuthHome',
-        newKey: 'Login',
-      });
-      this.props.navigation.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+
       /*
       this.props.navigation.navigate(NavigationActions.navigate({
         routeName: 'Auth',
@@ -260,46 +219,30 @@ class UserProfileScreen extends React.Component {
         </SafeAreaView>
       )
     }
-    else
-      if (!this.state.isVerified) {
+    else {
+      return (
 
-        console.log("Unverified");
-        console.log(verified);
-        return (
-          <SafeAreaView style={{ flex: 3 }}>
-            <TopNavbar title='Verification'></TopNavbar>
-
-
-            <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center", position: "relative" }}>
-              <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center", position: "relative" }}>
-                <VerificationScreen nav={this.props.navigation}></VerificationScreen>
+        <SafeAreaView style={{ flex: 3 }}>
+          <TopNavbar title='User Profile'></TopNavbar>
+          <ScrollView style={{ flex: 3 }}>
+            <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 10, overflow: "scroll" }}>
+              <View style={{ flex: 1 }}>
+                <UserProfile props={this.props.navigation} user={this.state.currentUser}></UserProfile>
               </View>
-
+              <View style={{ flex: 1, marginBottom: 10 }}>
+                <Button icon="logout-variant" style={{ backgroundColor: '#E53935', }} color='#FFFFFF' onPress={this.logoutUserOutOfStack}>Logout</Button>
+              </View>
             </View>
 
-          </SafeAreaView>
-        )
-      } else {
-
-        console.log("Verified");
-        console.log(verified);
-
-        return (
-
-          <SafeAreaView style={{ flex: 3 }}>
-            <TopNavbar title='User Profile'></TopNavbar>
-            <ScrollView >
-              <View style={{ marginStart: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
-
-                <UserProfile props={this.props.navigation} user={this.state.currentUser}></UserProfile>
-                <Button icon="logout-variant" style={{ backgroundColor: '#E53935', margin: 5 }} color='#FFFFFF' onPress={this.logoutUserOutOfStack}>Logout</Button>
-              </View>
-            </ScrollView>
-          </SafeAreaView>
-        );
+          </ScrollView>
 
 
-      }
+        </SafeAreaView>
+      );
+
+
+
+    }
   }
 }
 

@@ -69,7 +69,7 @@ AuthAccountStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'account'} />
   ),
-  tabBarColor: '#0097A7'
+  tabBarColor: '#5C6BC0'
 };
 
 AuthAccountStack.path = '';

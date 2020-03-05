@@ -62,21 +62,21 @@ function DeleteUserForm({ props }) {
       if (data.accept == 'I AM SURE') {
         console.log('deletion confirmed');
 
-        auth.signInWithEmailAndPassword(user.email, data.password).then(function() {
-            console.log('User verified');
-            
-            user.delete().then(function() {
-              console.log('Account Deleted');
-              props.navigate('Home');
+        auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
+          console.log('User verified');
 
-            }).catch(function(error) {
-              var errorCode = error.code;
-              var errorMessage = error.message;
-              console.log(errorCode);
-              console.log(errorMessage);
-            });
+          user.delete().then(function () {
+            console.log('Account Deleted');
+            props.navigate('Home');
 
-            }).catch(function (error) {
+          }).catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+          });
+
+        }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
@@ -90,7 +90,7 @@ function DeleteUserForm({ props }) {
         setError("accept", 'bad message', "Deletion confirmation not entered correctly");
 
       }
-      
+
     } else {
 
       console.log('Please fill in all fields');
@@ -109,17 +109,17 @@ function DeleteUserForm({ props }) {
     <View style={styles.container}>
       <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Delete Account</Title>
       <Subheading style={styles.label}>Password</Subheading>
-        <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
-          name="password"
+      <Controller
+        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        name="password"
 
-          control={control}
-          onChange={onChange}
+        control={control}
+        onChange={onChange}
 
-          rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
-        />
-        {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
-        {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Wrong password.</Subheading>}
+        rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
+      />
+      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
+      {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Wrong password.</Subheading>}
 
       <Subheading style={styles.label}>Confirmation message</Subheading>
       <Subheading style={styles.label}>Type the phrase "I AM SURE" in all caps.</Subheading>
@@ -130,7 +130,7 @@ function DeleteUserForm({ props }) {
         onChange={onChange}
         rules={{ required: true }}
       />
-      {errors.accept && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid confirmation message.</Subheading>}
+      {errors.accept && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid confirmation message.</Subheading>}
 
       <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
         Delete Account
