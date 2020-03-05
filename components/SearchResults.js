@@ -14,13 +14,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#69F0AE',
     ...Platform.select({
       ios: {
-        width: 320
+        width: "auto"
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 800,
       },
       android: {
-        width: 320
+        width: "auto"
       },
     }),
     borderTopLeftRadius: 15,
