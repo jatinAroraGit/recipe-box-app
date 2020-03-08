@@ -6,7 +6,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
-    backgroundColor: '#263238',
     elevation: 5,
     margin: 8,
     marginBottom: 0,
@@ -38,12 +37,14 @@ class RegisterScreen extends React.Component {
 
     return (
 
-      <SafeAreaView style={{ flex: 3, backgroundColor: '#1E88E5' }}>
+      <SafeAreaView style={{
+        flex: 3, backgroundColor: '#F8BBD0',
+      }}>
         <TopNavbar title='Register'></TopNavbar>
-        <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
+        <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} o>
 
           <ScrollView style={baseStyle.scrollViewBase}>
-            <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+            <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 10, marginBottom: 15, overflow: "hidden" }}>
 
 
               <RegisterForm nav={this.props.navigation}></RegisterForm>

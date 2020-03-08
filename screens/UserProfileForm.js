@@ -28,7 +28,7 @@ const customFormStyle = StyleSheet.create({
         width: 'auto'
       },
       web: {
-       width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
 
 
       },
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginLeft: 0
   },
-  button :{
+  button: {
     marginTop: 40,
     height: 40,
     backgroundColor: '#ec5990',
@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#0e101c',
-    borderRadius:10,
-    height:'auto',
-     ...Platform.select({
+    borderRadius: 10,
+    height: 'auto',
+    ...Platform.select({
       ios: {
         width: 320
       },
       web: {
-        width: ((Dimensions.get('window').width)<500)? ((Dimensions.get('window').width)-50): 600,
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
       },
       android: {
         width: 320
@@ -84,10 +84,10 @@ const styles = StyleSheet.create({
 });
 
 
- function UserProfileForm({props}) {
-  const { control, handleSubmit, errors } = useForm({mode:'onChange'});
-  const onSubmit = (data,event) => {
-    props.navigate('Profile', {names: data});
+function UserProfileForm({ props }) {
+  const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
+  const onSubmit = (data, event) => {
+    props.navigate('Profile', { names: data });
   };
   const onChange = args => {
     return {
@@ -96,31 +96,31 @@ const styles = StyleSheet.create({
   };
 
   return (
- <View style={styles.container}>
-   <Title style={{color:'#FFFFFF'}}>User Details</Title>
+    <View style={styles.container}>
+      <Title style={{ color: '#FFFFFF' }}>User Details</Title>
       <Text style={styles.label}>First name</Text>
       <Controller
-        as={<TextInput style={styles.input} />}
+        as={<TextInput maxLength={30} style={styles.input} />}
         onChange={onChange}
         control={control}
         name="firstName"
-        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/}}
+        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
       />
-       {errors.firstName && <Text style={{color:'#00FFFF'}}>This is required.</Text>}
+      {errors.firstName && <Text style={{ color: '#00FFFF' }}>This is required.</Text>}
 
-      <Text  style={styles.label}>Last name</Text>
+      <Text maxLength={30} style={styles.label}>Last name</Text>
       <Controller
         as={<TextInput style={styles.input} />}
         name="lastName"
         control={control}
         onChange={onChange}
-        rules={{ pattern:/^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/}}
-        
+        rules={{ pattern: /^[a-zA-Z]+(([\'\,\.\-][a-zA-Z])?[a-zA-Z]){1,}/ }}
+
       />
-{errors.lastName && <Text style={{color:'#00FFFF'}}>This is required.</Text>}
+      {errors.lastName && <Text style={{ color: '#00FFFF' }}>This is required.</Text>}
       <View style={styles.button}>
         <Button
-          color='#FFFFFF'      
+          color='#FFFFFF'
           title="Button"
           onPress={handleSubmit(onSubmit)}
         > Submit </Button>

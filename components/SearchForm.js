@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import axios from 'axios'
 import '../configure/apiKey.json'
 import { View, StyleSheet, Platform, Text, Dimensions, Picker, TouchableHighlight } from 'react-native';
 import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton, Chip } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
 import Autocomplete from 'react-native-autocomplete-input';
-import { StackGestureContext } from 'react-navigation-stack';
 
 const styles = StyleSheet.create({
   label: {
@@ -71,7 +70,8 @@ function SearchForm({ props }) {
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood' , 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
-
+  const _showModal = () => { setVisibleModal(true) };
+  const _hideModal = () => { setVisibleModal(false) };
 
 
   const onSubmit = data => {
@@ -119,23 +119,27 @@ function SearchForm({ props }) {
       
       for(var i in selectedDietary) {
 
-        if(i > 0 && selectedDietary[i] != "") {
+      for (var i in selectedDietary) {
+
+        if (i > 0 && selectedDietary[i] != "") {
 
           results.intolerances += ',';
 
         }
-        if(selectedDietary[i] != '') {
+        if (selectedDietary[i] != '') {
 
           results.intolerances += selectedDietary[i];
         }
       }
     }
-
+  }
 
     const result = JSON.stringify(results);
-console.log(result)
+
     if(num > 0) {
+
       props.navigate("Results", {results: result});
+      
     } else {
 
       setError("search", 'search', "Invalid User Details");
@@ -251,6 +255,7 @@ console.log(result)
 
   
 
+
   return (
 
     <View style={styles.container}>
@@ -262,6 +267,7 @@ console.log(result)
           name="query"
           control={control}
           onChange={onChange}
+          defaultValue=""
         />
         
 
