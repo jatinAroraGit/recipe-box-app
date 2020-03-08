@@ -1,8 +1,12 @@
 import * as React from 'react';
-import {useState} from 'react';
-import { View, StyleSheet, Platform, Text, Dimensions, Picker } from 'react-native';
-import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton } from 'react-native-paper';
+import {useState, useEffect} from 'react';
+import axios from 'axios'
+import '../configure/apiKey.json'
+import { View, StyleSheet, Platform, Text, Dimensions, Picker, TouchableHighlight } from 'react-native';
+import { Button, TextInput, Title, Subheading, Searchbar, List, RadioButton, Chip } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
+import Autocomplete from 'react-native-autocomplete-input';
+import { StackGestureContext } from 'react-navigation-stack';
 
 const styles = StyleSheet.create({
   label: {
@@ -58,53 +62,60 @@ var results = {};
 
 function SearchForm({ props }) {
 
-  const ingre = {name: ''};
-  const [empty, setEmpty] = useState(false);
-  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [autoComplete, setAutoComplete] = useState([])
+  const [selectedCuisine, setSelectedCuisine] = useState('None');
+  const [text, setText] = useState("");
   const [selectedDietary, setSelectedDietary] = useState([]);
-  const [ingredients, setIngredients] = useState([ingre]);
+  const [ingredients, setIngredients] = useState([]);
+  const [chips, setChips] = useState([]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood' , 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
+  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
 
-  const { control, handleSubmit, errors } = useForm({ mode: 'onChange' });
+
+
   const onSubmit = data => {
 
     results.includeIngredients = "";
     results.cuisine = "";
     results.query = "";
     results.intolerances = "";  
-    setEmpty(true);
-    if(ingredients.length < 2 && ingredients[0].name != "") {
-      setEmpty(false);
+    console.log("Ingredients")
+    console.log(ingredients);
+    console.log("chips");
+    console.log(chips);
+    
+    var num = 0;
         
-      for(var i in ingredients) {
+    for(var i in chips) {
 
-        if(i > 0 && ingredients[i].name != "") {
+      num++;
+      if(i > 0 && chips[i].name.name != "") {
 
-          results.includeIngredients += ',';
+        results.includeIngredients += ',';
 
-        }
-        if(ingredients[i].name != '') {
+      }
+      if(chips[i].name.name != '') {
 
-          results.includeIngredients += ingredients[i].name;
-        }
+        results.includeIngredients += chips[i].name.name;
       }
     }
 
-    if(selectedCuisine != '') {
-      setEmpty(false);
+    if(selectedCuisine != "None") {
+      num++;
+      console.log(selectedCuisine);
       results.cuisine = selectedCuisine;
 
     }
 
     if(data.query != undefined) {
-      setEmpty(false);
+      num++;
       results.query = data.query;
 
     }
 
     if(selectedDietary.length != 0) {
-      setEmpty(false);
+      num++;
       
       for(var i in selectedDietary) {
 
@@ -120,10 +131,16 @@ function SearchForm({ props }) {
       }
     }
 
+
     const result = JSON.stringify(results);
+console.log(result)
+    if(num > 0) {
+      props.navigate("Results", {results: result});
+    } else {
 
-    props.navigate("Results", {results: result});
+      setError("search", 'search', "Invalid User Details");
 
+    }
   }
   const onChange = args => {
     return {
@@ -135,63 +152,19 @@ function SearchForm({ props }) {
 
     setSelectedCuisine(c);
 
-  }
+  }  
 
-  const addIngredient = () => {
+  
 
-    setIngredients(ingredients.concat(ingre));
+  const showChip = chips.map((c, i) => {
 
-  }
+    return(
 
-  const checkDietary = (c) => {
+      <Chip onClose={() => removeChip(i)} key={i} style={{margin: 5, alignSelf: 'baseline'}}>{c.name.name.toString()}</Chip>
 
-    var selected = false;
+    );
 
-    for(var i in selectedDietary) {
-
-      if(selectedDietary[i] == c) {
-
-        selected = true;
-
-      }
-
-    }
-
-    return selected;
-
-  }
-
-  const toggleDietary = (d, i) => {
-
-    var toggled = false;
-
-
-    for(var i in selectedDietary) {
-
-      if(selectedDietary[i] == d) {
-
-        let temp = [...selectedDietary];
-        temp.splice(i, 1);
-        setSelectedDietary(temp);
-
-        toggled = true;
-      }
-
-    }
-    console.log(toggled)
-    if(!toggled) {
-
-      setSelectedDietary(selectedDietary.concat(d));
-
-    }
-
-  }
-
-  /*const removeIngrdient = (i) => {
-
-    setIngredients(ingredients.splice(i, 1))
-
-  }*/
+  });
 
   const updateIngredient = (name, i) => {
 
@@ -200,50 +173,33 @@ function SearchForm({ props }) {
     item.name = name;
     temp[i] = item;
     setIngredients(temp);
+    updateChips(name);
 
   }
 
-  const showCuisine = cuisine.map((c, i) => {
+  const updateChips = (name, i) => {
 
-    var key = 'cuisine' + i.toString();
+    var good = true;
+    for(var j in chips) {
 
-    return (
-      <Controller
-        as={<View style={{flexDirection: 'row'}}><RadioButton
-          key={c + "key"} 
-          theme={{colors: {text: '#EEEEEE'}}}
-          onPress={() => setCuisine(c)}
-          status={selectedCuisine === c ? 'checked' : 'unchecked'}
-        />
-        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
-        name={key}
-        key={c + "key"} 
-        control={control}
-        onChange={onChange}
-        />);
-        
-  });
+      if(name == chips[j].name.name) {
 
-  const showDietary = dietary.map((c, i) => {
+        good = false;
 
-    var key = 'dietary' + i.toString();
+      }
 
-    return (
-      <Controller
-        as={<View style={{flexDirection: 'row'}}><RadioButton
-          key={key}
-          theme={{colors: {text: '#EEEEEE'}}}
-          onPress={() => toggleDietary(c, i)}
-          status={checkDietary(c) ? 'checked' : 'unchecked'}
-        />
-        <Text style={{marginTop: 10, marginHorizontal: 10, color: '#EEEEEE'}}>{c}</Text></View>}
-        name={key}
-        key={c + "key"} 
-        control={control}
-        onChange={onChange}
-        />);
-        
-  });
+    }
+    if(good) {
+      i = chips.length;
+      let temp = [...chips];
+      let item = {...temp[i]};
+      item.name = name;
+      temp[i] = item;
+      
+      setChips(temp);
+    }
+    
+  }
 
   const showCuisinePicker = cuisine.map((c, i) => {
 
@@ -251,74 +207,96 @@ function SearchForm({ props }) {
 
     return (
 
-      <Controller
-        as={<Picker.Item label={c} value={c}/>}
-        name={key}
-        key={c + "key"} 
-        control={control}
-        onChange={onChange}
-        />
+      <Picker.Item key={key} label={c} value={c}/>
 
     );
 
-  })
+  });
 
-  const showIngredients = ingredients.map((c, i) => {
+  const showDietPicker = dietary.map((c, i) => {
 
-    var key = 'ingreident' + i.toString();
+    var key = 'diet' + i.toString();
 
     return (
-      <Controller
-        as={<View style={{flexDirection: 'row', marginVertical: 5}}><TextInput 
-          style={styles.inputIngredient , {flex: 4}} 
-          theme={{colors: {text: '#000000'}}}
-          key={key}
-          dense={true}
-          onChangeText={(text) => {updateIngredient(text, i)}}
-        />
-        {//<Button style={{flex: 1, backgroundColor: '#ef5350'}} theme={{colors: {text: '#EEEEEE'}}}onPress={() => { removeIngrdient(i)}} title={key + 'b'}>Remove</Button>
-        }
-        </View>}
-        name={key}
-        key={c + "key"} 
-        control={control}
-        onChange={onChange}
-      />);
-        
+
+       <Picker.Item key={key} label={c} value={c}/>
+
+    );
+
   });
+
+  const removeChip = (i) => {
+
+    var temp = new Array;
+    temp = chips;
+    temp.splice(i,1);
+    setChips(temp);
+    updateAutoComplete("")
+
+  }
+
+  const updateAutoComplete = (text) => {
+
+    var arr;
+    let apiKey = require('../configure/apiKey.json');
+        axios.get("https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=" + apiKey.key +"&query=" + text + "&number=5")
+          .then(res => {
+
+            setAutoComplete(res.data);
+
+        })
+
+    return arr;
+  };
+
+  
 
   return (
 
     <View style={styles.container}>
       <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Search</Title>
-      <View style={{ marginBottom: 10 }}>
+      <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
+      
         <Controller
           as={<Searchbar style={styles.input} />}
           name="query"
           control={control}
           onChange={onChange}
         />
-        {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
+        
 
-        <Picker style={{margin: 20}}selectedValue={selectedCuisine} onValueChange={(value) => {setCuisine(value)}}>
-          {showCuisinePicker}
+        <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', fontSize: 15 }}>Ingredients</Subheading>
+        <View style={{flexDirection: "row", flexWrap: 'wrap'}}>
+          {showChip}
+        </View>  
+        <Autocomplete
+          
+          value={text}
+          data={autoComplete}
+          onChangeText={(i) => {updateAutoComplete(i); setText(i)}}
+          renderItem={({item, i})=> (
+
+            <TouchableHighlight style={{backgroundColor: "#4DB6AC"}} key={i} onPress={() => {updateIngredient(item); setText(""); updateAutoComplete("")}}><Text>{item.name}</Text></TouchableHighlight>
+
+          )}></Autocomplete>
+
+        <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', fontSize: 15 }}>Cuisine</Subheading>
+        <Picker style={{backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC"}} selectedValue={selectedCuisine} onValueChange={(value) => {setCuisine(value)}}>
+          
+            {showCuisinePicker}
+          
         </Picker>
-          
-        <List.Section>
-          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Cuisine'>
-            {showCuisine}
-          </List.Accordion>
-          <List.Accordion theme={{colors: {text: '#EEEEEE'}}} title='Dietary Restrictions'>
-            {showDietary}
-          </List.Accordion>
-          <Subheading title="Ingredients" style={{fontSize: 16, marginVertical: 10, marginHorizontal: 15}} theme={{colors: {text: '#EEEEEE'}}}>Ingredients</Subheading>
-            {showIngredients}
-            <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#0288D1', margin: 20 }} onPress={() => addIngredient()}>Add</Button>
-          
-          
-        </List.Section>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-          <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
+        
+        <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', fontSize: 15 }}>Dietary Restrictions</Subheading>
+        <Picker style={{backgroundColor: "#FFD54F", borderRadius: 5, borderColor: "#CCCCCC"}} selectedValue={selectedDietary} onValueChange={(value) => {setSelectedDietary(value)}}>
+          {showDietPicker}
+        </Picker>
+
+              
+        
+        <View style={{ alignSelf: 'center',  marginTop: 10 }}>
+        {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
+          <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
             Search
         </Button>
         </View>
