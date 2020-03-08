@@ -53,7 +53,6 @@ function SearchResults({ navigation, ingredQuery }) {
   var basicQuery = navigation.getParam('searchQuery');
   console.log("BASIC QUERY: " + basicQuery);
   var results = JSON.parse(navigation.state.params.results);
-  console.log(results);
   var query = "";
   var queryLength = 0;
   function getQuery() {
@@ -94,14 +93,10 @@ function SearchResults({ navigation, ingredQuery }) {
 
     }
     let apiKey = require('../configure/apiKey.json');
-    // if(queryLength == 1) {
-    //  console.log(query);
-    //  query = 'https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + query + '&number=5';
-    //} else if(queryLength > 1) {
     console.log(query);
     query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
 
-    //}
+    
     console.log("######getQuery() query")
     console.log(query);
     return query;
@@ -110,16 +105,18 @@ function SearchResults({ navigation, ingredQuery }) {
   useEffect(() => {
 
     var url = getQuery();
-    if (queryLength == 1) {
+    console.log("URL");
+    console.log(url); 
       axios.get(url)
         .then(res => {
+          console.log(res);
           const items = res.data.results;
-          console.log(items)
+          console.log(items);
           setItems(items);
           setItemCount(items.length);
           setLoading(false);
         })
-    }
+    
 
 
   }, []);

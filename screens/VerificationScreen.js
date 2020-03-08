@@ -168,4 +168,4 @@ class VerificationScreen extends React.Component {
 VerificationScreen.navigationOptions = {
   header: null,
 };
-export default withNavigation(VerificationScreen);
+export default VerificationScreen;
