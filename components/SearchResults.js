@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList, Platform, Text, Dimensions, ScrollView, SafeAreaView } from 'react-native';
 import axios from 'axios'
 import '../configure/apiKey.json'
@@ -6,6 +6,7 @@ import RecipeCards from '../components/RecipeCards';
 import { PulseIndicator } from 'react-native-indicators';
 import ViewRecipe from './ViewRecipe';
 import { Button, Title } from 'react-native-paper';
+import Pagination, { Icon, Dot } from 'react-native-pagination';//{Icon,Dot} also available
 
 
 const styles = StyleSheet.create({
@@ -47,6 +48,14 @@ function SearchResults({ navigation, ingredQuery }) {
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   const [itemCount, setItemCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [viewItem, setViewItems] = useState([{}]);
+  const [itemsViewed, setItemsViewed] = useState(0);
+  const [isEnd, setIsEnd] = useState(false);
+  let counter = 0;
+  let numOfItemsViewed = 0;
+  let resultsPerPage = 10;
+
+  const ref = useRef();
   console.log('I GOT ::::::::::');
 
   //  console.log(navigation.state.params);
@@ -94,9 +103,9 @@ function SearchResults({ navigation, ingredQuery }) {
     }
     let apiKey = require('../configure/apiKey.json');
     console.log(query);
-    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=30';
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=33';
 
-    
+
     console.log("######getQuery() query")
     console.log(query);
     return query;
@@ -106,21 +115,68 @@ function SearchResults({ navigation, ingredQuery }) {
 
     var url = getQuery();
     console.log("URL");
-    console.log(url); 
-      axios.get(url)
-        .then(res => {
-          console.log(res);
-          const items = res.data.results;
-          console.log(items);
-          setItems(items);
-          setItemCount(items.length);
-          setLoading(false);
-        })
-    
+    console.log(url);
+    axios.get(url)
+      .then(res => {
+        console.log(res);
+        const items = res.data.results;
+        console.log(items);
+        setItems(items);
+        setItemCount(items.length);
+        //  setLoading(false);
+        let newItems = items.splice(counter, counter + resultsPerPage);
+        let initialLength = newItems.length;
+        console.log("NEW LIST ITEMS :::: " + newItems.length);
+        setViewItems(newItems);
+
+        counter = counter + resultsPerPage;
+
+        numOfItemsViewed = numOfItemsViewed + initialLength;
+        console.log('VIEWED Init ITEMS COUNT ===== ' + numOfItemsViewed);
+        setLoading(false);
+      })
+
 
 
   }, []);
+  const onViewableItemsChanged = () => ({ items, changed }) => setItems(items)
+  const getNextItems = () => {
+    setLoading(true);
+    console.log('ITEM V COUNT --- ' + numOfItemsViewed);
+    if (numOfItemsViewed > [itemCount]) {
+      setIsEnd(true);
+    }
+    let newItems;
+    if (counter + resultsPerPage < [itemCount]) {
+      console.log('UNDER LIMMIT');
+      newItems = items.splice(counter, counter + resultsPerPage);
+      console.log("NEW LIST ITEMS :::: " + newItems.length);
+      numOfItemsViewed = numOfItemsViewed + newItems.length;
+    }
+    else {
+      newItems = items.splice(counter, [itemCount]);
+      numOfItemsViewed = numOfItemsViewed + newItems.length;
+    }
 
+    setViewItems(newItems);
+    //  console.log("NEW LIST ITEMS :::: " + newItems.length);
+    setLoading(false);
+
+    console.log('VIEWED ITEMS COUNT ===== ' + numOfItemsViewed);
+    counter = counter + 10;
+
+
+  }
+  const getPrevItems = () => {
+    setLoading(true);
+    let newItems = items.splice(counter, counter + 10);
+    console.log("NEW LIST ITEMS :::: " + newItems.length);
+    setViewItems(newItems);
+    console.log("NEW LIST ITEMS :::: " + newItems.length);
+    setLoading(false);
+
+    counter + 10;
+  }
 
 
   /*
@@ -143,14 +199,16 @@ function SearchResults({ navigation, ingredQuery }) {
 
       </SafeAreaView>
     )
-  } else if (items.length > 0) {
+  } else if (viewItem.length > 0) {
     return (
-      <SafeAreaView>
-
+      <SafeAreaView style={{ flex: 1 }}>
+        {/*
         <FlatList
           style={styles.container}
-
+          pagingEnabled={true}
+          initialNumToRender={15}
           snapToAlignment={"center"}
+
           data={items}
           ListHeaderComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
           keyExtractor={(item, index) => index.toString()}
@@ -158,6 +216,21 @@ function SearchResults({ navigation, ingredQuery }) {
 
         //renderItem={({item}) => <ViewRecipe item={item}/>}
         />
+*/}
+        <FlatList
+          style={styles.container}
+          pagingEnabled={true}
+          initialNumToRender={15}
+          snapToAlignment={"center"}
+
+          data={viewItem}
+          ListHeaderComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
+
+        //renderItem={({item}) => <ViewRecipe item={item}/>}
+        />
+        <Button disabled={isEnd} onPress={getNextItems}> Next</Button>
       </SafeAreaView>
 
     );
