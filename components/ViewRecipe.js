@@ -13,7 +13,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     console.log(recipeDetail)
     console.log('Showing the id of the recipe - end')
 
-    const baseUri = `https://spoonacular.com/recipeImages/`;
+    //const baseUri = `https://spoonacular.com/recipeImages/`;
 
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
     var ingredientsArray = [];
@@ -127,7 +127,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
-                        <Image source={`${recipeDetail.image}`} style={styles.image} resizeMode="center"></Image>
+                        <Image source={{uri: recipeDetail.image}} style={styles.image} resizeMode="center"></Image>
                     </View>
                     <View style={styles.dm}>
                         <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -198,9 +198,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                         )
                     })}
-
-
-
 
                     <Button title="View Shopping List" onPress={() => {
                         navigation.navigate('Shopping', makeJsontoObject(ingred));
