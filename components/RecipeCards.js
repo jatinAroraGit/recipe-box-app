@@ -18,14 +18,18 @@ export default class RecipeCards extends React.PureComponent {
   // source={`${this.state.baseUri}${this.props.oneitem.image}`} 
   render() {
 
+
+    //console.log(this.props)
     var id = JSON.stringify(this.props.oneitem);
-  
+
     return (
       <View>
         <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewRecipe', { props: id })}>
           <Text style={styles.cardTitle}>{this.props.oneitem.title}</Text>
           <View style={{ flexDirection: "row" }}>
             <Image style={styles.cardImage} source={{ uri: this.props.oneitem.image }}></Image>
+            {/* <Image style={styles.cardImage} source={this.props.oneitem.image} /> */}
+
             <Text style={styles.cardText}>Serving Size: N/A</Text>
           </View>
 
@@ -39,7 +43,7 @@ export default class RecipeCards extends React.PureComponent {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
     marginBottom: 10,
     marginLeft: '2%',
     flexWrap: 'wrap',
@@ -70,7 +74,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: 80,
-    height:60,
+    height: 60,
     borderRadius: 10
     //resizeMode:'cover'
   },
@@ -80,8 +84,8 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   cardText: {
-    padding:10,
-    fontSize:16
+    padding: 10,
+    fontSize: 16
   },
   title: {
     alignItems: 'flex-start',
