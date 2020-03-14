@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
+    flexDirection: "row",
     shadowOffset: {
       width: 3,
       height: 3
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
   cardText: {
     padding: 10,
     fontSize: 16
+    
   },
   title: {
     alignItems: 'flex-start',
