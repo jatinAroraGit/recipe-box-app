@@ -17,7 +17,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
     //const baseUri = `https://spoonacular.com/recipeImages/`;
     const [iconName, setIconName] = useState('playlist-plus');
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
+    const [step, setStep] = useState([]);
+    const [prepareMinute, setPrepareMinute] = useState(0);
     var ingredientsArray = [];
+    var stepArray = [];
 
     useEffect(() => {
         console.log('useEffect has been called');
@@ -28,20 +31,34 @@ function ViewRecipe({ navigation, recipeDetail }) {
         if (ingredients) {
             console.log('If statement is called');
             // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
-            axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
+
+            //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
+            axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
-                    console.log('axios is called');
-                    const ingreds = res.data[0].steps;
-                    console.log('HiHello');
-                    console.log(res.data[0]);
-                    console.log('HiBye');
-                    // console.log(items)
-                    extractIngredients(ingreds);
+                    console.log('Receipe API is called');
+                    const info = res.data.analyzedInstructions[0].steps;
+                    const prepareMin = res.data.preparationMinutes;
+                    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+                    console.log(res.data.preparationMinutes);
+                    extractRecipeInformation(info);
+
+                    setPrepareMinute(prepareMin)
                 })
         }
 
 
     }, []);
+
+    const extractRecipeInformation = (info) => {
+        for (let i = 0; i < info.length; i++) {
+            stepArray.push(info[i].step);
+            // console.log(info[i].step);
+        }
+
+        setStep(stepArray);
+
+        extractIngredients(info);
+    };
 
     const extractIngredients = (ingreds) => {
 
@@ -156,8 +173,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>483</Text>
-                        <Text style={[styles.text, styles.subText]}>Posts</Text>
+                        <Text style={[styles.text, { fontSize: 24 }]}>{prepareMinute}</Text>
+                        <Text style={[styles.text, styles.subText]}>Prepare Minute</Text>
                     </View>
                     <View style={[styles.statsBox, { borderColor: "#DFDBCB", borderLeftWidth: 1, borderRightWidth: 1 }]}>
                         <Text style={[styles.text, { fontSize: 24 }]}>45,844</Text>
@@ -221,6 +238,17 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     }}></Button>
 
                 </View >
+
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                    {step.map((step, index) => {
+                        return (
+                            <View key={index} style={{ flexDirection: "row" }}>
+                                <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text> 
+                            </View>
+
+                        )
+                    })}
+                </View>
 
 
                 <Text style={[styles.subText, styles.recent]}>Recent Activity</Text>
