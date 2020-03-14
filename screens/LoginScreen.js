@@ -18,17 +18,17 @@ import UserProfileScreen from './UserProfileScreen';
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
-    backgroundColor: '#263238',
+    //backgroundColor: '#C2185B',
     elevation: 5,
     margin: 8,
     marginBottom: 0,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#EC407A',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    // borderLeftWidth: 1,
+    // borderRightWidth: 1,
+    // borderTopWidth: 6,
+    //borderColor: 'transparent',
+    // borderTopColor: '#EC407A',
+    // borderTopLeftRadius: 30,
+    // borderTopRightRadius: 30,
   }
 });
 
@@ -44,7 +44,13 @@ class LoginScreen extends React.Component {
       loggedin: false
     }
 
+
   };
+  componentDidMount() {
+
+  }
+
+
 
 
   callbackFunction = (childData) => {
@@ -56,32 +62,32 @@ class LoginScreen extends React.Component {
 
     console.log("Logged in?");
     console.log(loggedIn);
-    /*
-        if (loggedIn) {
-    
-          return (
-    
-            <UserProfileScreen ></UserProfileScreen>
-    
-          )
-        } else {
-    */
-    return (
 
-      <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
-        <ScrollView style={baseStyle.scrollViewBase}>
-          <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+    if (false) {
 
-            <LoginForm props={this.props.navigation}></LoginForm>
+      return (
 
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    )
-  };
+        <UserProfileScreen ></UserProfileScreen>
+
+      )
+    } else {
+
+      return (
+
+        <SafeAreaView style={{ flex: 3, backgroundColor: '#7986CB' }}>
+          <TopNavbar title='Log in'></TopNavbar>
+          <ScrollView style={baseStyle.scrollViewBase}>
+            <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, overflow: "hidden" }}>
+
+              <LoginForm props={this.props.navigation}></LoginForm>
+
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )
+    };
+  }
 }
-
 
 LoginScreen.navigationOptions = {
   header: null,
