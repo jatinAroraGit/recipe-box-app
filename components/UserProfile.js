@@ -7,8 +7,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight, ScrollView } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import SafeAreaView from 'react-native-safe-area-view';
-//import Toast, { DURATION } from 'react-native-easy-toast'
-//import Toast from 'react-native-root-toast';
+
 
 const styles = StyleSheet.create({
   label: {
@@ -44,7 +43,6 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-
     alignItems: 'center',
     paddingTop: 3,
     padding: 8,
@@ -63,7 +61,6 @@ const styles = StyleSheet.create({
     elevation: 8,
 
   },
-
   input: {
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
@@ -147,33 +144,16 @@ function UserProfile({ props, user }) {
   const noSavedRecipes = () => {
 
     return (
-      <View>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('Search')}>
-          Go to Recipes
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('Search')}>
+        Go to Recipes
       </Button>
-        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => setShowSnack(true)}>
-          Create A Recipe
-      </Button>
-      </View>
     )
 
   }
 
   return (
     <SafeAreaView style={{ flex: 3 }}>
-      <Snackbar
-        visible={showSnack}
-        onDismiss={() => setShowSnack(false)}
 
-        action={{
-          label: 'Undo',
-          onPress: () => {
-            // Do something
-          },
-        }}
-      >
-        Hey there! I'm a Snackbar.
-        </Snackbar>
       <Banner
         visible={showSnack}
         style={{ backgroundColor: '#EEEEEE' }}
@@ -190,7 +170,6 @@ function UserProfile({ props, user }) {
       <View style={styles.innerContainer}>
         <Title>Welcome, {user.displayName}</Title>
       </View>
-
       <View style={styles.innerContainer} >
         <Title>Account Settings</Title>
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('ChangeEmail')}>
@@ -235,8 +214,6 @@ function UserProfile({ props, user }) {
 
         />
       </View>
-
-
     </SafeAreaView>
 
   );

@@ -8,7 +8,7 @@ import { NavigationActions } from 'react-navigation'
 
 const styles = StyleSheet.create({
   label: {
-    color: '#000000',
+    color: '#FFFFFF',
     margin: 20,
     marginLeft: 0
   },
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 4,
-    backgroundColor: '#FFFFFF',
+    padding: 8,
+    backgroundColor: '#263238',
     borderRadius: 10,
     height: 'auto',
     ...Platform.select({
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     })
   },
   input: {
-    backgroundColor: '#90CAF9',
+    backgroundColor: '#FFFFFF',
     borderWidth: 0,
     height: 30,
     padding: 5,
@@ -56,9 +56,7 @@ function RegisterForm({ nav }) {
   console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
-    console.log("Form Data = ")
-    //  JSON.
-    JSON.stringify(data);
+
     console.log(data);
 
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
@@ -68,14 +66,14 @@ function RegisterForm({ nav }) {
         var name = data.firstName + " " + data.lastName;
         errorb = false;
         //Create User with Email and Password
-        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function (result) {
+        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function(result) {
 
-          return result.user.updateProfile({ displayName: name })
+          return result.user.updateProfile({ displayName: name})
 
         }).catch(function (error) {
           // Handle Errors here.
 
-
+          
           var errorCode = error.code;
           errorb = true;
           var errorMessage = error.message;
@@ -183,7 +181,7 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Email.</Subheading>}
+      {errors.email && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Email.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Email</Subheading>
       <Controller
@@ -193,34 +191,34 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ }}
       />
-      {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Invalid Email.</Subheading>}
-      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Emails do not match</Subheading>}
+      {errors.confirmEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Invalid Email.</Subheading>}
+      {errors.matchEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Emails do not match</Subheading>}
 
       <Subheading style={styles.label}>Password</Subheading>
       <Controller
-        as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
+        as={<TextInput style={styles.input} secureTextEntry={true} />}
         name="password"
         control={control}
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
-      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
+      {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Password</Subheading>
       <Controller
-        as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
+        as={<TextInput style={styles.input} secureTextEntry={true} />}
         name="confirmPassword"
         control={control}
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
-      {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
-      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Passwords do not match</Subheading>}
+      {errors.confirmPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Password.</Subheading>}
+      {errors.matchPassword && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Passwords do not match</Subheading>}
 
-      <Title style={{ color: '#1E88E5', marginTop: 20 }}>User Details</Title>
+      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>User Details</Title>
       <Subheading style={styles.label}>First name</Subheading>
       <Controller
-        as={<TextInput maxLength={30} style={styles.input} />}
+        as={<TextInput style={styles.input} />}
         onChange={onChange}
         control={control}
         name="firstName"
@@ -230,7 +228,7 @@ function RegisterForm({ nav }) {
 
       <Subheading style={styles.label}>Last name</Subheading>
       <Controller
-        as={<TextInput maxLength={30} style={styles.input} />}
+        as={<TextInput style={styles.input} />}
         name="lastName"
         control={control}
         onChange={onChange}
@@ -239,7 +237,7 @@ function RegisterForm({ nav }) {
       />
       {errors.lastName && <Text style={{ color: '#BF360C' }}>This is required.</Text>}
 
-      <Title style={{ color: '#1E88E5', marginTop: 20 }}>Security Questions</Title>
+      <Title style={{ color: '#FFFFFF', marginTop: 20 }}>Security Questions</Title>
       <Subheading style={styles.label}>Question</Subheading>
       <Controller
         as={<TextInput style={styles.input} />}
@@ -266,7 +264,9 @@ function RegisterForm({ nav }) {
         <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
           Register
             </Button>
-
+        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => props.navigate('Login')}>
+          Log in
+            </Button>
       </View>
     </View>
 
