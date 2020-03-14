@@ -84,7 +84,7 @@ function SearchResults({navigation, ingredQuery}) {
 
     //}
     console.log("######getQuery() query")
-    console.log(query);
+    // console.log(query);
     return query;
   }
 

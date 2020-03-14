@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Image, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image, Text, View, Dimensions, Platform } from 'react-native';
+import { Subheading, Title, Headline } from 'react-native-paper';
 //import {NavigationContainer} from '@react-navigation/navigate';
 
 export default class RecipeCards extends React.PureComponent {
@@ -46,17 +47,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 10,
     marginLeft: '2%',
-    width: '96%',
+    flexWrap: 'wrap',
+    alignItems: "flex-start",
+    ...Platform.select({
+      ios: {
+        width: "auto"
+      },
+      android: {
+        width: "auto"
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 700,
+
+
+      }
+    }),
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
-    flexDirection: "row",
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
     shadowOffset: {
       width: 3,
       height: 3
-    }
+    },
+    padding: 4,
+    //  flexDirection: "row"
   },
   cardImage: {
     width: 80,
@@ -64,10 +79,14 @@ const styles = StyleSheet.create({
     borderRadius: 10
     //resizeMode:'cover'
   },
+  cardTitle: {
+    padding: 10,
+    fontWeight: "600",
+    fontSize: 16
+  },
   cardText: {
     padding: 10,
     fontSize: 16
-    
   },
   title: {
     alignItems: 'flex-start',
