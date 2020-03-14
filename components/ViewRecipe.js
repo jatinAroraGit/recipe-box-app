@@ -21,6 +21,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [prepareMinute, setPrepareMinute] = useState(0);
     var ingredientsArray = [];
     var stepArray = [];
+    let noSteps = false;
 
     useEffect(() => {
         console.log('useEffect has been called');
@@ -36,13 +37,27 @@ function ViewRecipe({ navigation, recipeDetail }) {
             axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
                     console.log('Receipe API is called');
-                    const info = res.data.analyzedInstructions[0].steps;
                     const prepareMin = res.data.preparationMinutes;
-                    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-                    console.log(res.data.preparationMinutes);
-                    extractRecipeInformation(info);
-
                     setPrepareMinute(prepareMin)
+                    const ingredients = res.data.extendedIngredients;
+                    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+                    console.log(ingredients);
+                    extractIngredients(ingredients)
+                    
+                    const info = res.data.analyzedInstructions[0].steps;
+                    
+                    if (res.data.analyzedInstructions) {
+                        extractRecipeInformation(info);
+                    }else {
+                        noSteps = true;
+                        console.log('Hi bro');
+                    }
+
+                    // console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+                    // console.log(res.data.preparationMinutes);
+
+
+
                 })
         }
 
@@ -50,6 +65,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
     }, []);
 
     const extractRecipeInformation = (info) => {
+
+
         for (let i = 0; i < info.length; i++) {
             stepArray.push(info[i].step);
             // console.log(info[i].step);
@@ -57,17 +74,33 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
         setStep(stepArray);
 
-        extractIngredients(info);
+
+
     };
 
     const extractIngredients = (ingreds) => {
 
         for (let i = 0; i < ingreds.length; i++) {
-            for (let j = 0; j < ingreds[i].ingredients.length; j++) {
-                ingreds[i].ingredients[j].count = 0;
-                ingredientsArray.push(ingreds[i].ingredients[j]); //IngredientsArray currently holds a collection of ingredients' objects
-            }
+            ingredientsArray.push(
+
+                {
+                    id: ingreds[i].id,
+                    name: ingreds[i].name,
+                    count: 0
+
+                }
+
+            );
         }
+        // console.log(`YOOOOOO`)
+        // console.log(ingredientsArray)
+
+        // for (let i = 0; i < ingreds.length; i++) {
+        //     for (let j = 0; j < ingreds[i].ingredients.length; j++) {
+        //         ingreds[i].ingredients[j].count = 0;
+        //         ingredientsArray.push(ingreds[i].ingredients[j]); //IngredientsArray currently holds a collection of ingredients' objects
+        //     }
+        // }
 
         ingredientsArray = ingredientsArray.filter((ingredElement, index, self) =>
             index === self.findIndex((t) => (
@@ -216,13 +249,14 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                     {ingred.map((oneIngred, index) => {
                         return (
-                            <View key={oneIngred.id} style={{ flexDirection: "row" }}>
-                                <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {oneIngred.name}</Text>
-                                {/* <Button title='-' onPress={() => {
+                            <View key={index + 1} style={{ flexDirection: "row" }}>
+                                <View style={styles.recentItemIndicator}></View>
+                                <Text style={[styles.text, { fontSize: 14 }]}>{oneIngred.name}</Text>
+                                <Button title='-' onPress={() => {
                                     decrementCountHandler(oneIngred);
                                 }}></Button>
-                                <Text>{oneIngred.count}</Text> */}
-                                <Button style={styles.buttonHover} title='Add' onPress={() => {
+                                <Text>{oneIngred.count}</Text>
+                                <Button style={styles.buttonHover} title='+' onPress={() => {
                                     incrementCountHandler(oneIngred)
                                 }}></Button>
                             </View>
@@ -243,7 +277,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     {step.map((step, index) => {
                         return (
                             <View key={index} style={{ flexDirection: "row" }}>
-                                <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text> 
+                                <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text>
                             </View>
 
                         )
@@ -251,8 +285,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 </View>
 
 
-                <Text style={[styles.subText, styles.recent]}>Recent Activity</Text>
-
+                <Text style={{alignItems: "right"}, [styles.subText, styles.recent]}>Recent Activity</Text>
                 <View style={{ alignItems: "center" }}>
                     <View style={styles.recentItem}>
                         <View style={styles.recentItemIndicator}></View>
