@@ -59,8 +59,6 @@ const styles = StyleSheet.create({
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 700,
-
-
       }
     }),
     borderRadius: 10,

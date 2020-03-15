@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button } from "react-native";
+import React, { useState, useEffect, Component } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch } from "react-native";
 import { FAB } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import axios from 'axios';
+import MyView from './MyView';
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
@@ -18,10 +19,12 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [iconName, setIconName] = useState('playlist-plus');
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
     const [step, setStep] = useState([]);
+    let [noSteps, setNoSteps] = useState(false);
     const [prepareMinute, setPrepareMinute] = useState(0);
     var ingredientsArray = [];
     var stepArray = [];
-    let noSteps = false;
+    var noInstruction = true;
+    // let noSteps = false;
 
     useEffect(() => {
         console.log('useEffect has been called');
@@ -43,13 +46,16 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
                     console.log(ingredients);
                     extractIngredients(ingredients)
-                    
-                    const info = res.data.analyzedInstructions[0].steps;
-                    
-                    if (res.data.analyzedInstructions) {
+
+                    if (res.data.analyzedInstructions.length != 0) {
+                        const info = res.data.analyzedInstructions[0].steps;
                         extractRecipeInformation(info);
-                    }else {
-                        noSteps = true;
+                        // console.log('HAS STUFF')
+                    } else {
+                        setNoSteps(() => {
+                            noSteps = true;
+                        });
+                        console.log(noSteps);
                         console.log('Hi bro');
                     }
 
@@ -176,6 +182,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     }
 
 
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -245,8 +252,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
                     <Text style={[styles.text, { fontWeight: "200", fontSize: 20 }]}>Ingredients</Text>
                     {console.log(ingred, 'removed dupes')}
-
-
                     {ingred.map((oneIngred, index) => {
                         return (
                             <View key={index + 1} style={{ flexDirection: "row" }}>
@@ -273,7 +278,37 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 </View >
 
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+
+                <MyView>
+                    <Text>View Instruction</Text>
+                    <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
+                    {!noSteps ?
+                    <MyView hide={!noSteps} >
+                    <Text>No Instruction Included</Text>
+                    </MyView>
+                    // <MyView hide>
+                    //     <Text>This is always hidden</Text>
+                    // </MyView>
+                    :
+                    <MyView hide={!noSteps}>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                            {step.map((step, index) => {
+                                return (
+                                    <View key={index} style={{ flexDirection: "row" }}>
+                                        <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text>
+                                    </View>
+
+                                )
+                            })}
+                        </View>
+                    </MyView>
+                    
+                    }   
+                </MyView>
+
+                {/* {
+                    noSteps ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', fontSize: 100 }}><Text>No Steps Included</Text></View> :  
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
                     {step.map((step, index) => {
                         return (
                             <View key={index} style={{ flexDirection: "row" }}>
@@ -283,9 +318,12 @@ function ViewRecipe({ navigation, recipeDetail }) {
                         )
                     })}
                 </View>
+                } */}
 
 
-                <Text style={{alignItems: "right"}, [styles.subText, styles.recent]}>Recent Activity</Text>
+
+
+                <Text style={{ alignItems: "right" }, [styles.subText, styles.recent]}>Recent Activity</Text>
                 <View style={{ alignItems: "center" }}>
                     <View style={styles.recentItem}>
                         <View style={styles.recentItemIndicator}></View>
