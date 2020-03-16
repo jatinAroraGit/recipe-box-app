@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch } from "react-native";
-import { FAB } from 'react-native-paper';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions } from "react-native";
+import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+// import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import MyView from './MyView';
 
@@ -21,6 +22,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [step, setStep] = useState([]);
     let [noSteps, setNoSteps] = useState(false);
     const [prepareMinute, setPrepareMinute] = useState(0);
+    const [healthScore, setHealthScore] = useState(0);
+    const [cookingMinute, setCookingMinute] = useState(0);
     var ingredientsArray = [];
     var stepArray = [];
     var noInstruction = true;
@@ -42,6 +45,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     console.log('Receipe API is called');
                     const prepareMin = res.data.preparationMinutes;
                     setPrepareMinute(prepareMin)
+                    const hScore = res.data.healthScore;
+                    setHealthScore(hScore);
+                    const cookingMin = res.data.cookingMinutes;
+                    setCookingMinute(cookingMin);
                     const ingredients = res.data.extendedIngredients;
                     console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
                     console.log(ingredients);
@@ -207,22 +214,22 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.infoContainer}>
-                    <Text style={[styles.text, { fontWeight: "200", fontSize: 25 }]}>{recipeDetail.title}</Text>
+                    <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
                     <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
                 </View>
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>{prepareMinute}</Text>
+                        <Text style={[styles.text, { fontSize: 24 }]}>{prepareMinute} Min</Text>
                         <Text style={[styles.text, styles.subText]}>Prepare Minute</Text>
                     </View>
                     <View style={[styles.statsBox, { borderColor: "#DFDBCB", borderLeftWidth: 1, borderRightWidth: 1 }]}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>45,844</Text>
-                        <Text style={[styles.text, styles.subText]}>Followers</Text>
+                        <Text style={[styles.text, { fontSize: 24 }]}>{cookingMinute} Min</Text>
+                        <Text style={[styles.text, styles.subText]}>Cooking Minute</Text>
                     </View>
                     <View style={styles.statsBox}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>302</Text>
-                        <Text style={[styles.text, styles.subText]}>Following</Text>
+                        <Text style={[styles.text, { fontSize: 24 }]}>{healthScore} Point</Text>
+                        <Text style={[styles.text, styles.subText]}>Health Score</Text>
                     </View>
                 </View>
 
@@ -249,62 +256,72 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     </View> */}
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                    <Text style={[styles.text, { fontWeight: "200", fontSize: 20 }]}>Ingredients</Text>
-                    {console.log(ingred, 'removed dupes')}
-                    {ingred.map((oneIngred, index) => {
-                        return (
-                            <View key={index + 1} style={{ flexDirection: "row" }}>
-                                <View style={styles.recentItemIndicator}></View>
-                                <Text style={[styles.text, { fontSize: 14 }]}>{oneIngred.name}</Text>
-                                <Button title='-' onPress={() => {
-                                    decrementCountHandler(oneIngred);
-                                }}></Button>
-                                <Text>{oneIngred.count}</Text>
-                                <Button style={styles.buttonHover} title='+' onPress={() => {
-                                    incrementCountHandler(oneIngred)
-                                }}></Button>
-                            </View>
-
-                        )
-                    })}
-
-                    <Button title="View Shopping List" onPress={() => {
-                        navigation.navigate('Shopping', makeJsontoObject(ingred));
-                        console.log('Button is clicked');
-                        console.log(ingred);
-                        console.log('Bye Button');
-                    }}></Button>
-
-                </View >
-
-
-                <MyView>
-                    <Text>View Instruction</Text>
-                    <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
-                    {!noSteps ?
-                    <MyView hide={!noSteps} >
-                    <Text>No Instruction Included</Text>
-                    </MyView>
-                    // <MyView hide>
-                    //     <Text>This is always hidden</Text>
-                    // </MyView>
-                    :
-                    <MyView hide={!noSteps}>
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                            {step.map((step, index) => {
-                                return (
-                                    <View key={index} style={{ flexDirection: "row" }}>
-                                        <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text>
+                <View style={styles.viewBoxStyle}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                        <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+                        {console.log(ingred, 'removed dupes')}
+                        {ingred.map((oneIngred, index) => {
+                            return (
+                                <Card key={index + 1} style={styles.nestedCardStyle}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={styles.recentItemIndicator}></View>
+                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name}</Text>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Button title='-' onPress={() => {
+                                                decrementCountHandler(oneIngred);
+                                            }}></Button>
+                                            <Text>{oneIngred.count}</Text>
+                                            <Button style={styles.buttonHover} title='+' onPress={() => {
+                                                incrementCountHandler(oneIngred)
+                                            }}></Button>
+                                        </View>
                                     </View>
+                                </Card>
 
-                                )
-                            })}
-                        </View>
+                            )
+                        })}
+
+                        <Button title="View Shopping List" onPress={() => {
+                            navigation.navigate('Shopping', makeJsontoObject(ingred));
+                            console.log('Button is clicked');
+                            console.log(ingred);
+                            console.log('Bye Button');
+                        }}></Button>
+
+                    </View >
+                </View>
+
+
+                <View style={styles.viewBoxStyle}>
+                    <MyView>
+                        <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
+                        {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
+
+                        <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
+                        {!noSteps ?
+                            <MyView hide={!noSteps} >
+                                <Text>No Instruction Included</Text>
+                            </MyView>
+                            // <MyView hide>
+                            //     <Text>This is always hidden</Text>
+                            // </MyView>
+                            :
+                            <MyView hide={!noSteps}>
+                                {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}> */}
+                                {step.map((step, index) => {
+                                    return (
+                                        <View key={index}>
+                                            <View key={index} style={styles.nestedCardStyle}>
+                                                <Text style={{ color: '#000000', fontWeight: "400"}}>{index + 1}. {step}</Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+                            </MyView>
+
+                        }
                     </MyView>
-                    
-                    }   
-                </MyView>
+                </View>
 
                 {/* {
                     noSteps ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', fontSize: 100 }}><Text>No Steps Included</Text></View> :  
@@ -355,6 +372,61 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    nestedCardStyle: {
+        padding: 0,
+        borderRadius: 10,
+        backgroundColor: '#FFFFFF',
+        margin: 5,
+        height: 'auto',
+        flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+                width: 270
+            },
+            android: {
+                width: 270
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+            }
+
+        }),
+    },
+    viewBoxStyle: {
+        marginTop: 10,
+        backgroundColor: '#99ccff',
+        alignContent: "center",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 15,
+        borderWidth: 0,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 4,
+        height: 'auto',
+        ...Platform.select({
+            ios: {
+                width: 300
+            },
+            android: {
+                width: 300
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+
+
+            }
+        })
+    },
     container: {
         flex: 1,
         backgroundColor: "#fff"
