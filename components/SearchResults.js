@@ -102,8 +102,9 @@ function SearchResults({ navigation, ingredQuery }) {
 
     }
     let apiKey = require('../configure/apiKey.json');
+    console.log('This is query');
     console.log(query);
-    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&number=33';
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&addRecipeInformation=true&number=5';
 
 
     console.log("######getQuery() query")
