@@ -4,7 +4,7 @@ import {
   View,
 } from 'react-native';
 
-const MyView = (props) => {
+const Instruction = (props) => {
   const { children, hide, style } = props;
   if (hide) {
     return null;
@@ -16,7 +16,7 @@ const MyView = (props) => {
   );
 };
 
-MyView.propTypes = {
+Instruction.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
@@ -31,4 +31,4 @@ MyView.propTypes = {
   hide: PropTypes.bool,
 };
 
-export default MyView;
+export default Instruction;
