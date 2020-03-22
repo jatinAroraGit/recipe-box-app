@@ -4,7 +4,9 @@ import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-pa
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-//import MyView from './MyView';
+import Instruction from '../screens/Instruction';
+import Rating from '../screens/Rating'
+
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
@@ -222,6 +224,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
                 </View>
 
+                <View style={styles.ratingContainer}>
+                    <Rating rating={0} numStars={5} starColor="orange" />
+                </View>
+
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
                         <Text style={[styles.text, { fontSize: 24 }]}>{prepareMinute} Min</Text>
@@ -297,38 +303,34 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.viewBoxStyle}>
-                    <View>
+                    <Instruction>
                         <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
                         {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
 
                         <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
-
-                        {
-                        /*
-                        !noSteps ?
-                            <MyView hide={!noSteps} >
+                        {!noSteps ?
+                            <Instruction hide={!noSteps} >
                                 <Text>No Instruction Included</Text>
-                            </MyView>
+                            </Instruction>
                             // <MyView hide>
                             //     <Text>This is always hidden</Text>
                             // </MyView>
                             :
-                            <MyView hide={!noSteps}>
-                              
+                            <Instruction hide={!noSteps}>
+                                {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}> */}
                                 {step.map((step, index) => {
                                     return (
                                         <View key={index}>
                                             <View key={index} style={styles.nestedCardStyle}>
-                                                <Text style={{ color: '#000000', fontWeight: "400"}}>{index + 1}. {step}</Text>
+                                                <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
                                             </View>
                                         </View>
                                     )
                                 })}
-                            </MyView>
-                        */    
+                            </Instruction>
+
                         }
-                        
-                    </View>
+                    </Instruction>
                 </View>
 
                 {/* {
@@ -381,6 +383,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    ratingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
     nestedCardStyle: {
         padding: 0,
         borderRadius: 10,
