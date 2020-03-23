@@ -7,6 +7,7 @@ import { Button, TextInput, Title, Headline, Subheading, Searchbar, List, RadioB
 import { useForm, Controller } from 'react-hook-form';
 import Autocomplete from 'react-native-autocomplete-input';
 import SafeAreaView from 'react-native-safe-area-view';
+import Colors from '../constants/Colors.js';
 
 const styles = StyleSheet.create({
   label: {
@@ -65,7 +66,7 @@ var results = {};
 
 function SearchForm({ props }) {
 
-  const [autoComplete, setAutoComplete] = useState([])
+  const [autoComplete, setAutoComplete] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState('None');
   const [text, setText] = useState("");
   const [selectedDietary, setSelectedDietary] = useState([]);
@@ -86,22 +87,17 @@ function SearchForm({ props }) {
     results.intolerances = "";
     console.log("Ingredients")
     console.log(ingredients);
-    console.log("chips");
-    console.log(chips);
-
+    console.log(ingredients.length);
     var num = 0;
-
-    for (var i in chips) {
+        
+    for(var i in ingredients) {
 
       num++;
-      if (i > 0 && chips[i].name.name != "") {
-
-        results.includeIngredients += ',';
-
-      }
-      if (chips[i].name.name != '') {
-
-        results.includeIngredients += chips[i].name.name;
+      if(ingredients[i].name != "") {  //If there is an ingredient to show,
+        if (i > 0) {  //If it is not the first ingredient,
+          results.includeIngredients += ',';// add a comma.
+        }
+        results.includeIngredients += ingredients[i].name;//Add the ingredient.
       }
     }
 
@@ -147,6 +143,7 @@ function SearchForm({ props }) {
     } else {
 
       setError("search", 'search', "Invalid User Details");
+      //TODO this seems like the wrong error message, this seems to be reached when no search parameters are entered
 
     }
   }
@@ -164,48 +161,43 @@ function SearchForm({ props }) {
 
 
 
-  const showChip = chips.map((c, i) => {
+  const showChip = ingredients.map((ingredient, i) => {
 
     return (
 
-      <Chip onClose={() => removeChip(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>{c.name.name.toString()}</Chip>
+      <Chip onClose={() => removeIngredient(i)} key={i} style={{margin: 5, alignSelf: 'baseline'}}>{ingredient.name.toString()}</Chip>
 
     );
 
   });
 
-  const updateIngredient = (name, i) => {
+  const updateIngredient = (ingredient) => {
 
-    let temp = [...ingredients];
-    let item = { ...temp[i] };
-    item.name = name;
-    temp[i] = item;
-    setIngredients(temp);
-    updateChips(name);
+    var isAlreadyUsed = false;
+    for(var i in ingredients) {
 
-  }
+      if(ingredient.name == ingredients[i].name) {
 
-  const updateChips = (name, i) => {
-
-    var good = true;
-    for (var j in chips) {
-
-      if (name == chips[j].name.name) {
-
-        good = false;
+        isAlreadyUsed = true;
 
       }
 
     }
-    if (good) {
-      i = chips.length;
-      let temp = [...chips];
-      let item = { ...temp[i] };
-      item.name = name;
-      temp[i] = item;
-
-      setChips(temp);
+    if(!isAlreadyUsed) {
+      let temp = [...ingredients];
+      temp[ingredients.length] = ingredient;
+      setIngredients(temp);
     }
+
+  }
+
+  const removeIngredient = (i) => {
+
+    var temp = new Array;
+    temp = ingredients;
+    temp.splice(i,1);
+    setIngredients(temp);
+    clearAutoComplete();
 
   }
 
@@ -233,28 +225,18 @@ function SearchForm({ props }) {
 
   });
 
-  const removeChip = (i) => {
-
-    var temp = new Array;
-    temp = chips;
-    temp.splice(i, 1);
-    setChips(temp);
-    updateAutoComplete("")
-
+  const clearAutoComplete = () => {
+    setAutoComplete([]);
   }
 
   const updateAutoComplete = (text) => {
-
-    var arr;
     let apiKey = require('../configure/apiKey.json');
     axios.get("https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=" + apiKey.key + "&query=" + text + "&number=5")
       .then(res => {
 
         setAutoComplete(res.data);
 
-      })
-
-    return arr;
+        })
   };
 
 
@@ -265,7 +247,6 @@ function SearchForm({ props }) {
     <SafeAreaView style={styles.container}>
 
       <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
-
 
 
         <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
@@ -299,7 +280,7 @@ function SearchForm({ props }) {
               onChangeText={(i) => { updateAutoComplete(i); setText(i) }}
               renderItem={({ item, i }) => (
 
-                <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); updateAutoComplete("") }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
+                <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); clearAutoComplete("") }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
 
               )}></Autocomplete>
 
