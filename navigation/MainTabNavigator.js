@@ -26,6 +26,7 @@ import SearchResultScreen from '../screens/SearchResultScreen';
 import Loading from '../screens/Loading';
 import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 import UserHomeScreen from '../screens/UserHomeScreen';
+import EditRecipeScreen from '../screens/EditRecipeScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -120,6 +121,7 @@ SettingsStack.path = '';
 const OptionsStack = createStackNavigator(
   {
     Options: DevScreen,
+    EditRecipe: EditRecipeScreen,
   },
   config
 );
