@@ -104,7 +104,7 @@ function SearchResults({ navigation, ingredQuery }) {
     let apiKey = require('../configure/apiKey.json');
     console.log('This is query');
     console.log(query);
-    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&addRecipeInformation=true&number=5';
+    query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&addRecipeInformation=true&number=20';
 
 
     console.log("######getQuery() query")
@@ -231,8 +231,10 @@ function SearchResults({ navigation, ingredQuery }) {
 
         //renderItem={({item}) => <ViewRecipe item={item}/>}
         />
-        <Button disabled={isEnd} onPress={getNextItems}> Next</Button>
-      </SafeAreaView>
+        {
+        //<Button disabled={isEnd} onPress={getNextItems}> Next</Button>
+        }
+        </SafeAreaView>
 
     );
   }

@@ -26,8 +26,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.groupQuattro.recipeBox"
+      "supportsTablet": false,
+      "icon":"./assets/images/icon.png",
+      "bundleIdentifier": "app.groupQuattro.recipeBoxApp"
     },
     "android": {
       "package": "com.groupQuattro.recipeBox"

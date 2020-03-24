@@ -302,7 +302,7 @@ function SearchForm({ props }) {
         
         <View style={{ alignSelf: 'center',  marginTop: 10 }}>
         {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
-          <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
+          <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C' }} onPress={handleSubmit(onSubmit)}>
             Search
         </Button>
         </View>

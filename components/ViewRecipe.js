@@ -4,7 +4,7 @@ import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-pa
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-import MyView from './MyView';
+//import MyView from './MyView';
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
@@ -193,18 +193,23 @@ function ViewRecipe({ navigation, recipeDetail }) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
+                {
+                    /*
                 <View style={styles.titleBar}>
                     <Ionicons name="ios-arrow-back" size={24} color="rgb(82,87,93)"></Ionicons>
                     <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
                 </View>
-
+                */
+}
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
                         <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="center"></Image>
                     </View>
                     <View style={styles.dm}>
-                        <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-                    </View>
+                       {
+                        //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
+                       }
+                        </View>
                     <View style={styles.active}></View>
                     <View style={styles.add}>
                         <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
@@ -293,12 +298,15 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.viewBoxStyle}>
-                    <MyView>
+                    <View>
                         <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
                         {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
 
                         <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
-                        {!noSteps ?
+
+                        {
+                        /*
+                        !noSteps ?
                             <MyView hide={!noSteps} >
                                 <Text>No Instruction Included</Text>
                             </MyView>
@@ -307,7 +315,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                             // </MyView>
                             :
                             <MyView hide={!noSteps}>
-                                {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}> */}
+                              
                                 {step.map((step, index) => {
                                     return (
                                         <View key={index}>
@@ -318,9 +326,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                     )
                                 })}
                             </MyView>
-
+                        */    
                         }
-                    </MyView>
+                        
+                    </View>
                 </View>
 
                 {/* {
@@ -432,7 +441,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     text: {
-        fontFamily: "HelveticaNeue",
+    
         color: "rgb(82, 87, 93)",
         textAlign: "center"
     },
