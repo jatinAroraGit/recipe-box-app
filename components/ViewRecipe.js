@@ -303,6 +303,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.viewBoxStyle}>
+                    <View style={styles.viewBoxStyle}>
                     <Instruction>
                         <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
                         {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
@@ -331,6 +332,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                         }
                     </Instruction>
+                </View>
                 </View>
 
                 {/* {
