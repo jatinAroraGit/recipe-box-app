@@ -10,13 +10,6 @@ import Rating from '../screens/Rating'
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
-    // console.log('navigation in ViewRecipe - start');
-    // console.log(navigation);
-    // console.log('navigation in ViewRecipe - end')
-
-    console.log('Showing the id of the recipe - start');
-    console.log(recipeDetail)
-    console.log('Showing the id of the recipe - end')
 
     //const baseUri = `https://spoonacular.com/recipeImages/`;
     const [iconName, setIconName] = useState('playlist-plus');
@@ -30,10 +23,9 @@ function ViewRecipe({ navigation, recipeDetail }) {
     var stepArray = [];
     var noInstruction = true;
     // let noSteps = false;
-
+    
     useEffect(() => {
         console.log('useEffect has been called');
-        console.log(recipeDetail);
         let ingredients = "apples,+flour,+sugar"
         let apiKey = require('../configure/apiKey.json');
         let recipeId = recipeDetail.id;
@@ -45,6 +37,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
             axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
                     console.log('Receipe API is called');
+                    console.log(recipeId);
                     const prepareMin = res.data.preparationMinutes;
                     setPrepareMinute(prepareMin)
                     const hScore = res.data.healthScore;
@@ -101,6 +94,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 {
                     id: ingreds[i].id,
                     name: ingreds[i].name,
+                    amount: ingreds[i].amount,
+                    unit: ingreds[i].unit,
                     count: 0
 
                 }
@@ -178,7 +173,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
             console.log('Hey you should pick at least one of the ingredients.');
         }
 
+        console.log('Jason Object Array');
+        // console.log(JasonObject);
         return JsonObject;
+
 
     }
 
@@ -267,7 +265,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 </View>
 
                 <View style={styles.viewBoxStyle}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                         <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
                         {console.log(ingred, 'removed dupes')}
                         {ingred.map((oneIngred, index) => {
@@ -275,8 +273,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                 <Card key={index + 1} style={styles.nestedCardStyle}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={styles.recentItemIndicator}></View>
-                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name}</Text>
-                                        <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
                                             <Button title='-' onPress={() => {
                                                 decrementCountHandler(oneIngred);
                                             }}></Button>
@@ -293,6 +291,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                         <Button title="View Shopping List" onPress={() => {
                             navigation.navigate('Shopping', makeJsontoObject(ingred));
+                            // navigation.navigate('Shopping', ingred);
+                            // navigation.navigate('Test', makeJsontoObject(ingred));
                             console.log('Button is clicked');
                             console.log(ingred);
                             console.log('Bye Button');

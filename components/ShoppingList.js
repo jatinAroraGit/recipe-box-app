@@ -7,25 +7,46 @@ import { Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
 import { createAnimatableComponent } from 'react-native-animatable';
 
 
-
 export default function ShoppingList({ navigation, ingredSent }) {
-
+  
+  const [noZero, setnoZero] = useState([]);
+  // const [hasZero, setHasZero] = useState(ingredSent);
   console.log('what are the inside in ingredSent - start');
   console.log(JSON.parse(ingredSent[0]));
   console.log('what are the inside in ingredSent - end');
+  let ingredCopy = [];
+
+  useEffect(() => {
+    extractJSON(ingredSent);
+}, []) 
+
+// when we create the useState of noZero, it loops infinitively because whenever the noZero is being called, it re-render the whole component
+// To prevent infinit loop, we added the useEffect to prevent. 
+// Let's say the user put the setState function out of the component function, then it loops again and again. But by using the useEffect function, which is special function to render the compoent, it blocks looping.
 
 
-  var noJSON = [];
 
 
-  ingredSent = extractJSON(ingredSent);
 
-  function extractJSON(ingredSent) {
-    for (let i = 0; i < ingredSent.length; i++) {
-      noJSON[i] = JSON.parse(ingredSent[i]);
+ 
 
+
+//  extractJSON(hasZero);
+ console.log('This is the length of the ingredSent');
+ console.log(ingredSent.length);
+
+  function extractJSON(arr) {
+    console.log('YOOO')
+    console.log(arr);
+
+    let noJSON = [];
+
+    for (let i = 0; i < arr.length; i++) {
+      
+      noJSON.push(JSON.parse(arr[i]));
+      
       console.log('Hi ingredSent'); //whenever I change I need to go back to the first page, otherwise it would not be called at all.
-      console.log(JSON.parse(ingredSent[i]));
+      console.log(JSON.parse(arr[i]));
       console.log('Bye ingredSent');
     }
 
@@ -35,26 +56,23 @@ export default function ShoppingList({ navigation, ingredSent }) {
     console.log(noJSON)
     console.log('Bye noJSON');
 
-    return noJSON;
+    // return noJSON;
+    removeZero(noJSON);
 
   }
 
-  console.log('Start - shoppingList');
-  console.log(ingredSent);
-  console.log('end - shoppingList');
+  // console.log('Start - shoppingList');
+  // console.log(ingredSent);
+  // console.log('end - shoppingList');
 
   //const { ingredSent } = route.params;
   // const [noZero, setnoZero] = useState([]);
-  let noZero = [];
-
-  removeZero(ingredSent);
-
-
-
+  
+  
+  // let noZero = [];
 
   function removeZero(ingredArray) {
 
-    let ingredCopy = [];
 
     console.log('Hello the function removeZero is called successfully');
     console.log(ingredArray);
@@ -62,28 +80,36 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
 
     ingredArray.forEach((oneIngred) => {
-      console.log('Hi this is oneIngred');
-      console.log(oneIngred);
-      console.log('Bye oneIngred');
+      // console.log('Hi this is oneIngred');
+      // console.log(oneIngred);
+      // console.log('Bye oneIngred');
       if (oneIngred.count > 0) {
         ingredCopy.push(oneIngred);
       }
     })
 
-    noZero = ingredCopy;
-    // setnoZero(ingredCopy);
+    // noZero = ingredCopy;
+    setnoZero(ingredCopy);
 
     console.log('Hi this is ingredCopy');
     console.log(ingredCopy);
     console.log('Bye ingredCopy');
   }
 
+  // console.log('Hi this is no zero');
+  // console.log(noZero);
+  // console.log('Bye noZero');
 
+  const deleteIngredients = (oneIngred) => {
+    console.log('before');
+    console.log(noZero)
+    let deletedArr = noZero.filter(element => element.id !== oneIngred.id );
+    setnoZero(deletedArr);
+    console.log('after');
+    console.log(noZero);
 
-
-  console.log('Hi this is no zero');
-  console.log(noZero);
-  console.log('Bye noZero');
+    // noZero = _.reject(noZero, function(el) { return el.id === oneIngred.id });
+  };
 
 
 
@@ -100,6 +126,11 @@ export default function ShoppingList({ navigation, ingredSent }) {
                 <View style={{ flexDirection: 'row' }}>
                   <View style={styles.recentItemIndicator}></View>
                   <Subheading style={{ justifyContent: "flex-start" }} >{oneIngred.name} : {oneIngred.count}</Subheading>
+                </View>
+                <View>
+                  <Button title='Delete' onPress={ ()=> {
+                    deleteIngredients(oneIngred);
+                  }}></Button>
                 </View>
               </Card>
             </View>

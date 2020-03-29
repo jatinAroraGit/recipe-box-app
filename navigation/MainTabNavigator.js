@@ -86,8 +86,7 @@ const SearchStack = createStackNavigator(
     Search: SearchScreen,
     Results: SearchResultScreen,
     Shopping: ShoppingListScreen,
-    ViewAdvancedRecipe: ViewRecipeScreen,
-
+    ViewAdvancedRecipe: ViewRecipeScreen
 
   },
   config
