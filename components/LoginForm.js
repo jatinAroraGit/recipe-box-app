@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
-import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView, Picker } from 'react-native';
+import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView, Picker, Image } from 'react-native';
 import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card, Snackbar, IconButton, FAB, Banner } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -54,11 +54,13 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   input: {
-    backgroundColor: '#F8BBD0',
+    backgroundColor: '#FFFFFF',
+
     borderWidth: 0,
     height: 30,
-    padding: 5,
+    padding: 0,
     borderRadius: 4,
+    marginBottom: 14
   },
   modalStyle: {
     zIndex: 1500,
@@ -138,10 +140,7 @@ function LoginForm({ props }) {
             console.log('good');
             //  props.navigate('Home', undefined, StackActions.replace('UserProfile'));
 
-            props.navigate(NavigationActions.navigate({
-              routeName: 'Main',
-              action: NavigationActions.navigate({ routeName: 'UserProfile' })
-            }));
+            props.navigate("UserHomeScreen");
 
           }
           else
@@ -207,8 +206,9 @@ function LoginForm({ props }) {
 
     <View style={styles.container}>
       <KeyboardAvoidingView>
+        <Image source={require('../assets/images/kitchen-pack-cooking-svgrepo-com.png')} style={{ alignSelf: "center", width: 100, height: 100, position: "relative" }}></Image>
+        <Title style={{ color: '#9575CD', fontSize: 31, marginTop: 30, fontWeight: '500', marginBottom: 10, alignSelf: 'flex-start' }}>Login</Title>
 
-        <Title style={{ color: '#000000', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Login</Title>
         <View style={{ marginBottom: 10 }}>
           <Subheading style={styles.label}>Email</Subheading>
           <Controller
@@ -223,7 +223,7 @@ function LoginForm({ props }) {
 
           <Subheading style={styles.label}>Password</Subheading>
           <Controller
-            as={<TextInput disabled={loading} style={styles.input} secureTextEntry={true} />}
+            as={<TextInput maxLength={25} disabled={loading} style={styles.input} secureTextEntry={true} />}
             name="password"
 
             control={control}

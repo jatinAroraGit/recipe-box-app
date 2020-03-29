@@ -189,7 +189,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
     }
 
 
-
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -376,6 +375,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
         </SafeAreaView>
 
     );
+
 }
 
 export default ViewRecipe;
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     dm: {
         backgroundColor: "rgb(65,68,75)",
         position: "absolute",
-        top: 20,
+        top: 20
         width: 40,
         height: 40,
         borderRadius: 20,

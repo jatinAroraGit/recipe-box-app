@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Title, Subheading } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import { NavigationActions } from 'react-navigation'
+import Axios from 'axios';
+const apiKey = require('../configure/apiKey.json');
 
 const styles = StyleSheet.create({
   label: {
@@ -44,6 +47,28 @@ const styles = StyleSheet.create({
     height: 30,
     padding: 5,
     borderRadius: 4,
+  },
+  modalStyle: {
+    flex: 3,
+    justifyContent: 'center',
+    paddingTop: 3,
+    padding: 8,
+    backgroundColor: '#FFFFFF',
+
+    ...Platform.select({
+      ios: {
+        //  width: (Dimensions.get('screen').width - 50),
+        // height: (Dimensions.get('screen').height - 50)
+      },
+      web: {
+        //  width: (Dimensions.get('window').width - 50),
+        //  height: (Dimensions.get('window').height - 50)
+      },
+      android: {
+        // width: (Dimensions.get('screen').width - 50),
+        // height: (Dimensions.get('screen').height - 50)
+      },
+    })
   }
 });
 
@@ -55,8 +80,12 @@ function RegisterForm({ nav }) {
   const navigation = nav;
   console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState({});
   const onSubmit = data => {
     console.log("Form Data = ")
+
     //  JSON.
     JSON.stringify(data);
     console.log(data);
@@ -66,63 +95,97 @@ function RegisterForm({ nav }) {
       if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer) {
 
         var name = data.firstName + " " + data.lastName;
+        setLoading(true);
         errorb = false;
         //Create User with Email and Password
-        Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function (result) {
+        Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1").then(res => {
+          console.log('REQ SUCCESSFUL');
+          if (!(res.data.smtp_check)) {
+            setLoading(false);
+            console.log('SMTP ERROR');
+            setError("email", "invalid");
+            var testID = "dsaddsa"
 
-          return result.user.updateProfile({ displayName: name })
+          }
+          else if (res.data.smtp_check) {
 
-        }).catch(function (error) {
-          // Handle Errors here.
+            Firebase.auth().createUserWithEmailAndPassword(data.email, data.password).then(function (result) {
+              var userObj = { "uid": result.user.uid, "userEmail": result.user.email, "securityQuestion": data.question, "response": data.answer }
+              const baseURL = apiKey.baseURL;
+              const sendData = JSON.stringify(userObj);
 
+              console.log("SENDING DATA : " + userObj);
+              Axios.post(baseURL + '/userAccount/createUserAccount', sendData, {
+                headers: {
+                  'content-type': 'application/json',
+                  'Access-Control-Allow-Origin': '*',
 
-          var errorCode = error.code;
-          errorb = true;
-          var errorMessage = error.message;
-          console.log("ErrorCode");
-          console.log(errorCode);
-          console.log("ErrorMessage");
-          console.log(errorMessage);
-          setError("firebase", 'error', errorMessage);
-        });
+                }
+              }).then(() => {
+                console.log('Success');
+              }).catch(error => {
+                setLoading(false);
+                console.log("Error" + error);
+              });
 
+              result.user.sendEmailVerification().then(function () {
 
-
-
-        Firebase.auth().onAuthStateChanged(function (user) {
-
-          if (user) {
-
-            if (!user.emailVerified) {
-              user.sendEmailVerification().then(function () {
-
-                console.log('First Email sent to : ' + user.email);
-
+                console.log('Verification Email sent to new user : ' + user.email);
+                Firebase.auth().signOut();
               }).catch(function (error) {
                 console.log(' Already Verified.');
+                setLoading(false);
                 console.log(error);
               });
-            }
+              return result.user.updateProfile({ displayName: name })
 
-            console.log('\n\n\n\n\n\n\n\nhere')
-            console.log(user.uid);
-            navigation.navigate(NavigationActions.navigate({
-              routeName: 'Auth',
-              action: NavigationActions.navigate({ routeName: 'UserProfile' })
-            }))
-            //    props.navigate("Auth");
-            //   props.navigate("UserProfile");
+            }).catch(function (error) {
+              // Handle Errors here.
 
 
-          } else {
-
-            console.log("oops");
+              var errorCode = error.code;
+              errorb = true;
+              var errorMessage = error.message;
+              console.log("ErrorCode");
+              console.log(errorCode);
+              console.log("ErrorMessage");
+              console.log(errorMessage);
+              setLoading(false);
+              setError("firebase", 'error', errorMessage);
+            });
           }
 
+
+
+          Firebase.auth().onAuthStateChanged(function (user) {
+
+            if (user) {
+              setUser(user);
+              if (!user.emailVerified) {
+
+              }
+
+
+              setLoading(false);
+              setShowModal(true);
+
+              //    props.navigate("Auth");
+              //   props.navigate("UserProfile");
+
+
+            } else {
+              setLoading(false);
+              console.log("oops");
+            }
+
+          });
+        }).catch(error => {
+          console.log(error);
+          setLoading(false);
         });
 
       } else {
-
+        setLoading(false);
         if (data.email != data.confirmEmail) {
 
           console.log("email no good");
@@ -169,6 +232,10 @@ function RegisterForm({ nav }) {
       value: args[0].nativeEvent.text,
     };
   };
+  const logoutOfStack = () => {
+    Firebase.auth().signOut();
+    navigation.navigate('Login');
+  }
 
   return (
 
@@ -263,11 +330,28 @@ function RegisterForm({ nav }) {
       {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
+        <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
           Register
             </Button>
 
       </View>
+      <Provider>
+        <Portal>
+          <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
+            <View >
+              <Card.Content>
+                <Title style={{ fontSize: 30 }}>Verification Required</Title>
+                <Subheading style={{ fontSize: 20, color: '#000000', marginTop: 10 }}>You need to verify your account to proceed further</Subheading>
+                <Subheading style={{ fontSize: 20, color: '#E91E63', marginTop: 10 }}>A verification email has been sent to your email.
+                </Subheading>
+                <Subheading style={{ fontSize: 20, color: '#E91E63', marginTop: 10 }}>Email: {user.email} </Subheading>
+                <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained" onPress={logoutOfStack}>Close and ReLogin </Button>
+              </Card.Content>
+            </View>
+          </Modal>
+
+        </Portal>
+      </Provider>
     </View>
 
   );

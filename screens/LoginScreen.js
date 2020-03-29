@@ -74,7 +74,7 @@ class LoginScreen extends React.Component {
 
       return (
 
-        <SafeAreaView style={{ flex: 3, backgroundColor: '#7986CB' }}>
+        <SafeAreaView style={{ flex: 3, backgroundColor: '#FFFFFF' }}>
           <TopNavbar title='Log in'></TopNavbar>
           <ScrollView style={baseStyle.scrollViewBase}>
             <View style={{ marginStart: 10, marginTop: 20, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, overflow: "hidden" }}>
