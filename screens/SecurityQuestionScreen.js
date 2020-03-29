@@ -26,7 +26,7 @@ class SecurityQuestionScreen extends React.Component {
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Log in'></TopNavbar>
+        <TopNavbar title='Security Questions'></TopNavbar>
         <ScrollView >
           <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
 

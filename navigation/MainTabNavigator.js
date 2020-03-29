@@ -34,6 +34,8 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     UserHomeScreen: UserHomeScreen,
+    ViewRandomRecipe: ViewRecipeScreen,
+
   },
   config
 );

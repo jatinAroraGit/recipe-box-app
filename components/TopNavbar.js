@@ -87,7 +87,7 @@ class TopNavbar extends React.Component {
     const { navigation } = this.props.navigation;
     let BackButton;
     console.log('************ LINK : ' + this.props.navigation.state.routeName)
-    if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login' && this.props.navigation.state.routeName != 'UserProfile') {
+    if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login' && this.props.navigation.state.routeName != 'UserProfile' && this.props.navigation.state.routeName != 'Search') {
       BackButton = <Appbar.BackAction color='#FFFFFF' style={{ backgroundColor: '#000000', display: ((Platform.OS === 'web') ? 'none' : 'flex') }}
         onPress={() => this.props.navigation.goBack()}
       />
@@ -112,6 +112,8 @@ class TopNavbar extends React.Component {
 
 
           <Appbar.Header style={appbarCustom.transparentStyle}>
+            
+              /*
             <Searchbar icon='window-minimize' onIconPress={() => { this.minimizeSearchBar() }} iconColor='#C62828' style={{ backgroundColor: '#F8BBD0', width: '100%' }}
               placeholder="Search by title"
               onChangeText={query => { this.setState({ firstQuery: query }); }}
@@ -122,6 +124,8 @@ class TopNavbar extends React.Component {
               onSubmitEditing={(e) => this.handleSearch(e, firstQuery)}
 
             />
+            
+  }
           </Appbar.Header>
 
         ) : (
@@ -132,8 +136,9 @@ class TopNavbar extends React.Component {
                 title={this.props.title}
                 subtitle={this.props.subtitle}
               />
-              <Appbar.Action icon="magnify" color='#FFFFFF' style={{ backgroundColor: '#000000' }} onPress={() => this.ShowHideComponent()} />
-
+              {
+              //<Appbar.Action icon="magnify" color='#FFFFFF' style={{ backgroundColor: '#000000' }} onPress={() => this.ShowHideComponent()} />
+              }
               {ThirdButton}
             </Appbar.Header>
           )

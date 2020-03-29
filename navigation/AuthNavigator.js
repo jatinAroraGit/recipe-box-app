@@ -101,6 +101,7 @@ const authTabNavigator = createMaterialBottomTabNavigator({
     activeColor: '#FFFFFF',
     barStyle: { backgroundColor: "#EC407A" },
     shifting: true,
+    
   });
 
 authTabNavigator.path = '';

@@ -19,7 +19,7 @@ import { PulseIndicator } from 'react-native-indicators';
 export default function PageNotFound() {
   return (
     <SafeAreaView style={{ flex: 3 }}>
-      <TopNavbar title='Home'></TopNavbar>
+      <TopNavbar title='Page Not Found'></TopNavbar>
 
       <View style={{ marginStart: 10, marginEnd: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
         <PulseIndicator style={{ position: "absolute" }} animating={true} size={180} color='#2196F3' />

@@ -7,7 +7,7 @@ import Firebase from '../configure/Firebase';
 import VerificationScreen from './VerificationScreen';
 import { PulseIndicator } from 'react-native-indicators';
 import { NavigationActions, StackActions } from 'react-navigation'
-import Svg, { Circle, Rect } from 'react-native-svg';
+//import Svg, { Circle, Rect } from 'react-native-svg';
 import Axios from 'axios';
 const apiKey = require('../configure/apiKey.json');
 
@@ -300,7 +300,7 @@ class UserHomeScreen extends React.Component {
           renderItem={
             ({ item }) =>
 
-              <Card onPress={() => this.props.navigation.push('ViewAdvancedRecipe', { props: item.id })} style={customStyles.nestedCardStyle}>
+              <Card onPress={() => this.props.navigation.push('ViewRandomRecipe', { props: item.id })} style={customStyles.nestedCardStyle}>
 
                 <Card.Content>
 
