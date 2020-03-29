@@ -240,7 +240,7 @@ function ChangeEmailForm({ props }) {
       </View>
       <Provider>
         <Portal>
-          <Modal visible={showModal} contentContainerStyle={styles.modalStyle}>
+          <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
             <View >
               <Card.Content>
                 <Title style={{ fontSize: 30 }}>Verification Required</Title>

@@ -38,7 +38,7 @@ class RegisterScreen extends React.Component {
     return (
 
       <SafeAreaView style={{
-        flex: 3, backgroundColor: '#F8BBD0',
+        flex: 3,
       }}>
         <TopNavbar title='Register'></TopNavbar>
         <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} o>

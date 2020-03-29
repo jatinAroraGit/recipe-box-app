@@ -116,7 +116,7 @@ function ChangePasswordForm({ props }) {
         <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Change Password</Title>
         <Subheading style={styles.label}>Current Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
+          as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
           name="password"
 
           control={control}
@@ -129,7 +129,7 @@ function ChangePasswordForm({ props }) {
 
         <Subheading style={styles.label}>New Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
+          as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
           name="newPassword"
           control={control}
           onChange={onChange}
@@ -139,7 +139,7 @@ function ChangePasswordForm({ props }) {
 
         <Subheading style={styles.label}>Confirm New Password</Subheading>
         <Controller
-          as={<TextInput style={styles.input} secureTextEntry={true} />}
+          as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
           name="confirmNewPassword"
           control={control}
           onChange={onChange}

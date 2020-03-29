@@ -110,7 +110,7 @@ function DeleteUserForm({ props }) {
       <Title style={{ color: '#FFFFFF', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Delete Account</Title>
       <Subheading style={styles.label}>Password</Subheading>
       <Controller
-        as={<TextInput style={styles.input} secureTextEntry={true} />}
+        as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
         name="password"
 
         control={control}
