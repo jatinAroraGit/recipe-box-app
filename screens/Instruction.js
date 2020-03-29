@@ -1,29 +1,3 @@
-// import * as React from 'react';
-// import {Text, View} from 'react-native';
-// import { Switch } from 'react-native-paper';
-
-// export default class MyComponent extends React.Component {
-//   state = {
-//     isSwitchOn: false,
-//   };
-
-//   render() {
-//     const { isSwitchOn } = this.state;
-//     return (
-//       <View>
-//       <Switch
-//         value={isSwitchOn}
-//         onValueChange={() =>
-//           { this.setState({ isSwitchOn: !isSwitchOn }); }
-//         }
-//       />
-//       {isSwitchOn ? <Text>Hi </Text> : <Text>Hello </Text>}
-//       </View>
-//     );
-//   }
-// }
-
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -58,4 +32,3 @@ Instruction.propTypes = {
 };
 
 export default Instruction;
-
