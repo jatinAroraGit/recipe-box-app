@@ -24,7 +24,9 @@ export default class RecipeCards extends React.PureComponent {
 
     return (
       <View>
+
         <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('ViewAdvancedRecipe', { props: id })}>
+
           <Text style={styles.cardTitle}>{this.props.oneitem.title}</Text>
           <View style={{ flexDirection: "row" }}>
             <Image style={styles.cardImage} source={{ uri: this.props.oneitem.image }}></Image>
@@ -57,14 +59,13 @@ const styles = StyleSheet.create({
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 700,
-
-
       }
     }),
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
+    flexDirection: "row",
     shadowOffset: {
       width: 3,
       height: 3
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
   cardText: {
     padding: 10,
     fontSize: 16
+    
   },
   title: {
     alignItems: 'flex-start',

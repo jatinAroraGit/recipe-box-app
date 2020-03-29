@@ -267,6 +267,7 @@ function SearchForm({ props }) {
       <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
 
 
+
         <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
           <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Search</Title>
           <Controller
@@ -280,6 +281,7 @@ function SearchForm({ props }) {
             {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
             <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
               Search
+
         </Button>
           </View>
           <View style={{ flex: 1, margin: 5, padding: 4, backgroundColor: '#37474F', borderRadius: 10 }}>
