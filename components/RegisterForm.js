@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card, HelperText } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
@@ -113,7 +113,7 @@ function RegisterForm({ nav }) {
               var userObj = { "uid": result.user.uid, "userEmail": result.user.email, "securityQuestion": data.question, "response": data.answer }
               const baseURL = apiKey.baseURL;
               const sendData = JSON.stringify(userObj);
-
+              console.log('Sending at ' + baseURL + '/userAccount/createUserAccount');
               console.log("SENDING DATA : " + userObj);
               Axios.post(baseURL + '/userAccount/createUserAccount', sendData, {
                 headers: {
@@ -271,6 +271,7 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
+      <HelperText style={{ fontSize: 15, color: "#FFC400" }}>Rules: Must be at least 8 characters.Should contain at least an uppercase letter,a number and a special character. </HelperText>
       {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Password</Subheading>
