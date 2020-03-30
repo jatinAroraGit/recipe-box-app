@@ -5,20 +5,40 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 // import Instruction from '../screens/Instruction';
-import Rating from '../screens/Rating'
+//import Rating from '../screens/Rating'
 
+var sanitizeHtml = require('sanitize-html');
+const stripHtml = require("string-strip-html");
+
+//import MyView from './MyView';
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
+    let htmlMain=""
+    let htmlTitle = "<h1>"+recipeDetail.title+"</h1>";
+    let htmlDescrition="";
+    let htmlIngredients="";
+    let htmlSteps="";
+    let htmlInfo="";
+    let htmlExtra="";
+    let htmlImage="";
+    // console.log('navigation in ViewRecipe - start');
+    console.log("html title ::")
+    console.log(htmlTitle);
+    // console.log('navigation in ViewRecipe - end')
+
+    console.log('Showing the id of the recipe - start');
+    console.log(recipeDetail)
+    console.log('Showing the id of the recipe - end')
 
     //const baseUri = `https://spoonacular.com/recipeImages/`;
     const [iconName, setIconName] = useState('playlist-plus');
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
     const [step, setStep] = useState([]);
     let [noSteps, setNoSteps] = useState(false);
-    const [prepareMinute, setPrepareMinute] = useState(0);
-    const [healthScore, setHealthScore] = useState(0);
-    const [cookingMinute, setCookingMinute] = useState(0);
+    const [readyInMinutes, setreadyInMinutes] = useState(0);
+    const [servings, setservings] = useState(0);
+    const [summary, setsummary] = useState(0);
     const [switchValue, setSwitchValue] = useState(false);
     var ingredientsArray = [];
     var stepArray = [];
@@ -32,19 +52,22 @@ function ViewRecipe({ navigation, recipeDetail }) {
         let recipeId = recipeDetail.id;
         if (ingredients) {
             console.log('If statement is called');
-            // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
-
+            console.log('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key);
             //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
             axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
                     console.log('Receipe API is called');
                     console.log(recipeId);
-                    const prepareMin = res.data.preparationMinutes;
-                    setPrepareMinute(prepareMin)
-                    const hScore = res.data.healthScore;
-                    setHealthScore(hScore);
-                    const cookingMin = res.data.cookingMinutes;
-                    setCookingMinute(cookingMin);
+                    const readyInMin = res.data.readyInMinutes;
+                    setreadyInMinutes(readyInMin)
+                    const serves = res.data.servings
+                    setservings(serves);
+                    const recSummary = res.data.summary;
+                    var dirty = 'some really tacky HTML';
+var cleanSummary = sanitizeHtml(recSummary);
+let pureTextSummary=stripHtml(cleanSummary);
+htmlDescrition=htmlDescrition+"<div><p>"+pureTextSummary+"</p></div>"
+                    setsummary(pureTextSummary);
                     const ingredients = res.data.extendedIngredients;
                     console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
                     console.log(ingredients);
@@ -79,14 +102,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
     const extractRecipeInformation = (info) => {
 
-
+      htmlSteps="<div><h2>Instructions: </h2><ul>"
         for (let i = 0; i < info.length; i++) {
             stepArray.push(info[i].step);
+            htmlSteps=htmlSteps+"<li>"+info[i].step+"</li>";
             // console.log(info[i].step);
         }
 
         setStep(stepArray);
-
+      htmlSteps=htmlSteps+"</ul></li></div>"
+      console.log("PDF HTML***");
+      
+      console.log(htmlTitle+ htmlDescrition+ htmlSteps);
 
 
     };
@@ -224,25 +251,19 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <View style={styles.infoContainer}>
                     <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
-                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
                 </View>
 
-                <View style={styles.ratingContainer}>
-                    <Rating rating={0} numStars={5} starColor="orange" />
-                </View>
+                
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>{prepareMinute} Min</Text>
-                        <Text style={[styles.text, styles.subText]}>Prepare Minute</Text>
+                        <Text style={[styles.text, { fontSize: 18 }]}>{readyInMinutes}</Text>
+                        <Text style={[styles.text, styles.subText]}>Ready In Minutes</Text>
                     </View>
-                    <View style={[styles.statsBox, { borderColor: "#DFDBCB", borderLeftWidth: 1, borderRightWidth: 1 }]}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>{cookingMinute} Min</Text>
-                        <Text style={[styles.text, styles.subText]}>Cooking Minute</Text>
-                    </View>
+                   <Text style={{fontSize:34, color:'#99ccff'}}> | </Text>
                     <View style={styles.statsBox}>
-                        <Text style={[styles.text, { fontSize: 24 }]}>{healthScore} Point</Text>
-                        <Text style={[styles.text, styles.subText]}>Health Score</Text>
+                        <Text style={[styles.text, { fontSize: 24 }]}>{servings}</Text>
+                        <Text style={[styles.text, styles.subText]}>Servings</Text>
                     </View>
                 </View>
 
@@ -293,8 +314,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                             )
                         })}
-
-                        <Button title="View Shopping List" onPress={() => {
+                  <View style={{backgroundColor:"#CC5090", borderRadius:5}}>
+                        <Button color="#FFFFFF" title="View Shopping List" onPress={() => {
                             navigation.navigate('Shopping', makeJsontoObject(ingred));
                             // navigation.navigate('Shopping', ingred);
                             // navigation.navigate('Test', makeJsontoObject(ingred));
@@ -302,13 +323,23 @@ function ViewRecipe({ navigation, recipeDetail }) {
                             console.log(ingred);
                             console.log('Bye Button');
                         }}></Button>
+                        </View>
 
                     </View >
+                    <Text style={[styles.text, { color: "#FFFFFF",margin:8, fontWeight: "500", fontSize:18 }]}>
+                            {summary}
+                            </Text>
                 </View>
 
-
+                <View >
+                       
+                        <View style={{ width: 300, alignContent:"center",alignSelf:"center"  }}>
+                            
+                            
+                        </View>
+                    </View>
                 <View style={styles.viewBoxStyle}>
-                    <View style={styles.viewBoxStyle}>
+                   
                     <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
                         <View style={styles.switchStyle}>
                             <Switch
@@ -316,10 +347,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                 onValueChange={toggleSwitch}
                                 value={switchValue} />
                             <Text>{switchValue ?
-                                <View>
+                                <View style={{flex:1}}>
                                     {step.map((step, index) => {
                                         return (
-                                            <View key={index}>
+                                            <View style={{flex:3}} key={index}>
                                                 <View key={index} style={styles.nestedCardStyle}>
                                                     <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
                                                 </View>
@@ -334,7 +365,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                             }</Text>
                         </View>
-                    </View>
+                    
                 </View>
 
                 {/* {
@@ -352,31 +383,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 } */}
 
 
-
-
-                <Text style={{ alignItems: "right" }, [styles.subText, styles.recent]}>Recent Activity</Text>
-                <View style={{ alignItems: "center" }}>
-                    <View style={styles.recentItem}>
-                        <View style={styles.recentItemIndicator}></View>
-                        <View style={{ width: 250 }}>
-                            <Text style={[styles.text, { color: "rgb(65,68,75)", fontWeight: "300" }]}>
-                                Started Following{" "}
-                                <Text style={{ fontWeight: "400" }}>
-                                    Jason, Jatin, Sanghyuk Lee, Narma, Patrick <Text style={{ fontWeight: "400" }}>GroupQuattro</Text>
-                                </Text>
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.recentItem}>
-                        <View style={styles.recentItemIndicator}></View>
-                        <View style={{ width: 250 }}>
-                            <Text style={[styles.text, { color: "#41444B", fontWeight: "300" }]}>
-                                Started Following <Text style={{ fontWeight: "400" }}> Recipe2 </Text>
-                            </Text>
-                        </View>
-                    </View>
-                </View>
+       
             </ScrollView>
         </SafeAreaView>
 
@@ -398,6 +405,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     nestedCardStyle: {
+        flex:1,
         padding: 0,
         borderRadius: 10,
         backgroundColor: '#FFFFFF',
@@ -406,10 +414,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         ...Platform.select({
             ios: {
-                width: 270
+                width: "auto"
             },
             android: {
-                width: 270
+                width: "auto"
             },
             web: {
                 width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
@@ -420,6 +428,7 @@ const styles = StyleSheet.create({
         }),
     },
     viewBoxStyle: {
+        flex:1,
         marginTop: 10,
         backgroundColor: '#99ccff',
         alignContent: "center",
@@ -440,10 +449,10 @@ const styles = StyleSheet.create({
         height: 'auto',
         ...Platform.select({
             ios: {
-                width: 300
+                width: "auto"
             },
             android: {
-                width: 300
+                width: "auto"
             },
             web: {
                 width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
@@ -531,7 +540,8 @@ const styles = StyleSheet.create({
     },
     statsBox: {
         alignItems: "center",
-        flex: 1
+        flex: 1,
+        marginRight:4
 
     },
     mediaImageContainer: {

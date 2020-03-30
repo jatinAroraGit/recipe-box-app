@@ -3,6 +3,7 @@ import React from 'react';
 import { Title, Headline, Subheading, Surface, Button, Card } from 'react-native-paper';
 import { createAnimatableComponent, View } from 'react-native-animatable';
 import { withNavigation } from 'react-navigation';
+var app = require('../app.json');
 
 import {
   Image,
@@ -265,13 +266,9 @@ class HomeScreen extends React.Component {
               Start Searching
   </Button>
 
-            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Main')}>
-              Quick Dev Login
-  </Button>
-            <Button icon="comment-question" mode="contained" style={{ marginBottom: 5 }} onPress={() => this.props.navigation.navigate('Auth')}>
-              Quick Dev Logout
-  </Button>
-
+            <Text style={{fontSize:12, alignSelf:"center", color:'#CFD8DC'}}> Version: {app.expo.ios.buildNumber}
+  </Text>
+            
           </View>
 
         </ScrollView>
