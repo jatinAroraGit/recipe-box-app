@@ -71,7 +71,6 @@ function SearchForm({ props }) {
   const [text, setText] = useState("");
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [ingredients, setIngredients] = useState([]);
-  const [chips, setChips] = useState([]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['None', 'Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
@@ -193,11 +192,9 @@ function SearchForm({ props }) {
 
   const removeIngredient = (i) => {
 
-    var temp = new Array;
-    temp = ingredients;
+    let temp = [...ingredients];
     temp.splice(i,1);
     setIngredients(temp);
-    clearAutoComplete();
 
   }
 
@@ -277,10 +274,10 @@ function SearchForm({ props }) {
               value={text}
               data={autoComplete}
 
-              onChangeText={(i) => { updateAutoComplete(i); setText(i) }}
+              onChangeText={(i) => { updateAutoComplete(i); setText(i) }}//TODO reduce updateAutoComplete usage, uses lots of API calls
               renderItem={({ item, i }) => (
 
-                <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); clearAutoComplete("") }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
+                <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); clearAutoComplete() }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
 
               )}></Autocomplete>
 

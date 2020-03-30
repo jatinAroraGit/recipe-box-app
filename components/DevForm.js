@@ -56,55 +56,47 @@ function DevForm({ nav }) {
     console.log(data);
   };
 
-  const addFriend = () => {
+  const addStep = () => {
     setIndexes(prevIndexes => [...prevIndexes, counter]);
     setCounter(prevCounter => prevCounter + 1);
   };
 
-  const removeFriend = index => () => {
+  const removeStep = index => () => {
     setIndexes(prevIndexes => [...prevIndexes.filter(item => item !== index)]);
     setCounter(prevCounter => prevCounter - 1);
   };
 
-  const clearFriends = () => {
-    setIndexes([]);
+  const clearSteps = () => {
+    console.log(indexes);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {indexes.map(index => {
-        const fieldName = `friends[${index}]`;
+        const fieldName = `steps[${index}]`;
         return (
           <fieldset name={fieldName} key={fieldName}>
             <label>
-              First Name {index}:
+              Step {index+1}:
               <input
                 type="text"
-                name={`${fieldName}.firstName`}
+                name={`${fieldName}.stepText`}
                 ref={register}
               />
             </label>
 
-            <label>
-              Last Name {index}:
-              <input
-                type="text"
-                name={`${fieldName}.lastName`}
-                ref={register}
-              />
-            </label>
-            <button type="button" onClick={removeFriend(index)}>
+            <button type="button" onClick={removeStep(index)}>
               Remove
             </button>
           </fieldset>
         );
       })}
 
-      <button type="button" onClick={addFriend}>
-        Add Friend
+      <button type="button" onClick={addStep}>
+        Add step
       </button>
-      <button type="button" onClick={clearFriends}>
-        Clear Friends
+      <button type="button" onClick={clearSteps}>
+        Clear steps
       </button>
       <input type="submit" />
     </form>
