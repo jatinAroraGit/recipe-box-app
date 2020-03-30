@@ -4,17 +4,12 @@ import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-pa
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-//import MyView from './MyView';
+// import Instruction from '../screens/Instruction';
+import Rating from '../screens/Rating'
+
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
-    // console.log('navigation in ViewRecipe - start');
-    // console.log(navigation);
-    // console.log('navigation in ViewRecipe - end')
-
-    console.log('Showing the id of the recipe - start');
-    console.log(recipeDetail)
-    console.log('Showing the id of the recipe - end')
 
     //const baseUri = `https://spoonacular.com/recipeImages/`;
     const [iconName, setIconName] = useState('playlist-plus');
@@ -24,6 +19,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [prepareMinute, setPrepareMinute] = useState(0);
     const [healthScore, setHealthScore] = useState(0);
     const [cookingMinute, setCookingMinute] = useState(0);
+    const [switchValue, setSwitchValue] = useState(false);
     var ingredientsArray = [];
     var stepArray = [];
     var noInstruction = true;
@@ -31,7 +27,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
     useEffect(() => {
         console.log('useEffect has been called');
-        console.log(recipeDetail);
         let ingredients = "apples,+flour,+sugar"
         let apiKey = require('../configure/apiKey.json');
         let recipeId = recipeDetail.id;
@@ -43,6 +38,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
             axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
                     console.log('Receipe API is called');
+                    console.log(recipeId);
                     const prepareMin = res.data.preparationMinutes;
                     setPrepareMinute(prepareMin)
                     const hScore = res.data.healthScore;
@@ -77,6 +73,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
     }, []);
 
+    const toggleSwitch = (value) => {
+        setSwitchValue(value);
+    }
+
     const extractRecipeInformation = (info) => {
 
 
@@ -99,6 +99,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 {
                     id: ingreds[i].id,
                     name: ingreds[i].name,
+                    amount: ingreds[i].amount,
+                    unit: ingreds[i].unit,
                     count: 0
 
                 }
@@ -176,7 +178,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
             console.log('Hey you should pick at least one of the ingredients.');
         }
 
+        console.log('Jason Object Array');
+        // console.log(JasonObject);
         return JsonObject;
+
 
     }
 
@@ -199,16 +204,16 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
                 </View>
                 */
-}
+                }
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
                         <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="center"></Image>
                     </View>
                     <View style={styles.dm}>
-                       {
-                        //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-                       }
-                        </View>
+                        {
+                            //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
+                        }
+                    </View>
                     <View style={styles.active}></View>
                     <View style={styles.add}>
                         <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
@@ -220,6 +225,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 <View style={styles.infoContainer}>
                     <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
                     <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
+                </View>
+
+                <View style={styles.ratingContainer}>
+                    <Rating rating={0} numStars={5} starColor="orange" />
                 </View>
 
                 <View style={styles.statsContainer}>
@@ -261,7 +270,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 </View>
 
                 <View style={styles.viewBoxStyle}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                         <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
                         {console.log(ingred, 'removed dupes')}
                         {ingred.map((oneIngred, index) => {
@@ -269,8 +278,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                 <Card key={index + 1} style={styles.nestedCardStyle}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={styles.recentItemIndicator}></View>
-                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name}</Text>
-                                        <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                                             <Button title='-' onPress={() => {
                                                 decrementCountHandler(oneIngred);
                                             }}></Button>
@@ -287,6 +296,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                         <Button title="View Shopping List" onPress={() => {
                             navigation.navigate('Shopping', makeJsontoObject(ingred));
+                            // navigation.navigate('Shopping', ingred);
+                            // navigation.navigate('Test', makeJsontoObject(ingred));
                             console.log('Button is clicked');
                             console.log(ingred);
                             console.log('Bye Button');
@@ -297,37 +308,32 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.viewBoxStyle}>
-                    <View>
-                        <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
-                        {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
-
-                        <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
-
-                        {
-                        /*
-                        !noSteps ?
-                            <MyView hide={!noSteps} >
-                                <Text>No Instruction Included</Text>
-                            </MyView>
-                            // <MyView hide>
-                            //     <Text>This is always hidden</Text>
-                            // </MyView>
-                            :
-                            <MyView hide={!noSteps}>
-                              
-                                {step.map((step, index) => {
-                                    return (
-                                        <View key={index}>
-                                            <View key={index} style={styles.nestedCardStyle}>
-                                                <Text style={{ color: '#000000', fontWeight: "400"}}>{index + 1}. {step}</Text>
+                    <View style={styles.viewBoxStyle}>
+                    <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
+                        <View style={styles.switchStyle}>
+                            <Switch
+                                style={{ justifyContent: 'flex-start' }}
+                                onValueChange={toggleSwitch}
+                                value={switchValue} />
+                            <Text>{switchValue ?
+                                <View>
+                                    {step.map((step, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <View key={index} style={styles.nestedCardStyle}>
+                                                    <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    )
-                                })}
-                            </MyView>
-                        */    
-                        }
-                        
+                                        )
+                                    })}
+                                </View>
+
+                                :
+                                // <Text>No Instruction Included</Text>
+                                <Text></Text>
+
+                            }</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -381,6 +387,16 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    switchStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    ratingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
     nestedCardStyle: {
         padding: 0,
         borderRadius: 10,
@@ -441,7 +457,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     text: {
-    
+
         color: "rgb(82, 87, 93)",
         textAlign: "center"
     },
