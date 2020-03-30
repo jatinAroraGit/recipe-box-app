@@ -1,17 +1,13 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity } from "react-native";
 import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-// import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-// import Instruction from '../screens/Instruction';
-import Rating from '../screens/Rating'
 
 
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
 
-    //const baseUri = `https://spoonacular.com/recipeImages/`;
     const [iconName, setIconName] = useState('playlist-plus');
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
     const [step, setStep] = useState([]);
@@ -22,16 +18,15 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [switchValue, setSwitchValue] = useState(false);
     var ingredientsArray = [];
     var stepArray = [];
+    var mapArr = [];
     var noInstruction = true;
     // let noSteps = false;
 
     useEffect(() => {
-        console.log('useEffect has been called');
         let ingredients = "apples,+flour,+sugar"
         let apiKey = require('../configure/apiKey.json');
         let recipeId = recipeDetail.id;
         if (ingredients) {
-            console.log('If statement is called');
             // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
 
             //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
@@ -46,24 +41,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     const cookingMin = res.data.cookingMinutes;
                     setCookingMinute(cookingMin);
                     const ingredients = res.data.extendedIngredients;
-                    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-                    console.log(ingredients);
                     extractIngredients(ingredients)
 
                     if (res.data.analyzedInstructions.length != 0) {
                         const info = res.data.analyzedInstructions[0].steps;
                         extractRecipeInformation(info);
-                        // console.log('HAS STUFF')
                     } else {
                         setNoSteps(() => {
                             noSteps = true;
                         });
-                        console.log(noSteps);
-                        console.log('Hi bro');
+
                     }
 
-                    // console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-                    // console.log(res.data.preparationMinutes);
 
 
 
@@ -72,6 +61,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
     }, []);
+
+    const map = step.map((step, index) => {
+        return (
+            // <View key={index} style={styles.instructionStyle}>
+                <Text key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+            // </View>
+        )
+    })
+
+
+
+
 
     const toggleSwitch = (value) => {
         setSwitchValue(value);
@@ -82,7 +83,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
         for (let i = 0; i < info.length; i++) {
             stepArray.push(info[i].step);
-            // console.log(info[i].step);
         }
 
         setStep(stepArray);
@@ -107,8 +107,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
             );
         }
-        // console.log(`YOOOOOO`)
-        // console.log(ingredientsArray)
+
 
         // for (let i = 0; i < ingreds.length; i++) {
         //     for (let j = 0; j < ingreds[i].ingredients.length; j++) {
@@ -178,8 +177,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
             console.log('Hey you should pick at least one of the ingredients.');
         }
 
-        console.log('Jason Object Array');
-        // console.log(JasonObject);
         return JsonObject;
 
 
@@ -227,9 +224,9 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
                 </View>
 
-                <View style={styles.ratingContainer}>
+                {/* <View style={styles.ratingContainer}>
                     <Rating rating={0} numStars={5} starColor="orange" />
-                </View>
+                </View> */}
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
@@ -270,70 +267,54 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 </View>
 
                 <View style={styles.viewBoxStyle}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
-                        {console.log(ingred, 'removed dupes')}
-                        {ingred.map((oneIngred, index) => {
-                            return (
-                                <Card key={index + 1} style={styles.nestedCardStyle}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View style={styles.recentItemIndicator}></View>
-                                        <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                            <Button title='-' onPress={() => {
-                                                decrementCountHandler(oneIngred);
-                                            }}></Button>
-                                            <Text>{oneIngred.count}</Text>
-                                            <Button style={styles.buttonHover} title='+' onPress={() => {
-                                                incrementCountHandler(oneIngred)
-                                            }}></Button>
-                                        </View>
+                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
+                    <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+                    {ingred.map((oneIngred, index) => {
+                        return (
+                            <Card key={index + 1} style={styles.nestedCardStyle}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={styles.recentItemIndicator}></View>
+                                    <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                        <TouchableOpacity style={styles.button} onPress={() => {
+                                            decrementCountHandler(oneIngred);
+                                        }}><Text>-</Text></TouchableOpacity>
+                                        <Text>{oneIngred.count}</Text>
+                                        <TouchableOpacity style={styles.button} onPress={() => {
+                                            incrementCountHandler(oneIngred)
+                                        }}><Text>+</Text></TouchableOpacity>
                                     </View>
-                                </Card>
+                                </View>
+                            </Card>
 
-                            )
-                        })}
+                        )
+                    })}
 
-                        <Button title="View Shopping List" onPress={() => {
+                    <TouchableOpacity style={styles.button}
+                        // color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }}
+                        onPress={() => {
                             navigation.navigate('Shopping', makeJsontoObject(ingred));
-                            // navigation.navigate('Shopping', ingred);
-                            // navigation.navigate('Test', makeJsontoObject(ingred));
-                            console.log('Button is clicked');
-                            console.log(ingred);
-                            console.log('Bye Button');
-                        }}></Button>
+                        }}><Text>View Shopping List</Text></TouchableOpacity>
 
-                    </View >
+                    {/* </View > */}
                 </View>
 
 
                 <View style={styles.viewBoxStyle}>
-                    <View style={styles.viewBoxStyle}>
+                    {/* <View style={styles.viewBoxStyle}> */}
                     <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
-                        <View style={styles.switchStyle}>
-                            <Switch
-                                style={{ justifyContent: 'flex-start' }}
-                                onValueChange={toggleSwitch}
-                                value={switchValue} />
-                            <Text>{switchValue ?
-                                <View>
-                                    {step.map((step, index) => {
-                                        return (
-                                            <View key={index}>
-                                                <View key={index} style={styles.nestedCardStyle}>
-                                                    <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
-                                                </View>
-                                            </View>
-                                        )
-                                    })}
-                                </View>
+                    <View style={styles.switchStyle}>
+                        <Switch
+                            style={{ justifyContent: 'flex-start' }}
+                            onValueChange={toggleSwitch}
+                            value={switchValue} />
 
-                                :
-                                // <Text>No Instruction Included</Text>
-                                <Text></Text>
+                        {switchValue ?
+                            <Text> {map} </Text>
+                            :
+                            <Text>Click the button to see the instruction</Text>
 
-                            }</Text>
-                        </View>
+                        }
                     </View>
                 </View>
 
@@ -387,6 +368,34 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    button: {
+        alignItems: "center",
+        backgroundColor: "#d2f2fc",
+        padding: 10,
+        borderRadius: 10,
+      },
+    instructionStyle: {
+        padding: 0,
+        borderRadius: 10,
+        backgroundColor: '#FFFFFF',
+        margin: 5,
+        height: 'auto',
+        flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+                width: 270
+            },
+            android: {
+                width: 270
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+            }
+
+        }),
+    },
     switchStyle: {
         flex: 1,
         justifyContent: 'center',
@@ -406,10 +415,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         ...Platform.select({
             ios: {
-                width: 270
+                width: 360
             },
             android: {
-                width: 270
+                width: 360
             },
             web: {
                 width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
@@ -440,10 +449,10 @@ const styles = StyleSheet.create({
         height: 'auto',
         ...Platform.select({
             ios: {
-                width: 300
+                width: 380
             },
             android: {
-                width: 300
+                width: 380
             },
             web: {
                 width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
@@ -575,8 +584,8 @@ const styles = StyleSheet.create({
         height: 12,
         width: 12,
         borderRadius: 6,
-        marginTop: 3,
-        marginRight: 20
+        marginTop: 12,
+        marginRight: 3
 
     },
     buttonHover: {
