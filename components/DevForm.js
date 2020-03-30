@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   }
 });
 
-function DevForm({ nav }) {
+function DevForm({ props }) {
   const [indexes, setIndexes] = React.useState([]);
   const [counter, setCounter] = React.useState(0);
   const { register, handleSubmit } = useForm();
@@ -71,6 +71,12 @@ function DevForm({ nav }) {
   };
 
   return (
+    <view>
+    <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => {props.navigate('EditRecipe')}}>
+      Create a Recipe
+    </Button>
+    <br /><br /><br />
+          <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Old test stuff</Title>
     <form onSubmit={handleSubmit(onSubmit)}>
       {indexes.map(index => {
         const fieldName = `steps[${index}]`;
@@ -100,6 +106,7 @@ function DevForm({ nav }) {
       </button>
       <input type="submit" />
     </form>
+    </view>
   );
 }
 export default DevForm;
