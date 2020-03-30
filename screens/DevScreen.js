@@ -88,7 +88,7 @@ class DevScreen extends React.Component {
   render() {
 
     const { navigation } = this.props.navigation;
-    console.log(navigation);
+   // console.log(navigation);
     console.log('NAVIGATION USER %%%%%%% ');
     console.log(this.props.navigation.state.routeName);
     return (

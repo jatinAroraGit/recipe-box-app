@@ -105,6 +105,11 @@ function ChangeEmailForm({ props }) {
               setError("newEmail", "invalid");
             }
             else {
+              if(user.email==data.newEmail){
+                setLoading(false);
+                setError("newEmail", "invalid");
+              }
+              else {
               user.updateEmail(data.newEmail).then(function () {
                 console.log('Email updated');
 
@@ -130,12 +135,21 @@ function ChangeEmailForm({ props }) {
                   //props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
 
 
+                }).catch(error=>{
+                  setLoading(false);
+                  setError('newEmail',"Invalid, This Email Is In Use")
+                  console.log(error);
                 });
 
 
 
+              }).catch(error=>{
+                setLoading(false);
+                setError('authEmail',"Invalid, This Email Is In Use")
+                console.log(error);
               });
             }
+          }
             onVerification();
             // console.log(items)
           });
@@ -159,6 +173,8 @@ function ChangeEmailForm({ props }) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
+          setLoading(false);
+
           console.log(errorCode);
           console.log(errorMessage);
         });
@@ -167,10 +183,11 @@ function ChangeEmailForm({ props }) {
 
         console.log("emails do not match");
         setError("matchEmail", 'no ematch', "Emails do not match");
-
+        setLoading(false);
       }
 
     } else {
+      setLoading(false);
 
       console.log('Please fill in all fields');
 
@@ -218,6 +235,7 @@ function ChangeEmailForm({ props }) {
         />
 
         {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Email Address</Subheading>}
+        {errors.authEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Email is already in use.</Subheading>}
 
         <Subheading style={styles.label}>Confirm New Email</Subheading>
         <Controller

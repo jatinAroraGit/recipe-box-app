@@ -129,34 +129,8 @@ function ForgotPasswordForm({ props }) {
 
       console.log("SENDING DEV REQ AT " + baseURL + 'userAccount/getUserAccount');
 
-      fetch(baseURL + 'userAccount/getUserAccount', {
-        method: 'POST', // or 'PUT'
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: sendData,
-
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setSecurityQuestion(data.securityQuestion)
-            setResponse(data.response);
-            setUserFound(true);
-            setErrorMsg('Successful Dev')
-          }
-          else {
-            setErrorMsg('Not Found User')
-          }
-        })
-        .catch((error) => {
-          setErrorMsg(error);
-          setError("noUser", 'no user', "no account uses this email");
-          console.error('Error:', error);
-        });
-
-
-      /*
+     
+      
             Axios.post(baseURL + 'userAccount/getUserAccount', sendData, {
               headers: {
                 'content-type': 'application/json',
@@ -164,8 +138,7 @@ function ForgotPasswordForm({ props }) {
       
               },
               withCredentials: false,
-              httpsAgent: new https.Agent()
-      
+            
             },
              
             ).then((response) => {
@@ -183,7 +156,7 @@ function ForgotPasswordForm({ props }) {
               // setLoading(false);
               console.log(error);
             });
-      */
+      
 
     }
     else {
@@ -261,7 +234,7 @@ function ForgotPasswordForm({ props }) {
       }
     }).catch(error => {
       // setLoading(false);
-      console.log(error);
+      console.log("Axios Error " , error);
     });
   };
 

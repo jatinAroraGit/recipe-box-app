@@ -31,8 +31,11 @@ export default class RecipeCards extends React.PureComponent {
           <View style={{ flexDirection: "row" }}>
             <Image style={styles.cardImage} source={{ uri: this.props.oneitem.image }}></Image>
             {/* <Image style={styles.cardImage} source={this.props.oneitem.image} /> */}
+    <View style={{ flexDirection: "column" }}> 
+     <Text style={styles.cardText}>Serving Size: {this.props.oneitem.servings}</Text>
+    <Text style={styles.cardText}>Ready in minutes: {this.props.oneitem.readyInMinutes}</Text>
+    </View>
 
-            <Text style={styles.cardText}>Serving Size: N/A</Text>
           </View>
 
         </TouchableOpacity>
@@ -74,8 +77,8 @@ const styles = StyleSheet.create({
     //  flexDirection: "row"
   },
   cardImage: {
-    width: 80,
-    height: 60,
+    width: 100,
+    height: 80,
     borderRadius: 10
     //resizeMode:'cover'
   },

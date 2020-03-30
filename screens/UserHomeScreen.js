@@ -160,7 +160,7 @@ class UserHomeScreen extends React.Component {
       console.log('FIRING AUTH CHANGED &&&&&&&&');
       if (user.emailVerified) {
         this.setState({ currentUser: user });
-        console.log(this.state.currentUser.email);
+       // console.log(this.state.currentUser.email);
         if (user.emailVerified)
           set.setState({ currentUser: user });
 

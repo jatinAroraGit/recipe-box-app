@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card, HelperText } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
@@ -8,6 +8,7 @@ import Firebase from '../configure/Firebase';
 import { NavigationActions } from 'react-navigation'
 import Axios from 'axios';
 const apiKey = require('../configure/apiKey.json');
+//import * as Print from 'expo-print';
 
 const styles = StyleSheet.create({
   label: {
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#FFFFFF',
-
+     height: 'auto',
     ...Platform.select({
       ios: {
         //  width: (Dimensions.get('screen').width - 50),
@@ -78,11 +79,12 @@ var errorb = false;
 function RegisterForm({ nav }) {
 
   const navigation = nav;
-  console.log(navigation);
+  //console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({});
+  const captureView = useRef();
   const onSubmit = data => {
     console.log("Form Data = ")
 
@@ -98,6 +100,7 @@ function RegisterForm({ nav }) {
         setLoading(true);
         errorb = false;
         //Create User with Email and Password
+        console.log("Checking Mail Server at "+"http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1");
         Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1").then(res => {
           console.log('REQ SUCCESSFUL');
           if (!(res.data.smtp_check)) {
@@ -154,8 +157,6 @@ function RegisterForm({ nav }) {
               setError("firebase", 'error', errorMessage);
             });
           }
-
-
 
           Firebase.auth().onAuthStateChanged(function (user) {
 
@@ -236,11 +237,26 @@ function RegisterForm({ nav }) {
     Firebase.auth().signOut();
     navigation.navigate('Login');
   }
-
+  const capturePrint = async args => {
+   
+    captureView.capture().then(uri => {
+      console.log("do something with ", uri);
+    });
+  };
+  const pdfPrint = args => {
+    
+    /*
+   Print.printAsync().then(data=>{
+    console.log(data);
+   });
+   */
+  };
   return (
 
 
-    <View style={styles.container}>
+    <View   style={styles.container}>
+      <Button onPress={pdfPrint}>Print</Button>
+      <Button onPress={capturePrint}>capture</Button>
       <Title style={{ color: '#1E88E5', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Create Account</Title>
       <Subheading style={styles.label}>Email</Subheading>
       <Controller

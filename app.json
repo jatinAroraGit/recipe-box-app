@@ -28,10 +28,13 @@
     "ios": {
       "supportsTablet": false,
       "icon":"./assets/images/icon.png",
-      "bundleIdentifier": "app.groupQuattro.recipeBoxApp"
+      "bundleIdentifier": "app.groupQuattro.recipeBoxApp",
+      "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.groupQuattro.recipeBox"
+      "icon":"./assets/images/icon.png",
+      "package": "app.groupQuattro.recipeBoxApp",
+      "versionCode": 1
     },
     "description": ""
   }
