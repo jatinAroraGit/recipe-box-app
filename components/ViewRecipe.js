@@ -4,7 +4,7 @@ import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-pa
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-import Instruction from '../screens/Instruction';
+// import Instruction from '../screens/Instruction';
 import Rating from '../screens/Rating'
 
 
@@ -19,11 +19,12 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [prepareMinute, setPrepareMinute] = useState(0);
     const [healthScore, setHealthScore] = useState(0);
     const [cookingMinute, setCookingMinute] = useState(0);
+    const [switchValue, setSwitchValue] = useState(false);
     var ingredientsArray = [];
     var stepArray = [];
     var noInstruction = true;
     // let noSteps = false;
-    
+
     useEffect(() => {
         console.log('useEffect has been called');
         let ingredients = "apples,+flour,+sugar"
@@ -71,6 +72,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
     }, []);
+
+    const toggleSwitch = (value) => {
+        setSwitchValue(value);
+    }
 
     const extractRecipeInformation = (info) => {
 
@@ -199,16 +204,16 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
                 </View>
                 */
-}
+                }
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
                         <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="center"></Image>
                     </View>
                     <View style={styles.dm}>
-                       {
-                        //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-                       }
-                        </View>
+                        {
+                            //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
+                        }
+                    </View>
                     <View style={styles.active}></View>
                     <View style={styles.add}>
                         <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
@@ -274,7 +279,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={styles.recentItemIndicator}></View>
                                         <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                                             <Button title='-' onPress={() => {
                                                 decrementCountHandler(oneIngred);
                                             }}></Button>
@@ -304,35 +309,32 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <View style={styles.viewBoxStyle}>
                     <View style={styles.viewBoxStyle}>
-                    <Instruction>
-                        <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
-                        {/* <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline> */}
-
-                        <Switch onValueChange={value => setNoSteps(value)} value={noSteps} />
-                        {!noSteps ?
-                            <Instruction hide={!noSteps} >
-                                <Text>No Instruction Included</Text>
-                            </Instruction>
-                            // <MyView hide>
-                            //     <Text>This is always hidden</Text>
-                            // </MyView>
-                            :
-                            <Instruction hide={!noSteps}>
-                                {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}> */}
-                                {step.map((step, index) => {
-                                    return (
-                                        <View key={index}>
-                                            <View key={index} style={styles.nestedCardStyle}>
-                                                <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+                    <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
+                        <View style={styles.switchStyle}>
+                            <Switch
+                                style={{ justifyContent: 'flex-start' }}
+                                onValueChange={toggleSwitch}
+                                value={switchValue} />
+                            <Text>{switchValue ?
+                                <View>
+                                    {step.map((step, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <View key={index} style={styles.nestedCardStyle}>
+                                                    <Text style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    )
-                                })}
-                            </Instruction>
+                                        )
+                                    })}
+                                </View>
 
-                        }
-                    </Instruction>
-                </View>
+                                :
+                                // <Text>No Instruction Included</Text>
+                                <Text></Text>
+
+                            }</Text>
+                        </View>
+                    </View>
                 </View>
 
                 {/* {
@@ -385,6 +387,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    switchStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     ratingContainer: {
         flex: 1,
         justifyContent: "center",
@@ -450,7 +457,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     text: {
-    
+
         color: "rgb(82, 87, 93)",
         textAlign: "center"
     },
