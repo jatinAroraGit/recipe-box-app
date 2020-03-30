@@ -69,7 +69,7 @@ function SearchForm({ props }) {
   const [autoComplete, setAutoComplete] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState('None');
   const [text, setText] = useState("");
-  const [selectedDietary, setSelectedDietary] = useState([]);
+  const [selectedDietary, setSelectedDietary] = useState('None');
   const [ingredients, setIngredients] = useState([]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
   const dietary = ['None', 'Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
@@ -113,25 +113,10 @@ function SearchForm({ props }) {
 
     }
 
-    if (selectedDietary.length != 0) {
+    if (selectedDietary != "None") {
       num++;
-
-      for (var i in selectedDietary) {
-
-        for (var i in selectedDietary) {
-
-          if (i > 0 && selectedDietary[i] != "") {
-
-            results.intolerances += ',';
-
-          }
-          if (selectedDietary[i] != '') {
-
-            results.intolerances += selectedDietary[i];
-          }
-        }
-      }
-    }
+      results.intolerances = selectedDietary;
+    }//TODO make intolerances an array that can support multiple values.  Requires changing input type before supporting it here.
 
     const result = JSON.stringify(results);
 
@@ -282,7 +267,7 @@ function SearchForm({ props }) {
               )}></Autocomplete>
 
             <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Cuisine</Title>
-            <Picker style={{ backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedCuisine} onValueChange={(value) => { setCuisine(value) }}>
+            <Picker style={{ backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedCuisine} onValueChange={(value) => { setSelectedCuisine(value) }}>
 
               {showCuisinePicker}
 
