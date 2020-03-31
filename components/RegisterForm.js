@@ -255,8 +255,7 @@ function RegisterForm({ nav }) {
 
 
     <View   style={styles.container}>
-      <Button onPress={pdfPrint}>Print</Button>
-      <Button onPress={capturePrint}>capture</Button>
+     
       <Title style={{ color: '#1E88E5', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Create Account</Title>
       <Subheading style={styles.label}>Email</Subheading>
       <Controller
