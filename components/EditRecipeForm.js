@@ -57,16 +57,17 @@ const styles = StyleSheet.create({
 var recipe = {};
 
 function EditRecipeForm({ nav }) {
-
+  var userID = 'guest';
+  if (Firebase.auth().currentUser){
+    userID = Firebase.auth().currentUser.uid;
+  }
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
-  const [ingredientUnit, setIngredientUnit] = useState("cup");
-  var recipeID = 'new';
-  var author = "UIDGoesHere"
+  var recipeID = nav.state.params.ID;
   var isPublished = false;
   var isPublic = false;
   var isShared = false;
-  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+  const { control, handleSubmit, clearError, errors, setError } = useForm({ mode: 'onChange' });
 
 //--------------------------------------------------
 //------------- Database code ----------------------
@@ -79,15 +80,16 @@ function EditRecipeForm({ nav }) {
 
 /*
 
-  //TODO get UID at this point
-  var UID = "1234";
-
-  //Database sees if recipe exists, creates a new one with author if it doesn't.  If it exists, returns if UID is authorized.
+  //Database sees if recipe exists, creates a new one with author if it doesn't.  If it exists, returns data if UID is authorized.
+  //If invalid UID or recipeID, return the flag 'allowedAccess' as 'false'.
   //returns ONLY res.isDeleted if database reads deleted flag for that ID.  if recipeID='new', generates random recipe ID for new recipe.
-  axios.get("https://prj666.mystudentlab.ca:6759/rest-api/userRecipe/" + recipeID + "?UID=" + UID)
+  axios.get("https://prj666.mystudentlab.ca:6759/rest-api/userRecipe/" + recipeID + "?UID=" + userID)
   .then(res => {
-   if(res.isDeleted == true){
-      //TODO tell user recipe is deleted, not able to edit or make recipe with that ID.
+   if(res.allowedAccess == false){
+    //TODO tell user they do not have permission to edit the recipe, do not show them editing page.
+   }
+   else if(res.isDeleted == true){
+      //TODO tell user recipe is deleted, not able to edit that recipe.
     }else{//safe to load all data for editing
       setIngredients(res.ingredients);
       setSteps(res.steps);
@@ -113,16 +115,14 @@ function EditRecipeForm({ nav }) {
   });
   
   const showSteps = steps.map((step, i) => {
-    console.log("Step "+(i+1).toString()+":");
     return(
-      <List.Item
-        style={{marginBottom: 10, backgroundColor: '#dddddd' }}
-        title={"Step "+(i+1).toString()+":"}
-        description={step.toString()}
-        right={props => <Button style={{ backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => removeStep(i)}>
+      <View style={{marginBottom: 10, backgroundColor: '#dddddd', padding: 6 }} key={i} >
+        <Subheading style={{color:"#222222"}} >Step {i+1}:</Subheading>
+        <Text>{step}</Text>
+        <Button style={{ backgroundColor: '#1DE9B6', height: 32, marginTop: 3 }} mode="contained" onPress={() => removeStep(i)}>
           Remove
-        </Button>}
-      />
+        </Button>
+      </View>
     );
   
   });
@@ -135,39 +135,49 @@ function EditRecipeForm({ nav }) {
    }
    
   const onIngredient = data => {
-    if (data.ingredientName.length > 1){
-      var isAlreadyUsed = false;
+    let isValid = true;
+    if (data.ingredientName == ""){
+      isValid = false;
+      setError("ingredientText", 'ingredient', "Must enter the ingredient to add.");
+    }
+    else if(data.ingredientName.length < 2){
+      isValid = false;
+      setError("ingredientShort", 'shortingredient', "Ingredient text is too short.");
+    }else{
       for(var i in ingredients) {
-    
         if(data.ingredientName == ingredients[i].name) {
-    
-          isAlreadyUsed = true;
-    
+          isValid = false;
+          setError("ingredientUsed", 'usedingredient', "Ingredient is already used in the recipe.");
         }
-    
-      }
-      if(!isAlreadyUsed) {
-        let temp = {name: data.ingredientName, quantity: data.ingredientQuantity.toString(), unit: ingredientUnit};
-        let tempArray = [...ingredients];
-        tempArray[ingredients.length] = temp;
-        setIngredients(tempArray);
-        clearIngredientText();
       }
     }
-    else{
-      setError("ingredient", 'shortingredient', "Ingredient text is too short.");
+    if (data.ingredientQuantity == "" || data.ingredientQuantity <= 0){
+      isValid = false;
+      setError("ingredientQuantity", 'quantityingredient', " Quantity must be greater than 0.");
     }
+    if (isValid == true){
+      let temp = {name: data.ingredientName, quantity: data.ingredientQuantity, unit: data.ingredientUnit};
+      let tempArray = [...ingredients];
+      tempArray[ingredients.length] = temp;
+      setIngredients(tempArray);
+      clearIngredientText();
+     }
   }
 
   const clearIngredientText = () =>{
+    
     //TODO set the 3 inptus for ingredient to default
   }
 
   const onStep = data => {
+    if (data.step.length > 2){
       let tempArray = [...steps];
       tempArray[steps.length] = data.step;
       setSteps(tempArray);
       //TODO clear step text
+    }else{
+      setError("stepShort", 'shortstep', "Step text is too short.");
+    }
   }
 
   const removeStep = (i) => {
@@ -178,7 +188,7 @@ function EditRecipeForm({ nav }) {
 
   const onPublish = data => {
 
-    console.log(data);
+    console.log("Attepmting to publish...");
     let isValid = true;
 
     if (data.recipeName.length < 2) {
@@ -200,12 +210,14 @@ function EditRecipeForm({ nav }) {
     if (isValid){
       isPublished = true;
       onSubmit(data);
+      console.log("Recipe successfully published.");
     }
   }
 
+
   const onSubmit = data => {
     recipe.ID = recipeID;
-    recipe.author = author;
+    recipe.author = userID;
     recipe.isPublished = isPublished;
     recipe.isShared = isShared;
     recipe.isPublic = isPublic;
@@ -213,6 +225,7 @@ function EditRecipeForm({ nav }) {
     recipe.description = data.recipeDesc;
     recipe.ingredients = ingredients;
     recipe.steps = steps;
+    console.log("Recipe successfully saved.");
     console.log("here's the recipe:" + JSON.stringify(recipe));
 
     if (true/* if data is valid enough to be stored*/) {
@@ -263,41 +276,59 @@ function EditRecipeForm({ nav }) {
       {/* TODO add image upload/linking here */}
 
       <Subheading style={styles.label}>Ingredients</Subheading>
-      <View style={{flexDirection: "row", flexWrap: 'wrap'}}>
+      <View style={{flexDirection: "column", flexWrap: 'wrap'}}>
         {showChip}
       </View>  
       <Controller
         as={<TextInput style={styles.input} />}
         name="ingredientName"
         id="ingredientName"
+        defaultValue=""
         control={control}
         onChange={onChange}
       />
-      {errors.ingredient && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>cannot add a blank ingredient.</Subheading>}
+      {errors.ingredientText && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Enter the ingredient in the above field.</Subheading>}
+      {errors.ingredientShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Ingredient is too short.</Subheading>}
+      {errors.ingredientUsed && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Ingredient is already in the recipe.</Subheading>}
       
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}/*TODO fix the inputs in this view*/ >
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 5 }} >
+      <View style={{ flexDirection: 'column', justifyContent: 'center', marginHorizontal: 5 }} >
+        
+      <Text style={{justifyContent: 'center', color: '#FFFFFF' }}>Quantity</Text>
       <Controller
-      as={<input type='number'/>}
+        as={<TextInput style={styles.input} />}
       name="ingredientQuantity"
       id="ingredientQuantity"
       defaultValue="1" 
+      keyboardType="numeric"
       control={control}
+      onChange={onChange}
+      maxLength={15}
       min="1" />
-      <Picker style={{backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC"}} selectedValue={ingredientUnit} onValueChange={(value) => {setIngredientUnit(value)}} >
-        <Picker.Item Key='cup' label='cup' value='cup'/>
-        <Picker.Item Key='mililitre' label='mililitre' value='mililitre'/>
-        <Picker.Item Key='piece' label='piece' value='piece'/>
-
-      </Picker>
+      </View>
+      <View style={{ flexDirection: 'column', justifyContent: 'center', marginHorizontal: 5 }} >
+      <Text style={{justifyContent: 'center', color: '#FFFFFF' }}>Unit (optional)</Text>
+      <Controller
+        as={<TextInput style={styles.input} />}
+      name="ingredientUnit"
+      id="ingredientUnit"
+      defaultValue=""
+      autoCapitalize="none"
+      control={control}
+      onChange={onChange}
+      maxLength={30} />
       </View>  
+      </View>
+      {errors.ingredientQuantity && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Quantity must be more than 0.</Subheading>}
 
 
-      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onIngredient)}>
+      <Button style={{ marginHorizontal: 10, marginTop: 12, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onIngredient)}>
         Add Ingredient
       </Button>
 
       {errors.recipeIngredients && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Must have at least 1 ingredient.</Subheading>}
 
+      <Subheading style={styles.label}>Steps</Subheading>
 
       {showSteps}
 
@@ -306,14 +337,16 @@ function EditRecipeForm({ nav }) {
         
         multiline={true}
         name="step"
+        defaultValue=""
         control={control}
         onChange={onChange}
       />
       <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onStep)}>
         Add step
       </Button>
-      
+
       {errors.step && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Must have at least 1 step.</Subheading>}
+      {errors.stepShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Step text must be longer.</Subheading>}
 
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
