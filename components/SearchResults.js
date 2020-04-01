@@ -6,7 +6,7 @@ import RecipeCards from '../components/RecipeCards';
 import { PulseIndicator } from 'react-native-indicators';
 import ViewRecipe from './ViewRecipe';
 import { Button, Title } from 'react-native-paper';
-
+let apiKey = require('../configure/apiKey.json');
 
 const styles = StyleSheet.create({
   container: {
@@ -50,6 +50,10 @@ function SearchResults({ navigation, ingredQuery }) {
 
   var basicQuery = navigation.getParam('searchQuery');
   var results = JSON.parse(navigation.state.params.results);
+  console.log('Query To search')
+  var sendData = JSON.stringify(results)
+  console.log(JSON.stringify(results));
+
   var query = "";
   var queryLength = 0;
   function getQuery() {
@@ -81,14 +85,23 @@ function SearchResults({ navigation, ingredQuery }) {
       query += "&includeIngredients=" + results.includeIngredients;
 
     }
-    let apiKey = require('../configure/apiKey.json');
+
+    console.log('This is query');
+    console.log(query);
+
     query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&addRecipeInformation=true&number=20';
-    return query;
+
+    console.log("######getQuery() query")
+    console.log(query);
+    return sendData;
   }
 
   useEffect(() => {
-
-    var url = getQuery();
+    var baseURL = apiKey.baseURL
+    var sendData = getQuery();
+    console.log("URL");
+    console.log(baseURL + 'recipes/search');
+    /*
     axios.get(url)
       .then(res => {
         const items = res.data.results;
@@ -96,8 +109,32 @@ function SearchResults({ navigation, ingredQuery }) {
         setItemCount(items.length);
         setLoading(false);
       })
+      */
 
-
+    axios.post(baseURL + 'recipes/search', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((response) => {
+      console.log(response);
+      if (response.data) {
+        console.log(response.data);
+        const items = response.data;
+        console.log(items);
+        setItems(items);
+        setItemCount(items.length);
+        setLoading(false);
+      }
+      else {
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+      // setLoading(false);
+      console.log(error);
+    });
 
   }, []);
 
