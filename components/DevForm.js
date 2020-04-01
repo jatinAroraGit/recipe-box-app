@@ -51,7 +51,7 @@ function DevForm({ props }) {
   const [indexes, setIndexes] = React.useState([]);
   const [counter, setCounter] = React.useState(0);
   const { register, handleSubmit } = useForm();
-
+/*
   const onSubmit = data => {
     console.log(data);
   };
@@ -69,13 +69,13 @@ function DevForm({ props }) {
   const clearSteps = () => {
     console.log(indexes);
   };
-
+*/
   return (
-    <view>
-    <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => {props.navigate('EditRecipe')}}>
+    <View style={styles.container}>
+    <Button style={{ marginHorizontal: 10, marginTop: 20, marginBottom: 100, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => {props.navigate('EditRecipe', {ID: 'new'})}}>
       Create a Recipe
     </Button>
-    <br /><br /><br />
+    {/*}
           <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Old test stuff</Title>
     <form onSubmit={handleSubmit(onSubmit)}>
       {indexes.map(index => {
@@ -106,7 +106,8 @@ function DevForm({ props }) {
       </button>
       <input type="submit" />
     </form>
-    </view>
+    */}
+    </View>
   );
 }
 export default DevForm;

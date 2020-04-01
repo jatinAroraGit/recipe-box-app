@@ -274,7 +274,7 @@ class UserHomeScreen extends React.Component {
 
           <View style={{ marginStart: 10, marginEnd: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
             <PulseIndicator style={{ position: "absolute" }} animating={true} size={180} color='#F06292' />
-            <Title style={{ position: "relative", padding: 10, colo: "#FFFFFF" }}>Loading</Title>
+            <Title style={{ position: "relative", padding: 10, color: "#FFFFFF" }}>Loading</Title>
 
           </View>
 
