@@ -80,9 +80,6 @@ function EditRecipeForm({ nav }) {
 
 /*
 
-  //TODO get UID at this point
-  var UID = "1234";
-
   //Database sees if recipe exists, creates a new one with author if it doesn't.  If it exists, returns data if UID is authorized.
   //If invalid UID or recipeID, return the flag 'allowedAccess' as 'false'.
   //returns ONLY res.isDeleted if database reads deleted flag for that ID.  if recipeID='new', generates random recipe ID for new recipe.
@@ -191,7 +188,7 @@ function EditRecipeForm({ nav }) {
 
   const onPublish = data => {
 
-    console.log(data);
+    console.log("Attepmting to publish...");
     let isValid = true;
 
     if (data.recipeName.length < 2) {
@@ -213,8 +210,10 @@ function EditRecipeForm({ nav }) {
     if (isValid){
       isPublished = true;
       onSubmit(data);
+      console.log("Recipe successfully published.");
     }
   }
+
 
   const onSubmit = data => {
     recipe.ID = recipeID;
@@ -226,6 +225,7 @@ function EditRecipeForm({ nav }) {
     recipe.description = data.recipeDesc;
     recipe.ingredients = ingredients;
     recipe.steps = steps;
+    console.log("Recipe successfully saved.");
     console.log("here's the recipe:" + JSON.stringify(recipe));
 
     if (true/* if data is valid enough to be stored*/) {
