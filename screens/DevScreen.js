@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { View, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform, Text, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground } from 'react-native';
+import { Button, Appbar, Snackbar, Menu, Divider, Provider, Subheading, Title } from 'react-native-paper';
 import TopNavbar from '../components/TopNavbar';
-import DevForm from '../components/DevForm';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { useForm } from 'react-hook-form'
+import axios from 'axios'
+import UserProfileForm from './UserProfileForm';
+import '../configure/apiKey.json'
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
-    backgroundColor: '#263238',
+    //  backgroundColor: '#263238',
     elevation: 5,
     margin: 8,
     marginBottom: 0,
@@ -14,50 +17,101 @@ const baseStyle = StyleSheet.create({
     borderRightWidth: 1,
     borderTopWidth: 6,
     borderColor: 'transparent',
-    borderTopColor: 'transparent',
+    borderTopColor: '#EC407A',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   }
 });
+const appbarCustom = StyleSheet.create({
+  safeView: {
+    ...Platform.select({
+      ios: {
+        padding: 30
+      },
+      android: {
+        padding: 30
+      }
+    }),
+  },
+  transparentStyle: {
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+      },
+      android: {
+        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+      },
+      web: {
+        backgroundColor: '#000000'
+      }
+    }),
+  }
+})
 
 class DevScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      navigation: this.props.navigation,
+  }
+  state = {
+    recipes: []
+  }
+  componentDidMount() {
+    // this.props.searchQuery = this.props.navigation.getParam('searchQuery');
+    this.fetchData(this.props.navigation.getParam('searchQuery'));
 
+
+  }
+  logoutUser = async () => {
+    try {
+      await Firebase.auth().signOut();
+      // await Firebase.auth().currentUser.delete;
+      this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+      // this.props.navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  componentDidUpdate(prevProps) {
+    this.fetchData(this.props.navigation.getParam('searchQuery'));
+  }
+  fetchData(query) {
+    let apiKey = require('../configure/apiKey.json');
+    if (query) {
+      axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=40')
+        .then(res => {
+          const recipes = res.data.results;
+          console.log(recipes)
+          this.setState({ recipes });
+        })
     }
   }
-
-  callbackFunction = (childData) => {
-    this.setState({ login: childData });
-    console.log("login complete!")
-  }
-
   render() {
 
     const { navigation } = this.props.navigation;
-   // console.log(navigation);
+    console.log(navigation);
     console.log('NAVIGATION USER %%%%%%% ');
     console.log(this.props.navigation.state.routeName);
     return (
 
-      <SafeAreaView style={{ flex: 3, backgroundColor: '#1E88E5' }}>
-        <TopNavbar title='Devscreen :o'></TopNavbar>
-        <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
+      <SafeAreaView style={{ flex: 3, backgroundColor: '#B2EBF2' }}>
+        <TopNavbar title={this.props.navigation.state.routeName}></TopNavbar>
+        <ScrollView style={baseStyle.scrollViewBase}>
 
-          <ScrollView style={baseStyle.scrollViewBase}>
-            <View style={{ marginStart: 10, marginTop: 10, marginEnd: 10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
+          <ImageBackground source={require('../assets/images/multicolored_abstract.jpg')} style={{ flex: 3, width: '100%', height: '100%', position: "absolute" }}>
 
 
-              <DevForm props={this.props.navigation}></DevForm>
+            <Title style={{ marginBottom: 3 }}>Results</Title>
+            {this.state.recipes.map(r => <Text>{r.title}</Text>)}
 
-            </View>
 
-          </ScrollView>
-        </KeyboardAwareScrollView>
+          </ImageBackground>
+
+        </ScrollView>
       </SafeAreaView>
     );
+
+
+
   }
 }
 
