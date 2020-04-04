@@ -44,9 +44,11 @@ function SearchResults({ navigation, ingredQuery }) {
 
 
 
-  const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
+  const [items, setItems] = useState([]); //useState is initial state to manage items being updated.
   const [itemCount, setItemCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [responseStr, setResponseTxt] = useState("No Items Found For Your Search");
+  console.log('I GOT ::::::::::');
 
   var basicQuery = navigation.getParam('searchQuery');
   var results = JSON.parse(navigation.state.params.results);
@@ -129,10 +131,13 @@ function SearchResults({ navigation, ingredQuery }) {
         setLoading(false);
       }
       else {
+        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
         setError("noUser", 'no user', "no account uses this email");
       }
     }).catch(error => {
-      // setLoading(false);
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
       console.log(error);
     });
 
@@ -181,10 +186,10 @@ function SearchResults({ navigation, ingredQuery }) {
 
     );
   }
-  else if (items.length == 0) {
+  else if (items.length == 0 || !(items)) {
     return (
       <SafeAreaView>
-        <Title>No results found for your search</Title>
+        <Title>{responseStr}</Title>
       </SafeAreaView>
 
     );

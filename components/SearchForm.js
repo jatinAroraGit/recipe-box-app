@@ -68,7 +68,7 @@ function SearchForm({ props }) {
   const [autoComplete, setAutoComplete] = useState([])
   const [selectedCuisine, setSelectedCuisine] = useState('None');
   const [text, setText] = useState("");
-  const [selectedDietary, setSelectedDietary] = useState([]);
+  const [selectedMealType, setSelectedMealType] = useState('None');
   const [ingredients, setIngredients] = useState([]);
   const [chips, setChips] = useState([]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
@@ -84,7 +84,11 @@ function SearchForm({ props }) {
     results.includeIngredients = [];
     results.cuisine = "";
     results.query = "";
-    results.intolerances = "";
+    results.mealType = "";
+    console.log("Ingredients")
+    console.log(ingredients);
+    console.log("chips");
+    console.log(chips);
 
     var num = 0;
 
@@ -111,11 +115,10 @@ function SearchForm({ props }) {
 
     }
 
-    if (selectedDietary[i] != 'None') {
-
-      results.intolerances = selectedDietary;
-
-    }
+    if (selectedMealType != "None") {
+      num++;
+      results.mealType = selectedMealType;
+    }//TODO make mealType an array that can support multiple values.  Requires changing input type before supporting it here.
 
     const result = JSON.stringify(results);
     console.log('Final Query:: ', results);
@@ -182,116 +185,118 @@ function SearchForm({ props }) {
         setIngredients(temp);
 
       }
+    }
+  }
 
-      const showCuisinePicker = cuisine.map((c, i) => {
+  const showCuisinePicker = cuisine.map((c, i) => {
 
-        var key = 'cuisine' + i.toString();
+    var key = 'cuisine' + i.toString();
 
-        return (
+    return (
 
-          <Picker.Item key={key} label={c} value={c} />
+      <Picker.Item key={key} label={c} value={c} />
 
-        );
+    );
 
-      });
+  });
 
-      const showDietPicker = mealType.map((c, i) => {
+  const showDietPicker = mealType.map((c, i) => {
 
-        var key = 'type' + i.toString();
+    var key = 'type' + i.toString();
 
-        return (
+    return (
 
-          <Picker.Item key={key} label={c} value={c} />
+      <Picker.Item key={key} label={c} value={c} />
 
-        );
+    );
 
-      });
+  });
 
-      const removeChip = (i) => {
+  const removeChip = (i) => {
 
-        var temp = new Array;
-        temp = chips;
-        temp.splice(i, 1);
-        setChips(temp);
-        updateAutoComplete("")
+    var temp = new Array;
+    temp = chips;
+    temp.splice(i, 1);
+    setChips(temp);
+    updateAutoComplete("")
 
-      }
+  }
 
-      const updateAutoComplete = (text) => {
+  const updateAutoComplete = (text) => {
 
-        var arr;
-        let apiKey = require('../configure/apiKey.json');
-        axios.get("https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=" + apiKey.key + "&query=" + text + "&number=5")
-          .then(res => {
+    var arr;
+    let apiKey = require('../configure/apiKey.json');
+    axios.get("https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=" + apiKey.key + "&query=" + text + "&number=5")
+      .then(res => {
 
-            setAutoComplete(res.data);
+        setAutoComplete(res.data);
 
-          })
-      };
-
-
-
-
-      return (
-
-        <SafeAreaView style={styles.container}>
-
-          <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
+      })
+  };
 
 
 
-            <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
-              <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Search</Title>
-              <Controller
-                as={<Searchbar returnKeyType="search" onSubmitEditing={handleSubmit(onSubmit)} placeholder="Searching For..." style={styles.input} />}
-                name="query"
-                control={control}
-                onChange={onChange}
-                defaultValue=""
-              />
-              <View style={{ alignSelf: 'center', marginBottom: 3 }}>
-                {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
-                <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
-                  Search
-    
+
+  return (
+
+    <SafeAreaView style={styles.container}>
+
+      <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
+
+
+
+        <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
+          <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Search</Title>
+          <Controller
+            as={<Searchbar returnKeyType="search" onSubmitEditing={handleSubmit(onSubmit)} placeholder="Searching For..." style={styles.input} />}
+            name="query"
+            control={control}
+            onChange={onChange}
+            defaultValue=""
+          />
+          <View style={{ alignSelf: 'center', marginBottom: 3 }}>
+            {errors.search && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
+            <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
+              Search
+
         </Button>
-              </View>
-              <View style={{ flex: 1, margin: 5, padding: 4, backgroundColor: '#37474F', borderRadius: 10 }}>
-                <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EC407A', alignSelf: "center", fontSize: 20 }}>Filter By</Title>
-                <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Include Ingredients</Title>
-                <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
-                  {showChip}
-                </View>
-                <Autocomplete
-                  style={{ borderRadius: 4, backgroundColor: '#FFFFFF', height: 40 }}
-                  placeholder=' Enter an ingredient name'
-                  value={text}
-                  data={autoComplete}
-
-                  onChangeText={(i) => { updateAutoComplete(i); setText(i) }}
-                  renderItem={({ item, i }) => (
-
-                    <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); updateAutoComplete("") }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
-
-                  )}></Autocomplete>
-
-                <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Cuisine</Title>
-                <Picker style={{ backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedCuisine} onValueChange={(value) => { setCuisine(value) }}>
-
-                  {showCuisinePicker}
-
-                </Picker>
-
-                <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Dietary Restrictions</Subheading>
-                <Picker style={{ backgroundColor: "#FFD54F", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedDietary} onValueChange={(value) => { setSelectedDietary(value) }}>
-                  {showDietPicker}
-                </Picker>
-
-              </View>
+          </View>
+          <View style={{ flex: 1, margin: 5, padding: 4, backgroundColor: '#37474F', borderRadius: 10 }}>
+            <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EC407A', alignSelf: "center", fontSize: 20 }}>Filter By</Title>
+            <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Include Ingredients</Title>
+            <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
+              {showChip}
             </View>
+            <Autocomplete
+              style={{ borderRadius: 4, backgroundColor: '#FFFFFF', height: 40 }}
+              placeholder=' Enter an ingredient name'
+              value={text}
+              data={autoComplete}
+
+              onChangeText={(i) => { updateAutoComplete(i); setText(i) }}
+              renderItem={({ item, i }) => (
+
+                <TouchableHighlight style={{ backgroundColor: "#66BB6A", padding: 4 }} key={i} onPress={() => { updateIngredient(item); setText(""); updateAutoComplete("") }}><Text style={{ fontSize: 19, color: '#FFFFFF' }}>{item.name}</Text></TouchableHighlight>
+
+              )}></Autocomplete>
+
+            <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Cuisine</Title>
+            <Picker style={{ backgroundColor: "#4DB6AC", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedCuisine} onValueChange={(value) => { setCuisine(value) }}>
+
+              {showCuisinePicker}
+
+            </Picker>
+
+            <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}> Meal Type</Subheading>
+            <Picker style={{ backgroundColor: "#FFD54F", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedMealType} onValueChange={(value) => { setSelectedMealType(value) }}>
+              {showDietPicker}
+            </Picker>
 
           </View>
-        </SafeAreaView >
-      );
-    }
-    export default SearchForm;
+        </View>
+
+      </View>
+    </SafeAreaView >
+  );
+}
+export default SearchForm;
