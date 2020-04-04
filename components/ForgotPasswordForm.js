@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import Axios from 'axios';
-//import RNFetchBlob from 'rn-fetch-blob'
+
 const apiKey = require('../configure/apiKey.json');
 const baseURL = apiKey.baseURL;
 const styles = StyleSheet.create({
@@ -87,7 +87,6 @@ function ForgotPasswordForm({ props }) {
   const [response, setResponse] = useState("answer");
   const [userFound, setUserFound] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('NA');
 
   const onSubmit = data => {
 
@@ -127,41 +126,31 @@ function ForgotPasswordForm({ props }) {
       const query = { "userEmail": data.email };
       const sendData = JSON.stringify(query);
 
-      console.log("SENDING DEV REQ AT " + baseURL + 'userAccount/getUserAccount');
+      Axios.post(baseURL + 'userAccount/getUserAccount', sendData, {
+        headers: {
+          'content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
 
-     
-      
-            Axios.post(baseURL + 'userAccount/getUserAccount', sendData, {
-              headers: {
-                'content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-      
-              },
-              withCredentials: false,
-            
-            },
-             
-            ).then((response) => {
-              // if(response.data.uid ||;
-              console.log(response);
-              if (response.data) {
-                setSecurityQuestion(response.data.securityQuestion)
-                setResponse(response.data.response);
-                setUserFound(true);
-              }
-              else {
-                setError("noUser", 'no user', "no account uses this email");
-              }
-            }).catch(error => {
-              // setLoading(false);
-              console.log(error);
-            });
-      
+        }
+      }).then((response) => {
+        // if(response.data.uid ||;
+        console.log(response);
+        if (response.data) {
+          setSecurityQuestion(response.data.securityQuestion)
+          setResponse(response.data.response);
+          setUserFound(true);
+        }
+        else {
+          setError("noUser", 'no user', "no account uses this email");
+        }
+      }).catch(error => {
+        // setLoading(false);
+        console.log("Error" + error);
+      });
 
     }
     else {
       console.log('Please fill all fields');
-
       setError("missingData", 'missing data', "some fields were left blank");
     }
 
@@ -175,101 +164,12 @@ function ForgotPasswordForm({ props }) {
   const onCloseModal = () => {
     props.navigate('Login');
   };
-  const sendProdRequest = () => {
-    const testObj = { "userEmail": "jaarora45@gmail.com" };
-    const prodURL = apiKey.prodURL;
-    console.log("SENDING REQ AT " + prodURL + 'userAccount/getUserAccount');
-    fetch(prodURL + 'userAccount/getUserAccount', {
-      method: 'POST', // or 'PUT'
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(testObj),
-    })
-      .then((response) => {
-        response.json();
-      })
-      .then((data) => {
-        if (data) {
-          setSecurityQuestion(data.securityQuestion)
-          setResponse(data.response);
-          setUserFound(true);
-          setErrorMsg("SUCCESS PROD");
-        }
-        else {
-          setErrorMsg('Not Found User');
-        }
-      })
-      .catch((error) => {
-        setError("noUser", 'no user', "no account uses this email");
-        setErrorMsg(error);
-        console.error('Error:', error);
-      });
+  const resetStatus = () => {
+    setUserFound(false);
+    setSecurityQuestion("");
+    setIsEmailSent(false);
+    setResponse("");
   };
-
-  const sendTestReq = () => {
-    const testObj = { "test": "app" };
-    const testURL = "http://192.168.56.1:5000/test";
-    // console.log("SENDING REQ AT " + prodURL + 'userAccount/getUserAccount');
-    Axios.post(testURL, JSON.stringify(testObj), {
-      headers: {
-        'content-type': 'application/json',
-
-      },
-      withCredentials: false,
-
-    },
-
-    ).then((response) => {
-      // if(response.data.uid ||;
-      console.log(response);
-      if (response.data) {
-        // setSecurityQuestion(response.data.securityQuestion)
-        // setResponse(response.data.response);
-        // setUserFound(true);
-        setErrorMsg(response.data.TestCall);
-      }
-      else {
-        setError("noUser", 'no user', "no account uses this email");
-      }
-    }).catch(error => {
-      // setLoading(false);
-      console.log("Axios Error " , error);
-    });
-  };
-
-  const sendTestProd = () => {
-    const testObj = { "test": "app" };
-    const testURL = "https://prj666.mystudentlab.ca:6759/test";
-    // console.log("SENDING REQ AT " + prodURL + 'userAccount/getUserAccount');
-    Axios.post(testURL, JSON.stringify(testObj), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-
-      },
-      withCredentials: false,
-
-    },
-
-    ).then((response) => {
-      // if(response.data.uid ||;
-      console.log(response);
-      if (response.data) {
-        // setSecurityQuestion(response.data.securityQuestion)
-        // setResponse(response.data.response);
-        // setUserFound(true);
-        setErrorMsg(response.data.TestCall);
-      }
-      else {
-        setError("noUser", 'no user', "no account uses this email");
-      }
-    }).catch(error => {
-      // setLoading(false);
-      console.log(error);
-    });
-  };
-
   return (
     <KeyboardAvoidingView >
       <View style={styles.container}>
@@ -300,25 +200,9 @@ function ForgotPasswordForm({ props }) {
         {errors.wrongAnswer && <Subheading style={{ color: '#BF360C' }}>Answer is incorrect.</Subheading>}
         {errors.missingData && <Subheading style={{ color: '#BF360C' }}>Please fill in all fields.</Subheading>}
         {!userFound && (
-          <View>
-            <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
-              Continue
+          <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
+            Continue
         </Button>
-            { /*
-            <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={sendProdRequest}>
-              Continue via Prod
-        </Button>
-            <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={sendTestReq}>
-              Test
-        </Button>
-
-            <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={sendTestProd}>
-              Test Prod
-        </Button>
-            <Text style={{ color: "#FFFFFF" }}>{errorMsg}</Text>
-        */
-            }
-          </View>
         )
         }
         {userFound && (

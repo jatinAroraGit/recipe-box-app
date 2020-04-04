@@ -44,6 +44,7 @@ class TopNavbar extends React.Component {
       show: false,
       userLoggedIn: (Firebase.auth().currentUser) ? true : false
     };
+    console.log(Firebase.auth().currentUser);
   }
 
   ShowHideComponent = () => {

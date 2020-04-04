@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card, HelperText } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Provider, Portal, Modal, Card } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import { NavigationActions } from 'react-navigation'
 import Axios from 'axios';
 const apiKey = require('../configure/apiKey.json');
-//import * as Print from 'expo-print';
 
 const styles = StyleSheet.create({
   label: {
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     padding: 8,
     backgroundColor: '#FFFFFF',
-     height: 'auto',
+
     ...Platform.select({
       ios: {
         //  width: (Dimensions.get('screen').width - 50),
@@ -79,12 +78,11 @@ var errorb = false;
 function RegisterForm({ nav }) {
 
   const navigation = nav;
-  //console.log(navigation);
+  console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({});
-  const captureView = useRef();
   const onSubmit = data => {
     console.log("Form Data = ")
 
@@ -100,7 +98,6 @@ function RegisterForm({ nav }) {
         setLoading(true);
         errorb = false;
         //Create User with Email and Password
-        console.log("Checking Mail Server at "+"http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1");
         Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1").then(res => {
           console.log('REQ SUCCESSFUL');
           if (!(res.data.smtp_check)) {
@@ -116,7 +113,7 @@ function RegisterForm({ nav }) {
               var userObj = { "uid": result.user.uid, "userEmail": result.user.email, "securityQuestion": data.question, "response": data.answer }
               const baseURL = apiKey.baseURL;
               const sendData = JSON.stringify(userObj);
-              console.log('Sending at ' + baseURL + '/userAccount/createUserAccount');
+
               console.log("SENDING DATA : " + userObj);
               Axios.post(baseURL + '/userAccount/createUserAccount', sendData, {
                 headers: {
@@ -157,6 +154,8 @@ function RegisterForm({ nav }) {
               setError("firebase", 'error', errorMessage);
             });
           }
+
+
 
           Firebase.auth().onAuthStateChanged(function (user) {
 
@@ -237,25 +236,11 @@ function RegisterForm({ nav }) {
     Firebase.auth().signOut();
     navigation.navigate('Login');
   }
-  const capturePrint = async args => {
-   
-    captureView.capture().then(uri => {
-      console.log("do something with ", uri);
-    });
-  };
-  const pdfPrint = args => {
-    
-    /*
-   Print.printAsync().then(data=>{
-    console.log(data);
-   });
-   */
-  };
+
   return (
 
 
-    <View   style={styles.container}>
-     
+    <View style={styles.container}>
       <Title style={{ color: '#1E88E5', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Create Account</Title>
       <Subheading style={styles.label}>Email</Subheading>
       <Controller
@@ -286,7 +271,6 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
-      <HelperText style={{ fontSize: 15, color: "#FFC400" }}>Rules: Must be at least 8 characters.Should contain at least an uppercase letter,a number and a special character. </HelperText>
       {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
 
       <Subheading style={styles.label}>Confirm Password</Subheading>

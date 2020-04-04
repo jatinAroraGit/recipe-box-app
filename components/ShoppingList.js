@@ -2,13 +2,13 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, Platform, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button, Platform, Dimensions, TouchableOpacity } from 'react-native';
 import { Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
 import { createAnimatableComponent } from 'react-native-animatable';
 
 
 export default function ShoppingList({ navigation, ingredSent }) {
-  
+
   const [noZero, setnoZero] = useState([]);
   // const [hasZero, setHasZero] = useState(ingredSent);
   console.log('what are the inside in ingredSent - start');
@@ -18,22 +18,22 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
   useEffect(() => {
     extractJSON(ingredSent);
-}, []) 
+  }, [])
 
-// when we create the useState of noZero, it loops infinitively because whenever the noZero is being called, it re-render the whole component
-// To prevent infinit loop, we added the useEffect to prevent. 
-// Let's say the user put the setState function out of the component function, then it loops again and again. But by using the useEffect function, which is special function to render the compoent, it blocks looping.
-
-
+  // when we create the useState of noZero, it loops infinitively because whenever the noZero is being called, it re-render the whole component
+  // To prevent infinit loop, we added the useEffect to prevent. 
+  // Let's say the user put the setState function out of the component function, then it loops again and again. But by using the useEffect function, which is special function to render the compoent, it blocks looping.
 
 
 
- 
 
 
-//  extractJSON(hasZero);
- console.log('This is the length of the ingredSent');
- console.log(ingredSent.length);
+
+
+
+  //  extractJSON(hasZero);
+  console.log('This is the length of the ingredSent');
+  console.log(ingredSent.length);
 
   function extractJSON(arr) {
     console.log('YOOO')
@@ -42,9 +42,9 @@ export default function ShoppingList({ navigation, ingredSent }) {
     let noJSON = [];
 
     for (let i = 0; i < arr.length; i++) {
-      
+
       noJSON.push(JSON.parse(arr[i]));
-      
+
       console.log('Hi ingredSent'); //whenever I change I need to go back to the first page, otherwise it would not be called at all.
       console.log(JSON.parse(arr[i]));
       console.log('Bye ingredSent');
@@ -67,8 +67,8 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
   //const { ingredSent } = route.params;
   // const [noZero, setnoZero] = useState([]);
-  
-  
+
+
   // let noZero = [];
 
   function removeZero(ingredArray) {
@@ -103,7 +103,7 @@ export default function ShoppingList({ navigation, ingredSent }) {
   const deleteIngredients = (oneIngred) => {
     console.log('before');
     console.log(noZero)
-    let deletedArr = noZero.filter(element => element.id !== oneIngred.id );
+    let deletedArr = noZero.filter(element => element.id !== oneIngred.id);
     setnoZero(deletedArr);
     console.log('after');
     console.log(noZero);
@@ -124,14 +124,19 @@ export default function ShoppingList({ navigation, ingredSent }) {
             <View key={oneIngred.id} >
               <Card style={styles.nestedCardStyle}>
                 <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <View style={styles.recentItemIndicator}></View>
                   <Subheading style={{ justifyContent: "flex-start" }} >{oneIngred.name} : {oneIngred.count}</Subheading>
                 </View>
-                <View>
-                  <Button title='Delete' onPress={ ()=> {
+                <View style={{justifyContent: 'flex-end'}}>
+                <TouchableOpacity style={styles.button} title='Delete' onPress={ ()=> {
                     deleteIngredients(oneIngred);
-                  }}></Button>
+                  }}><Text>Delete</Text></TouchableOpacity>
                 </View>
+                </View>
+                {/* <View>
+                  
+                </View> */}
               </Card>
             </View>
 
@@ -144,6 +149,13 @@ export default function ShoppingList({ navigation, ingredSent }) {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "#f9deff",
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: 'flex-end'
+  },
   recentItemIndicator: {
     backgroundColor: "#CABFAB",
     padding: 4,
@@ -176,10 +188,10 @@ const styles = StyleSheet.create({
     height: 'auto',
     ...Platform.select({
       ios: {
-        width: 300
+        width: 380
       },
       android: {
-        width: 300
+        width: 380
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
@@ -198,10 +210,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     ...Platform.select({
       ios: {
-        width: 270
+        width: 360
       },
       android: {
-        width: 270
+        width: 360
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
