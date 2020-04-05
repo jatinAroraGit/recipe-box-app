@@ -1,17 +1,14 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, FlatList } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity } from "react-native";
 import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
-
-// import Instruction from '../screens/Instruction';
-//import Rating from '../screens/Rating'
-
+var sanitizeHtml = require('sanitize-html');
+var stripHtml = require('string-strip-html');
 
 function ViewRecipe({ navigation, recipeDetail }) {
   recipeDetail = JSON.parse(recipeDetail.props);
-  const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
   let htmlMain = ""
   let htmlTitle = "<h1>" + recipeDetail.title + "</h1>";
   let htmlDescrition = "";
@@ -23,13 +20,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   // console.log('navigation in ViewRecipe - start');
   console.log("html title ::")
   console.log(htmlTitle);
-  // console.log('navigation in ViewRecipe - end')
-
-  console.log('Showing the id of the recipe - start');
-  console.log(recipeDetail)
-  console.log('Showing the id of the recipe - end')
-
-  //const baseUri = `https://spoonacular.com/recipeImages/`;
+  const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
   const [iconName, setIconName] = useState('playlist-plus');
   const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
   const [loading, setLoading] = useState(true);
@@ -42,142 +33,94 @@ function ViewRecipe({ navigation, recipeDetail }) {
   const [switchValue, setSwitchValue] = useState(false);
   var ingredientsArray = [];
   var stepArray = [];
+  var mapArr = [];
   var noInstruction = true;
   // let noSteps = false;
 
   useEffect(() => {
-    console.log('useEffect has been called');
-    let ingredients = "apples,+flour,+sugar"
+
     let apiKey = require('../configure/apiKey.json');
-    let recipeId = {
-      "id": recipeDetail.id
-    };
+    let recipeId = { "id": recipeDetail.id };
 
+    // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
 
-    if (ingredients) {
-      console.log('If statement is called');
-      console.log('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key);
-      //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
-      /*
-      axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
-        .then(res => {
-          console.log('Recipe Detail');
-          console.log(res);
-          const readyInMin = res.data.readyInMinutes;
-          setreadyInMinutes(readyInMin)
-          const serves = res.data.servings
-          setservings(serves);
-          const recSummary = res.data.summary;
-          var dirty = 'some really tacky HTML';
-          var cleanSummary = sanitizeHtml(recSummary);
-          let pureTextSummary = stripHtml(cleanSummary);
-          htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
-          setsummary(pureTextSummary);
-          const ingredients = res.data.extendedIngredients;
-          console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-          console.log(ingredients);
-          extractIngredients(ingredients)
-
-          if (res.data.analyzedInstructions.length != 0) {
-            const info = res.data.analyzedInstructions[0].steps;
-            extractRecipeInformation(info);
-            // console.log('HAS STUFF')
-          } else {
-            setNoSteps(() => {
-              noSteps = true;
-            });
-            console.log(noSteps);
-            console.log('Hi bro');
-          }
-
-          // console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-          // console.log(res.data.preparationMinutes);
-
-
-
-        });
-        */
-      console.log('Calling API: ' + apiKey.baseURL + 'recipes/detail');
-      axios.post(apiKey.baseURL + 'recipes/detail', recipeId, {
-        headers: {
-          'content-type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        withCredentials: false,
+    //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
+    console.log('Calling API: ' + apiKey.baseURL + 'recipes/detail' + "With Obj: ", recipeId);
+    axios.post(apiKey.baseURL + 'recipes/detail', recipeId, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
-      ).then((res) => {
-        console.log("Recipe Info : ");
+      withCredentials: false,
+    },
+    ).then((res) => {
+      console.log("Recipe Info : ");
+      console.log(res);
+      if (res.data) {
+        console.log('Recipe Detail');
         console.log(res);
-        if (res.data) {
-          console.log('Recipe Detail');
-          console.log(res);
-          setIsFound(true);
+        setIsFound(true);
 
-          const readyInMin = res.data.readyInMinutes;
-          setreadyInMinutes(readyInMin)
-          const serves = res.data.servings
-          setservings(serves);
-          const recSummary = res.data.summary;
-          var dirty = 'some really tacky HTML';
-          var cleanSummary = sanitizeHtml(recSummary);
-          let pureTextSummary = stripHtml(cleanSummary);
-          htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
-          setsummary(pureTextSummary);
-          const ingredients = res.data.includedIngredients;
-          console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-          console.log(ingredients);
-          extractIngredients(ingredients)
+        const readyInMin = res.data.readyInMinutes;
+        setreadyInMinutes(readyInMin)
+        const serves = res.data.servings
+        setservings(serves);
+        const recSummary = res.data.summary;
+        var dirty = 'some really tacky HTML';
+        var cleanSummary = sanitizeHtml(recSummary);
+        let pureTextSummary = stripHtml(cleanSummary);
+        htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
+        setsummary(pureTextSummary);
+        const ingredients = res.data.includedIngredients;
+        console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+        console.log(ingredients);
+        extractIngredients(ingredients)
 
-          if (res.data.instructions.length != 0) {
-            //  const info = res.data.analyzedInstructions[0].steps;
-            //extractRecipeInformation(res.data.instructions);
-            // console.log('HAS STUFF')
-            setStep(res.data.instructions);
-            setLoading(false);
-          } else {
-            setNoSteps(() => {
-              noSteps = true;
-            });
-            console.log(noSteps);
-            console.log('Hi bro');
-          }
-          //  setLoading(false);
-        }
-        else {
+        if (res.data.instructions.length != 0) {
+          //  const info = res.data.analyzedInstructions[0].steps;
+          //extractRecipeInformation(res.data.instructions);
+          // console.log('HAS STUFF')
+          console.log("Instrcuions");
+          console.log(res.data.instructions);
+
+          setStep(res.data.instructions);
           setLoading(false);
-          setIsFound(false);
-          setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-          setError("noUser", 'no user', "no account uses this email");
+        } else {
+          setNoSteps(() => {
+            noSteps = true;
+          });
+          console.log(noSteps);
+          console.log('Hi bro');
         }
-      }).catch(error => {
-
-        setIsFound(false);
-        console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-        setLoading(false);
-        console.log(error);
-      });
-    }
-
-
-
-
-    const extractRecipeInformation = (info) => {
-      console.log("Steps Extract", info);
-      htmlSteps = "<div><h2>Instructions: </h2><ul>"
-      for (let i = 0; i < info.length; i++) {
-        stepArray.push(info[i].step);
-        htmlSteps = htmlSteps + "<li>" + info[i].step + "</li>";
-        // console.log(info[i].step);
+        //  setLoading(false);
       }
+      else {
+        setLoading(false);
+        setIsFound(false);
+        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
 
-
-      console.log(htmlTitle + htmlDescrition + htmlSteps);
+      setIsFound(false);
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
       setLoading(false);
+      console.log(error);
+    });
+  }, []);
 
-      setStep(stepArray);
+  const map = step.map((step, index) => {
+    return (
+      <View >
+        <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step.description}</Subheading>
+      </View>
+    )
+  })
 
-    }, []);
+
+
+
 
   const toggleSwitch = (value) => {
     setSwitchValue(value);
@@ -217,8 +160,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
       );
     }
-    // console.log(`YOOOOOO`)
-    // console.log(ingredientsArray)
+
 
     // for (let i = 0; i < ingreds.length; i++) {
     //     for (let j = 0; j < ingreds[i].ingredients.length; j++) {
@@ -257,24 +199,50 @@ function ViewRecipe({ navigation, recipeDetail }) {
       }
     })
 
-    return JsonObject;
     setIngred(ingredsCopy);
   };
 
 
   const decrementCountHandler = (incomingIngred) => {
 
+    let ingredsCopy = Array.from(ingred);
+
+    ingredsCopy.forEach((curr) => {
+      if (curr.id === incomingIngred.id) {
+        if (curr.count > 0) {
+          curr.count = curr.count - 1;
+        }
+      }
+
+    })
+    setIngred(ingredsCopy);
+  };
+
+  const makeJsontoObject = (JsonObject) => {
+    if (JsonObject.length != 0) {
+      for (let i = 0; i < JsonObject.length; i++) {
+        JsonObject[i] = JSON.stringify(JsonObject[i]);
+      }
+    } else {
+      console.log('Hey you should pick at least one of the ingredients.');
+    }
+
+    return JsonObject;
+
+
+  }
+
+  const addToList = () => {
+    if (iconName == 'bookmark-plus')
+      setIconName('bookmark-check');
+    else
+      setIconName('bookmark-plus');
+
   }
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 3 }}>
 
-        ingredsCopy.forEach((curr) => {
-          if (curr.id === incomingIngred.id) {
-            if (curr.count > 0) {
-          curr.count = curr.count - 1;
-        }
-      }
 
         <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
 
@@ -332,19 +300,14 @@ function ViewRecipe({ navigation, recipeDetail }) {
           </View>
 
 
-
-
           <View style={styles.infoContainer}>
             <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
             <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
           </View>
 
-          <View style={styles.infoContainer}>
-            <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
-          </View>
-
-
-
+          {/* <View style={styles.ratingContainer}>
+                    <Rating rating={0} numStars={5} starColor="orange" />
+                </View> */}
 
           <View style={styles.statsContainer}>
             <View style={styles.statsBox}>
@@ -382,119 +345,82 @@ function ViewRecipe({ navigation, recipeDetail }) {
           </View>
 
           <View style={styles.viewBoxStyle}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-              <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
-              {console.log(ingred, 'removed dupes')}
-              {ingred.map((oneIngred, index) => {
-                return (
-                  <Card key={index + 1} style={styles.nestedCardStyle}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <View style={styles.recentItemIndicator}></View>
-                      <Text style={{ color: '#000000', fontWeight: "400" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                        <Button title='-' onPress={() => {
-                          decrementCountHandler(oneIngred);
-                        }}></Button>
-                        <Text>{oneIngred.count}</Text>
-                        <Button style={styles.buttonHover} title='+' onPress={() => {
-                          incrementCountHandler(oneIngred)
-                        }}></Button>
-                      </View>
+            {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
+            <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+            {ingred.map((oneIngred, index) => {
+              return (
+                <Card key={index + 1} style={styles.nestedCardStyle}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.recentItemIndicator}></View>
+                    <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                    <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                      <TouchableOpacity style={styles.button} onPress={() => {
+                        decrementCountHandler(oneIngred);
+                      }}><Text>-</Text></TouchableOpacity>
+                      <Text>{oneIngred.count}</Text>
+                      <TouchableOpacity style={styles.button} onPress={() => {
+                        incrementCountHandler(oneIngred)
+                      }}><Text>+</Text></TouchableOpacity>
                     </View>
-                  </Card>
+                  </View>
+                </Card>
 
-                )
-              })}
-              <View style={{ backgroundColor: "#CC5090", borderRadius: 5 }}>
-                <Button color="#FFFFFF" title="View Shopping List" onPress={() => {
-                  navigation.navigate('Shopping', makeJsontoObject(ingred));
-                  // navigation.navigate('Shopping', ingred);
-                  // navigation.navigate('Test', makeJsontoObject(ingred));
-                  console.log('Button is clicked');
-                  console.log(ingred);
-                  console.log('Bye Button');
-                }}></Button>
-              </View>
+              )
+            })}
 
-              <View style={styles.viewBoxStyle}>
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity style={styles.button} onPress={() => { saveRecipe() }}>
-                    <Text>Save Recipe</Text>
-                  </TouchableOpacity>
-                  <Text style={{ marginHorizontal: 10 }}> </Text>
-                  <TouchableOpacity style={styles.button} onPress={() => { downloadRecipe() }}>
-                    <Text>Download Recipe</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <TouchableOpacity style={styles.button}
+              // color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }}
+              onPress={() => {
+                navigation.navigate('Shopping', makeJsontoObject(ingred));
+              }}><Text>View Shopping List</Text></TouchableOpacity>
 
-              <View style={styles.viewBoxStyle}>
-              </View >
-              <Text style={[styles.text, { color: "#FFFFFF", margin: 8, fontWeight: "500", fontSize: 18 }]}>
-                {summary}
-              </Text>
-            </View>
+            {/* </View > */}
+          </View>
 
-            <View >
-
-              <View style={{ width: 300, alignContent: "center", alignSelf: "center" }}>
+          {/* </View > */}
 
 
-              </View>
-            </View>
-
-
-            <View style={styles.viewBoxStyle}>
-              {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
-              <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
-              {ingred.map((oneIngred, index) => {
-                return (
-                  <Card key={index + 1} style={styles.nestedCardStyle}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <View style={styles.recentItemIndicator}></View>
-                      <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                        <TouchableOpacity style={styles.button} onPress={() => {
-                          decrementCountHandler(oneIngred);
-                        }}><Text>-</Text></TouchableOpacity>
-                        <Text>{oneIngred.count}</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => {
-                          incrementCountHandler(oneIngred)
-                        }}><Text>+</Text></TouchableOpacity>
-                      </View>
-                    </View>
-                  </Card>
-
-                )
-              })}
-
-              <TouchableOpacity style={styles.button}
-                // color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }}
-                onPress={() => {
-                  navigation.navigate('Shopping', makeJsontoObject(ingred));
-                }}><Text>View Shopping List</Text></TouchableOpacity>
-
-              {/* </View > */}
-            </View>
-
-
-
-            <View style={styles.viewBoxStyle}>
-              {/* <View style={styles.viewBoxStyle}> */}
-              <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
+          <View style={styles.viewBoxStyle}>
+            {/* <View style={styles.viewBoxStyle}> */}
+            <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
+            <View style={styles.switchStyle}>
 
               <Text> {map} </Text>
 
             </View>
-
-
-
           </View>
 
-        </ScrollView>
-      </SafeAreaView>
+
+
+
+          <Text style={{ alignItems: "right" }, [styles.subText, styles.recent]}>Recent Activity</Text>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.recentItem}>
+            <View style={styles.recentItemIndicator}></View>
+            <View style={{ width: 250 }}>
+              <Text style={[styles.text, { color: "rgb(65,68,75)", fontWeight: "300" }]}>
+                Started Following{" "}
+                <Text style={{ fontWeight: "400" }}>
+                  Jason, Jatin, Sanghyuk Lee, Narma, Patrick <Text style={{ fontWeight: "400" }}>GroupQuattro</Text>
+                </Text>
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.recentItem}>
+            <View style={styles.recentItemIndicator}></View>
+            <View style={{ width: 250 }}>
+              <Text style={[styles.text, { color: "#41444B", fontWeight: "300" }]}>
+                Started Following <Text style={{ fontWeight: "400" }}> Recipe2 </Text>
+              </Text>
+            </View>
+          </View>
+        </View>
+            </ScrollView>
+        </SafeAreaView >
 
     );
+
   }
   else if (!isFound) {
     return (
@@ -509,6 +435,34 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "#d2f2fc",
+    padding: 10,
+    borderRadius: 10,
+  },
+  instructionStyle: {
+    padding: 0,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    margin: 5,
+    height: 'auto',
+    flexDirection: 'row',
+    ...Platform.select({
+      ios: {
+        width: 270
+      },
+      android: {
+        width: 270
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+      }
+
+    }),
+  },
   switchStyle: {
     flex: 1,
     justifyContent: 'center',
@@ -520,7 +474,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   nestedCardStyle: {
-    flex: 1,
     padding: 0,
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
@@ -529,200 +482,181 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     ...Platform.select({
       ios: {
-        width: "auto"
+        width: 360
       },
-      ratingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
+      android: {
+        width: 360
       },
-      nestedCardStyle: {
-        flex: 1,
-        padding: 0,
-        borderRadius: 10,
-        backgroundColor: '#FFFFFF',
-        margin: 5,
-        height: 'auto',
-        flexDirection: 'row',
-        ...Platform.select({
-          ios: {
-            width: "auto"
-          },
-          android: {
-            width: "auto"
-          },
-          web: {
-            width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
 
 
-          }
+      }
 
-        }),
-      },
-      viewBoxStyle: {
-        flex: 1,
-        marginTop: 10,
-        backgroundColor: '#99ccff',
-        alignContent: "center",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 15,
-        borderWidth: 0,
-        padding: 10,
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.62,
+    }),
+  },
+  viewBoxStyle: {
+    marginTop: 10,
+    backgroundColor: '#99ccff',
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    borderWidth: 0,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
 
-        elevation: 4,
-        height: 'auto',
-        ...Platform.select({
-          ios: {
-            width: "auto"
-          },
-          android: {
-            width: "auto"
-          },
-          web: {
-            width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+    elevation: 4,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 380
+      },
+      android: {
+        width: 380
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
 
 
-          }
-        })
-      },
-      container: {
-        flex: 1,
-        backgroundColor: "#fff"
-      },
-      text: {
+      }
+    })
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
+  },
+  text: {
 
-        color: "rgb(82, 87, 93)",
-        textAlign: "center"
-      },
-      subText: {
-        fontSize: 12,
-        color: "#rgb(174, 181, 188)",
-        textTransform: "uppercase",
-        fontWeight: "500"
+    color: "rgb(82, 87, 93)",
+    textAlign: "center"
+  },
+  subText: {
+    fontSize: 12,
+    color: "#rgb(174, 181, 188)",
+    textTransform: "uppercase",
+    fontWeight: "500"
 
-      },
-      image: {
-        flex: 1,
-        width: 100,
-        height: 100
-      },
-      titleBar: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 24,
-        marginHorizontal: 16
-      },
-      profileImage: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        overflow: "hidden"
-      },
-      dm: {
-        backgroundColor: "rgb(65,68,75)",
-        position: "absolute",
-        top: 20,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center"
-      },
-      active: {
-        backgroundColor: "#34FF89",
-        position: "absolute",
-        bottom: 20,
-        left: 10,
-        padding: 4,
-        height: 20,
-        width: 20,
-        borderRadius: 10
+  },
+  image: {
+    flex: 1,
+    width: undefined,
+    height: undefined
+  },
+  titleBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 24,
+    marginHorizontal: 16
+  },
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    overflow: "hidden"
+  },
+  dm: {
+    backgroundColor: "rgb(65,68,75)",
+    position: "absolute",
+    top: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  active: {
+    backgroundColor: "#34FF89",
+    position: "absolute",
+    bottom: 20,
+    left: 10,
+    padding: 4,
+    height: 20,
+    width: 20,
+    borderRadius: 10
 
-      },
-      add: {
-        // backgroundColor: "#41444B",
-        position: "absolute",
-        bottom: 0,
-        right: 0,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center"
+  },
+  add: {
+    // backgroundColor: "#41444B",
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center"
 
-      },
-      infoContainer: {
-        alignSelf: "center",
-        alignItems: "center",
-        marginTop: 16
-      },
-      statsContainer: {
-        flexDirection: "row",
-        alignSelf: "center",
-        marginTop: 32
+  },
+  infoContainer: {
+    alignSelf: "center",
+    alignItems: "center",
+    marginTop: 16
+  },
+  statsContainer: {
+    flexDirection: "row",
+    alignSelf: "center",
+    marginTop: 32
 
-      },
-      statsBox: {
-        alignItems: "center",
-        flex: 1,
-        marginRight: 4
+  },
+  statsBox: {
+    alignItems: "center",
+    flex: 1
 
-      },
-      mediaImageContainer: {
-        width: 180,
-        height: 200,
-        borderRadius: 12,
-        overflow: "hidden",
-        marginHorizontal: 10
-      },
-      mediaCount: {
-        backgroundColor: "#41444B",
-        position: "absolute",
-        top: "50%",
-        marginTop: -50,
-        marginLeft: 30,
-        width: 100,
-        height: 100,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 12,
-        shadowColor: "rgba(0, 0 ,0 ,0.38)",
-        shadowOffset: { width: 0, height: 10 },
-        shadowRadius: 20,
-        shadowOpacity: 1
+  },
+  mediaImageContainer: {
+    width: 180,
+    height: 200,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginHorizontal: 10
+  },
+  mediaCount: {
+    backgroundColor: "#41444B",
+    position: "absolute",
+    top: "50%",
+    marginTop: -50,
+    marginLeft: 30,
+    width: 100,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    shadowColor: "rgba(0, 0 ,0 ,0.38)",
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 20,
+    shadowOpacity: 1
 
-      },
-      recent: {
-        marginLeft: 78,
-        marginTop: 32,
-        marginBottom: 6,
-        fontSize: 10
-      },
-      recentItem: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        marginBottom: 16
-      },
-      recentItemIndicator: {
-        backgroundColor: "#CABFAB",
-        padding: 4,
-        height: 12,
-        width: 12,
-        borderRadius: 6,
-        marginTop: 3,
-        marginRight: 20
+  },
+  recent: {
+    marginLeft: 78,
+    marginTop: 32,
+    marginBottom: 6,
+    fontSize: 10
+  },
+  recentItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16
+  },
+  recentItemIndicator: {
+    backgroundColor: "#CABFAB",
+    padding: 4,
+    height: 12,
+    width: 12,
+    borderRadius: 6,
+    marginTop: 12,
+    marginRight: 3
 
-      },
-      buttonHover: {
-        color: "#CABFAB"
-      },
+  },
+  buttonHover: {
+    color: "#CABFAB"
+  }
 
-    });
+});

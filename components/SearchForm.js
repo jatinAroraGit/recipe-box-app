@@ -187,7 +187,6 @@ function SearchForm({ props }) {
       }
     }
   }
-
   const showCuisinePicker = cuisine.map((c, i) => {
 
     var key = 'cuisine' + i.toString();
