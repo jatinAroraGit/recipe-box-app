@@ -15,14 +15,10 @@ class SecurityQuestionScreen extends React.Component {
 
   callbackFunction = (childData) => {
     this.setState({ login: childData });
-    console.log("login complete!")
   }
 
   render() {
 
-    console.log(this.state.navigation);
-    //console.log('NAVIGATION USER %%%%%%% ');
-    //console.log(this.props.navigation.state.routeName);
     return (
 
       <SafeAreaView style={{ flex: 3 }}>

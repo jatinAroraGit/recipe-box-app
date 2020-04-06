@@ -84,10 +84,6 @@ function SearchForm({ props }) {
     results.cuisine = "";
     results.query = "";
     results.intolerances = "";
-    console.log("Ingredients")
-    console.log(ingredients);
-    console.log("chips");
-    console.log(chips);
 
     var num = 0;
 
@@ -107,7 +103,6 @@ function SearchForm({ props }) {
 
     if (selectedCuisine != "None") {
       num++;
-      console.log(selectedCuisine);
       results.cuisine = selectedCuisine;
 
     }
@@ -118,24 +113,10 @@ function SearchForm({ props }) {
 
     }
 
-    if (selectedDietary.length != 0) {
-      num++;
+    if (selectedDietary[i] != 'None') {
 
-      for (var i in selectedDietary) {
+      results.intolerances = selectedDietary;
 
-        for (var i in selectedDietary) {
-
-          if (i > 0 && selectedDietary[i] != "") {
-
-            results.intolerances += ',';
-
-          }
-          if (selectedDietary[i] != '') {
-
-            results.intolerances += selectedDietary[i];
-          }
-        }
-      }
     }
 
     const result = JSON.stringify(results);

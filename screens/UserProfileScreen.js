@@ -114,9 +114,6 @@ class UserProfileScreen extends React.Component {
 
   constructor(props) {
 
-
-    console.log('USER PROFILE SCREEN: ******')
-
     super(props);
     this.state = { currentUser: [], isVerified: false, loading: true };
 
@@ -125,19 +122,14 @@ class UserProfileScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    console.log('USER PROFILE Mounted');
     const params = this.props.navigation.state;
     const isUserVerfied = params.verified;
-    console.log(params);
     let set = this;
     this.unsubscribe = Firebase.auth().onAuthStateChanged(user => {
       this.setState({ loading: false })
-      console.log('FIRING AUTH CHANGED &&&&&&&&');
       if (user.emailVerified) {
 
         set.user = user;
-
-        console.log(set.user.email);
         if (user.emailVerified)
           set.setState({ currentUser: user });
 
@@ -152,10 +144,6 @@ class UserProfileScreen extends React.Component {
   componentDidUpdate() {
     //  this.setState({ loading: true })
 
-    console.log('USER PROFILE UPDATING');
-
-
-
   }
 
   componentWillUnmount() {
@@ -164,7 +152,6 @@ class UserProfileScreen extends React.Component {
     //this.setState({ currentUser: null, isVerified: false, loading: true });
   }
   handleSubmitClick = (color) => {
-    console.log('CLICKED %%%');
   }
   logoutUser = async () => {
     try {

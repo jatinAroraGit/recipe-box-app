@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { View, StyleSheet, Platform, SafeAreaView, ScrollView, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Platform, SafeAreaView, ScrollView, Dimensions, Text, ImageBackground } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
-import DeleteUserForm from '../components/DeleteUserForm';
+import UserItems from '../components/UserItems';
 
 
-class DeleteUserScreen extends React.Component {
+class UserItemsScreen extends React.Component {
    constructor(props) {
     super(props);
       this.state = {
@@ -20,22 +20,23 @@ class DeleteUserScreen extends React.Component {
   render() {
     
     return (
-  
+      <ImageBackground source={require('../assets/images/Blush.jpg')} style={{ width: '100%', height: '100%', position: "relative" }} >
       <SafeAreaView style={{ flex: 3 }}>
-        <TopNavbar title='Delete User'></TopNavbar>
+        <TopNavbar title='Change Password'></TopNavbar>
         <ScrollView >
           <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>
             
-              <DeleteUserForm props={this.props.navigation}></DeleteUserForm>
+              <UserItems props={this.props.navigation}></UserItems>
             
           </View>
         </ScrollView>
       </SafeAreaView>
+      </ImageBackground>
     );
   }
 }
 
-DeleteUserScreen.navigationOptions = {
+UserItemsScreen.navigationOptions = {
   header: null,
 };
-export default DeleteUserScreen;
+export default UserItemsScreen;

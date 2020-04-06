@@ -36,7 +36,6 @@ var loggedIn = false;
 
 class LoginScreen extends React.Component {
   constructor(props) {
-    console.log('LOGIN SCREEN: ******')
 
     super(props);
     this.state = {
@@ -55,13 +54,10 @@ class LoginScreen extends React.Component {
 
   callbackFunction = (childData) => {
 
-    console.log("login complete!");
+    
   };
 
   render() {
-
-    console.log("Logged in?");
-    console.log(loggedIn);
 
     if (false) {
 

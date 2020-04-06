@@ -52,8 +52,6 @@ function SecurityQuestionForm({ props }) {
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
-    console.log(data);
-
     if (data.question && data.question) {
 
       if (data.question === data.answer) {
@@ -62,13 +60,8 @@ function SecurityQuestionForm({ props }) {
 
       } else {
 
-        console.log('good');
         props.navigate('UserAccount');
       }
-    } else {
-
-      console.log('bad');
-
     }
 
   }

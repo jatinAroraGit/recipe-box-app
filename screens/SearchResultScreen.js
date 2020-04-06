@@ -29,7 +29,6 @@ class SearchResultScreen extends React.Component {
       axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=40')
         .then(res => {
           const recipes = res.data.results;
-          console.log(recipes)
           this.setState({ recipes });
         })
     }
@@ -37,7 +36,6 @@ class SearchResultScreen extends React.Component {
 
   callbackFunction = (childData) => {
     this.setState({ login: childData });
-    console.log("login complete!")
   }
 
   render() {

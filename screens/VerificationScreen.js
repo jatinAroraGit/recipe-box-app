@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
 class VerificationScreen extends React.Component {
   notifyMessage = "Oops!, something went wrong. Try again later.";
   constructor(props) {
-    console.log('VERIFICATION SCREEN: ******')
 
     super(props);
     this.state = {
@@ -98,12 +97,10 @@ class VerificationScreen extends React.Component {
 
         // this.setState({ showSnack: true });
 
-        console.log(' Email sent to : ' + user.email);
 
       }).catch(function (error) {
         //  sentEmail = true;
         //   this.setState({ message: "A verification email has been sent to" })
-        console.log(error);
       });
       //  if (sentEmail) {
       //  this.setState({ message: "A verification email has been sent to" })
@@ -117,7 +114,6 @@ class VerificationScreen extends React.Component {
 
   callbackFunction = (childData) => {
     this.setState({ login: childData });
-    console.log("login complete!")
   }
 
   render() {

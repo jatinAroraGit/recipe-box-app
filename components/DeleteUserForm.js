@@ -54,46 +54,32 @@ function DeleteUserForm({ props }) {
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
-    console.log(data);
 
     if (data.password && data.accept) {
-      console.log('required data entered');
 
       if (data.accept == 'I AM SURE') {
-        console.log('deletion confirmed');
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
-          console.log('User verified');
 
           user.delete().then(function () {
-            console.log('Account Deleted');
             props.navigate('Home');
 
           }).catch(function (error) {
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
           });
 
         }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
-          console.log(errorCode);
-          console.log(errorMessage);
         });
 
       } else {
 
-        console.log("Accept code not entered");
         setError("accept", 'bad message', "Deletion confirmation not entered correctly");
 
       }
-
-    } else {
-
-      console.log('Please fill in all fields');
 
     }
 

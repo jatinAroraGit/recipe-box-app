@@ -188,7 +188,6 @@ function EditRecipeForm({ nav }) {
 
   const onPublish = data => {
 
-    console.log("Attepmting to publish...");
     let isValid = true;
 
     if (data.recipeName.length < 2) {
@@ -210,7 +209,6 @@ function EditRecipeForm({ nav }) {
     if (isValid){
       isPublished = true;
       onSubmit(data);
-      console.log("Recipe successfully published.");
     }
   }
 
@@ -225,8 +223,6 @@ function EditRecipeForm({ nav }) {
     recipe.description = data.recipeDesc;
     recipe.ingredients = ingredients;
     recipe.steps = steps;
-    console.log("Recipe successfully saved.");
-    console.log("here's the recipe:" + JSON.stringify(recipe));
 
     if (true/* if data is valid enough to be stored*/) {
 

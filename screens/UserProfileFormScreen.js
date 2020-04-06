@@ -38,7 +38,6 @@ class UserProfileFormScreen extends React.Component {
 
   }
   handleSubmitClick = (color) => {
-    console.log('CLICKED %%%');
   }
   render() {
 

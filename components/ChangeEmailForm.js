@@ -84,21 +84,14 @@ function ChangeEmailForm({ props }) {
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
     setLoading(true);
-    console.log(data);
 
     if (data.password && data.newEmail && data.confirmNewEmail) {
-      console.log('required data entered');
 
       if (data.newEmail == data.confirmNewEmail) {
-        console.log('new emails match');
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
-          console.log('User verified');
           Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.newEmail + "&smtp=1&format=1").then(res => {
-            console.log('axios for validator');
 
-            console.log(res.data);
-            console.log('HiBye');
             if (!(res.data.smtp_check)) {
               setLoading(false);
 
@@ -106,11 +99,8 @@ function ChangeEmailForm({ props }) {
             }
             else {
               user.updateEmail(data.newEmail).then(function () {
-                console.log('Email updated');
 
                 user.sendEmailVerification().then(function () {
-
-                  console.log('First Email sent to : ' + user.email);
 
                   setLoading(false);
                   setShowModal(true)
@@ -137,7 +127,6 @@ function ChangeEmailForm({ props }) {
               });
             }
             onVerification();
-            // console.log(items)
           });
 
 
@@ -145,34 +134,24 @@ function ChangeEmailForm({ props }) {
 
           /*
                     user.updateEmail(data.newEmail).then(function () {
-                      console.log('Email updated');
                       props.navigate('UserProfile');
           
                     }).catch(function (error) {
                       var errorCode = error.code;
                       var errorMessage = error.message;
-                      console.log(errorCode);
-                      console.log(errorMessage);
                     });
           */
         }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
-          console.log(errorCode);
-          console.log(errorMessage);
         });
 
       } else {
 
-        console.log("emails do not match");
         setError("matchEmail", 'no ematch', "Emails do not match");
 
       }
-
-    } else {
-
-      console.log('Please fill in all fields');
 
     }
 

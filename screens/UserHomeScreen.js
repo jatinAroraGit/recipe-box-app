@@ -140,9 +140,6 @@ class UserHomeScreen extends React.Component {
 
   constructor(props) {
 
-
-    console.log('USER PROFILE SCREEN: ******')
-
     super(props);
     this.state = { currentUser: [], isVerified: false, loading: true, items: [{}], tag: "" };
   }
@@ -150,17 +147,13 @@ class UserHomeScreen extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    this._isMounted = true;
-    console.log('USER PROFILE Mounted');
+    this._isMounted = true;;
     const params = this.props.navigation.state;
-    console.log(params);
     let set = this;
     this.unsubscribe = Firebase.auth().onAuthStateChanged(user => {
 
-      console.log('FIRING AUTH CHANGED &&&&&&&&');
       if (user.emailVerified) {
         this.setState({ currentUser: user });
-        console.log(this.state.currentUser.email);
         if (user.emailVerified)
           set.setState({ currentUser: user });
 
@@ -175,9 +168,6 @@ class UserHomeScreen extends React.Component {
   componentDidUpdate() {
     //  this.setState({ loading: true })
 
-    console.log('USER PROFILE UPDATING');
-
-
 
   }
 
@@ -187,7 +177,6 @@ class UserHomeScreen extends React.Component {
     //this.setState({ currentUser: null, isVerified: false, loading: true });
   }
   handleSubmitClick = (color) => {
-    console.log('CLICKED %%%');
   }
   logoutUser = async () => {
     try {
@@ -197,7 +186,6 @@ class UserHomeScreen extends React.Component {
       this.props.navigation.navigate('Auth');
       this.props.navigation.navigate('Login');
     } catch (error) {
-      console.error(error);
     }
   };
   logoutUserOutOfStack = async () => {
@@ -232,7 +220,6 @@ class UserHomeScreen extends React.Component {
     var baseUri = "https://api.spoonacular.com/recipes/random?";
     var tag = "";
     var hours = new Date().getHours();
-    console.log('hours' + hours);
     if (hours >= 12 && hours <= 18) {
       tag = "Our Pick's For Lunch"
     }
@@ -243,12 +230,9 @@ class UserHomeScreen extends React.Component {
       tag = "Our Pick's For Breakfast"
     }
     this.setState({ tag: tag, loading: true })
-    console.log('Sending Req to ' + baseUri + "&apiKey=" + apiKey.key + "&tag=" + tag + "&number=5");
     Axios.get(baseUri + "apiKey=" + apiKey.key + "&tag=" + tag + "&number=5")
       .then(res => {
-        console.log(res);
         const items = res.data.recipes;
-        console.log(items);
         this.setState({ items: items });
         //setItemCount(items.length);
         //  setLoading(false);
@@ -265,6 +249,36 @@ class UserHomeScreen extends React.Component {
       }).catch(err => {
         this.setState({ loading: false })
       });
+  }
+
+  toSaved() {
+
+    var savedRecipes = [];
+    
+    var savedCookbooks = [];
+    
+    // GET SAVED COOKBOOKS HERE AND SET AS savedCookbooks
+    // GET SAVED RECIPES HERE AND SET AS savedRecipes
+
+    savedRecipes = [{id: 749013, title: "Pasta", uri: "https://spoonacular.com/recipeImages/749013-312x231.jpeg"},
+    {id: 549100, title: "Sweet Pork Taco Bowls", uri: "https://spoonacular.com/recipeImages/549100-312x231.jpg"},
+    {id: 737543, title: "Chicken Pie", uri: "https://spoonacular.com/recipeImages/737543-312x231.jpeg"},
+    {id: 499139, title: "Chicken Kiev", uri: "https://spoonacular.com/recipeImages/499139-312x231.jpg"}];
+    // REMOVE ABOVE AFTER IMPLEMENTING API
+
+    for(var i in savedRecipes) {
+
+      savedRecipes[i] = JSON.stringify(savedRecipes[i]);
+
+    }
+
+    for(var i in savedCookbooks) {
+
+      savedCookbooks[i] = JSON.stringify(savedCookbooks[i]);
+
+    }
+
+    this.props.navigation.navigate('UserItems', {recipes: savedRecipes, cookbooks: savedCookbooks});
   }
 
   render() {
@@ -332,14 +346,10 @@ class UserHomeScreen extends React.Component {
                   <Image source={require('../assets/images/cooking-stew-svgrepo-com.png')} style={{ width: 200, height: 200, position: "relative" }}></Image>
 
                   <Surface style={customStyles.defaultRounded}>
-                    <Text onPress={() => this.props.navigation.push('UserProfile')} style={{ color: '#ffffff', fontSize: 20 }}>View User Profile
-     </Text>
-
+                    <Text onPress={() => this.props.navigation.push('UserProfile')} style={{ color: '#ffffff', fontSize: 20 }}>View User Profile</Text>
                   </Surface>
                   <Surface style={customStyles.defaultRounded}>
-                    <Text onPress={() => this.props.navigation.push('UserProfile')} style={{ color: '#ffffff', fontSize: 20 }}> See Your Cookbooks
-     </Text>
-
+                    <Text onPress={() => {this.toSaved()}} style={{ color: '#ffffff', fontSize: 20 }}> View Your Saved Cookbooks and Recipes</Text>
                   </Surface>
                 </View>
 

@@ -27,6 +27,7 @@ import Loading from '../screens/Loading';
 import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 import UserHomeScreen from '../screens/UserHomeScreen';
 import EditRecipeScreen from '../screens/EditRecipeScreen';
+import UserItemsScreen from '../screens/UserItemsScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -62,7 +63,7 @@ const AccountStack = createStackNavigator(
     ForgotPassword: ForgotPasswordScreen,
 
     SecurityQuestion: SecurityQuestionScreen,
-
+    UserItems: UserItemsScreen,
     Verification: VerificationScreen,
     CreateCookbook: PageNotFound,
     ChangeEmail: ChangeEmailScreen,

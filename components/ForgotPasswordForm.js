@@ -90,39 +90,31 @@ function ForgotPasswordForm({ props }) {
 
   const onSubmit = data => {
 
-    console.log(data);
 
     if (data.email && data.answer) {
 
       if (data.answer == response) {//TODO change 'true' to checking for the email in the database.
         //TODO read security questions from database instead of hardcoding.
-        console.log('Valid security question answer');
+        
 
 
         auth.sendPasswordResetEmail(data.email).then(function () {
           // Email sent.
           setIsEmailSent(true);
-          console.log('password recovery email sent');
           //   props.navigate('Login');
 
         }).catch(function (error) {
           // An error happened.
           var errorCode = error.code;
           var errorMessage = error.message;
-          console.log(errorCode);
-          console.log(errorMessage);
-
-          console.log('No user');
           setError("noUser", 'no user', "no account uses this email");
         });
 
       } else {
-        console.log('Invalid security question answer');
         setError("wrongAnswer", 'wrong answer', "security question answer is incorrect");
 
       }
     } else if (data.email && !userFound) {
-      console.log('Valid email entered.');
       const query = { "userEmail": data.email };
       const sendData = JSON.stringify(query);
 
@@ -134,7 +126,6 @@ function ForgotPasswordForm({ props }) {
         }
       }).then((response) => {
         // if(response.data.uid ||;
-        console.log(response);
         if (response.data) {
           setSecurityQuestion(response.data.securityQuestion)
           setResponse(response.data.response);
@@ -145,18 +136,15 @@ function ForgotPasswordForm({ props }) {
         }
       }).catch(error => {
         // setLoading(false);
-        console.log("Error" + error);
       });
 
     }
     else {
-      console.log('Please fill all fields');
       setError("missingData", 'missing data', "some fields were left blank");
     }
 
   }
   const onChange = args => {
-    console.log(args[0]);
     return {
       value: args[0].nativeEvent.text,
     };

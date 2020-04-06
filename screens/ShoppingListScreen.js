@@ -16,7 +16,6 @@ class ShoppingListScreen extends React.Component {
 
     callbackFunction = (childData) => {
         this.setState({login: childData});
-        console.log("login complete!")
     }
 
     
@@ -29,12 +28,6 @@ class ShoppingListScreen extends React.Component {
         <TopNavbar title='Shopping List'></TopNavbar>
         <ScrollView >
           <View style={{ marginStart:10, marginTop: 10, marginEnd:10, position: 'relative', top: 0, left: 0, right: 0, bottom: 0 , justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden"}}>  
-            {/* {console.log('This is showing ingredSent - Start')}
-            {console.log(ingred)}
-            {console.log('This is showing ingredSent - end')} */}
-            {console.log('This is start-ViewRecipeScreen')}
-            {console.log(JSON.parse(this.state.navigation.state.params[0]))}
-            {console.log('This is end-ViewRecipeScreen')}
             <ShoppingList navigation={this.props.navigation} ingredSent={this.props.navigation.state.params}></ShoppingList>
           </View>
         </ScrollView> 

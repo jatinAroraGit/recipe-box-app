@@ -47,23 +47,15 @@ function SearchResults({ navigation, ingredQuery }) {
   const [items, setItems] = useState([{}]); //useState is initial state to manage items being updated.
   const [itemCount, setItemCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  console.log('I GOT ::::::::::');
 
-  //  console.log(navigation.state.params);
   var basicQuery = navigation.getParam('searchQuery');
-  console.log("BASIC QUERY: " + basicQuery);
   var results = JSON.parse(navigation.state.params.results);
   var query = "";
   var queryLength = 0;
   function getQuery() {
 
-    console.log("######getQuery() results")
-    console.log(results);
-
-
     if (results.query != "") {
 
-      console.log("good");
       queryLength++;
       query += "&query=" + results.query;
 
@@ -71,7 +63,6 @@ function SearchResults({ navigation, ingredQuery }) {
 
     if (results.cuisine != "") {
 
-      console.log("good");
       queryLength++;
       query += "&cuisine=" + results.cuisine;
 
@@ -79,7 +70,6 @@ function SearchResults({ navigation, ingredQuery }) {
 
     if (results.intolerances != "") {
 
-      console.log("good");
       queryLength++;
       query += "&intolerances=" + results.intolerances;
 
@@ -87,32 +77,21 @@ function SearchResults({ navigation, ingredQuery }) {
 
     if (results.includeIngredients != "") {
 
-      console.log("good");
       queryLength++;
       query += "&includeIngredients=" + results.includeIngredients;
 
     }
     let apiKey = require('../configure/apiKey.json');
-    console.log('This is query');
-    console.log(query);
-
     query = 'https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKey.key + query + '&addRecipeInformation=true&number=20';
-
-    console.log("######getQuery() query")
-    console.log(query);
     return query;
   }
 
   useEffect(() => {
 
     var url = getQuery();
-    console.log("URL");
-    console.log(url);
     axios.get(url)
       .then(res => {
-        console.log(res);
         const items = res.data.results;
-        console.log(items);
         setItems(items);
         setItemCount(items.length);
         setLoading(false);

@@ -44,7 +44,6 @@ class TopNavbar extends React.Component {
       show: false,
       userLoggedIn: (Firebase.auth().currentUser) ? true : false
     };
-    console.log(Firebase.auth().currentUser);
   }
 
   ShowHideComponent = () => {
@@ -56,19 +55,15 @@ class TopNavbar extends React.Component {
   };
 
   thirdButtonFunction() {
-    console.log('PRESSED');
   }
   handleSearch = (keyPress, query) => {
-    console.log(keyPress.keyboardWillHide);
     // if(keyPress.nativeEvent.key=='Enter'){
-    console.log(query);
 
     this.props.navigation.navigate('SearchResults', { searchQuery: query });
     //}
   };
 
   minimizeSearchBar = () => {
-    console.log('Minimize Search Bar search here');
     this.setState({ show: false });
   }
   logoutUser = async () => {
@@ -78,7 +73,6 @@ class TopNavbar extends React.Component {
       // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
       this.props.navigation.navigate('Login');
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -86,7 +80,6 @@ class TopNavbar extends React.Component {
     const { firstQuery } = this.state;
     const { navigation } = this.props.navigation;
     let BackButton;
-    console.log('************ LINK : ' + this.props.navigation.state.routeName)
     if (this.props.navigation.dangerouslyGetParent().state.index > 0 && this.props.navigation.state.routeName != 'Login' && this.props.navigation.state.routeName != 'UserProfile' && this.props.navigation.state.routeName != 'Search') {
       BackButton = <Appbar.BackAction color='#FFFFFF' style={{ backgroundColor: '#000000', display: ((Platform.OS === 'web') ? 'none' : 'flex') }}
         onPress={() => this.props.navigation.goBack()}
@@ -151,7 +144,7 @@ class TopNavbar extends React.Component {
   }
 }
 function testFunc() {
-  console.log('PRESSED SEARCH CLOSE');
+  
 }
 
 

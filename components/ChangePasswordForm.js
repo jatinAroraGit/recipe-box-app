@@ -56,50 +56,34 @@ function ChangePasswordForm({ props }) {
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
-    console.log("JSON FORM DATA :::::::::::");
     const sendData = JSON.stringify(data);
-    console.log(sendData);
     if (data.password && data.newPassword && data.confirmNewPassword) {
-      console.log('required data entered');
 
       if (data.newPassword == data.confirmNewPassword) {
-        console.log('new passwords match');
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
-          console.log('User verified');
-          console.log('DB REQ SENT');
           Axios.post('http://localhost:8082/rest-api/recipe/example', sendData).then(() => {
-            console.log('Success');
+            
           });
           user.updatePassword(data.newPassword).then(function () {
-            console.log('Password updated');
             props.navigate('UserProfile');
 
           }).catch(function (error) {
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
           });
 
         }).catch(function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
           setError("invalid", 'wrong password', "Wrong Password");
-          console.log(errorCode);
-          console.log(errorMessage);
         });
 
       } else {
 
-        console.log("passwords do not match");
         setError("matchPassword", 'no pmatch', "Passwords do not match");
 
       }
-
-    } else {
-
-      console.log('Please fill in all fields');
 
     }
 
