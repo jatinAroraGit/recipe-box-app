@@ -11,6 +11,7 @@ let apiKey = require('../configure/apiKey.json');
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+    marginBottom: 20,
     backgroundColor: '#69F0AE',
     ...Platform.select({
       ios: {
@@ -23,8 +24,8 @@ const styles = StyleSheet.create({
         width: "auto"
       },
     }),
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderRadius: 15,
+
     padding: 10,
 
   },
@@ -171,10 +172,10 @@ function SearchResults({ navigation, ingredQuery }) {
 
         <FlatList
           style={styles.container}
-
+          inverted={true}
           snapToAlignment={"center"}
           data={items}
-          ListHeaderComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
+          ListFooterComponent={<Title style={{ marginBottom: 4, alignSelf: "center" }}> Found {itemCount} results</Title>}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => <RecipeCards navigation={navigation} oneitem={item} />}
 

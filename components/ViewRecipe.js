@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
+import { FAB, Title, Headline, Subheading, Surface, Card, Divider } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
@@ -29,6 +29,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   let [isFound, setIsFound] = useState(false);
   const [readyInMinutes, setreadyInMinutes] = useState(0);
   const [servings, setservings] = useState(0);
+  const [recipeInfo, setRecipeInfo] = useState();
   const [summary, setsummary] = useState(0);
   const [switchValue, setSwitchValue] = useState(false);
   var ingredientsArray = [];
@@ -54,25 +55,25 @@ function ViewRecipe({ navigation, recipeDetail }) {
       withCredentials: false,
     },
     ).then((res) => {
-      console.log("Recipe Info : ");
-      console.log(res);
+
       if (res.data) {
         console.log('Recipe Detail');
-        console.log(res);
+        //console.log(res);
         setIsFound(true);
-
+        setRecipeInfo(res.data);
+        console.log(recipeInfo);
         const readyInMin = res.data.readyInMinutes;
         setreadyInMinutes(readyInMin)
         const serves = res.data.servings
         setservings(serves);
         const recSummary = res.data.summary;
-        var dirty = 'some really tacky HTML';
+
         var cleanSummary = sanitizeHtml(recSummary);
         let pureTextSummary = stripHtml(cleanSummary);
         htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
         setsummary(pureTextSummary);
         const ingredients = res.data.includedIngredients;
-        console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+
         console.log(ingredients);
         extractIngredients(ingredients)
 
@@ -112,9 +113,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
   const map = step.map((step, index) => {
     return (
-      <View >
-        <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step.description}</Subheading>
-      </View>
+
+      <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{"\n"}{index + 1}) {step.description} {"\n"}</Subheading >
     )
   })
 
@@ -136,7 +136,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     }
 
     setStep(stepArray);
-    htmlSteps = htmlSteps + "</ul></li></div>"
+    htmlSteps = htmlSteps + "</ul></li ></div > "
     console.log("PDF HTML***");
 
     console.log(htmlTitle + htmlDescrition + htmlSteps);
@@ -161,13 +161,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
       );
     }
 
-
-    // for (let i = 0; i < ingreds.length; i++) {
-    //     for (let j = 0; j < ingreds[i].ingredients.length; j++) {
-    //         ingreds[i].ingredients[j].count = 0;
-    //         ingredientsArray.push(ingreds[i].ingredients[j]); //IngredientsArray currently holds a collection of ingredients' objects
-    //     }
-    // }
 
     ingredientsArray = ingredientsArray.filter((ingredElement, index, self) =>
       index === self.findIndex((t) => (
@@ -275,7 +268,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
           }
           <View style={{ alignSelf: "center" }}>
             <View style={styles.profileImage}>
-              <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="center"></Image>
+
+              <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} resizeMode="center"></Image>
             </View>
             <View style={styles.dm}>
               {
@@ -302,7 +296,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
           <View style={styles.infoContainer}>
             <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
-            <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
+
           </View>
 
           {/* <View style={styles.ratingContainer}>
@@ -316,26 +310,13 @@ function ViewRecipe({ navigation, recipeDetail }) {
             </View>
             <Text style={{ fontSize: 34, color: '#99ccff' }}> | </Text>
             <View style={styles.statsBox}>
-              <Text style={[styles.text, { fontSize: 24 }]}>{servings}</Text>
+              <Text style={[styles.text, { fontSize: 20 }]}>{servings}</Text>
               <Text style={[styles.text, styles.subText]}>Servings</Text>
             </View>
           </View>
 
           <View style={{ marginTop: 32 }}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              {/* 
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View> */}
 
             </ScrollView>
             {/* <View style={styles.mediaCount}>
@@ -382,42 +363,17 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
           <View style={styles.viewBoxStyle}>
             {/* <View style={styles.viewBoxStyle}> */}
-            <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
-            <View style={styles.switchStyle}>
+            <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>Instructions</Headline>
 
+            <View style={{ margin: 10 }}>
               <Text> {map} </Text>
 
             </View>
           </View>
 
 
-
-
-          <Text style={{ alignItems: "right" }, [styles.subText, styles.recent]}>Recent Activity</Text>
-        <View style={{ alignItems: "center" }}>
-          <View style={styles.recentItem}>
-            <View style={styles.recentItemIndicator}></View>
-            <View style={{ width: 250 }}>
-              <Text style={[styles.text, { color: "rgb(65,68,75)", fontWeight: "300" }]}>
-                Started Following{" "}
-                <Text style={{ fontWeight: "400" }}>
-                  Jason, Jatin, Sanghyuk Lee, Narma, Patrick <Text style={{ fontWeight: "400" }}>GroupQuattro</Text>
-                </Text>
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.recentItem}>
-            <View style={styles.recentItemIndicator}></View>
-            <View style={{ width: 250 }}>
-              <Text style={[styles.text, { color: "#41444B", fontWeight: "300" }]}>
-                Started Following <Text style={{ fontWeight: "400" }}> Recipe2 </Text>
-              </Text>
-            </View>
-          </View>
-        </View>
-            </ScrollView>
-        </SafeAreaView >
+        </ScrollView>
+      </SafeAreaView >
 
     );
 
@@ -450,10 +406,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     ...Platform.select({
       ios: {
-        width: 270
+        width: "auto"
       },
       android: {
-        width: 270
+        width: "auto"
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
@@ -482,10 +438,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     ...Platform.select({
       ios: {
-        width: 360
+        width: "auto"
       },
       android: {
-        width: 360
+        width: "auto"
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
@@ -516,10 +472,10 @@ const styles = StyleSheet.create({
     height: 'auto',
     ...Platform.select({
       ios: {
-        width: 380
+        width: "auto"
       },
       android: {
-        width: 380
+        width: "auto"
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
@@ -546,8 +502,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: undefined,
-    height: undefined
+    width: "auto",
+    height: "auto"
   },
   titleBar: {
     flexDirection: "row",
