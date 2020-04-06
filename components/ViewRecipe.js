@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Card, Divider } from 'react-native-paper';
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
+import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Firebase from '../configure/Firebase';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
 var sanitizeHtml = require('sanitize-html');
@@ -119,6 +120,13 @@ function ViewRecipe({ navigation, recipeDetail }) {
   })
 
 
+    const map = step.map((step, index) => {
+        return (
+            // <View key={index} style={styles.instructionStyle}>
+            <Text key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+            // </View>
+        )
+    })
 
 
 
@@ -247,6 +255,49 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
       // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
 
+        setShowModal(true);
+        console.log('showModal', showModal);
+    }
+
+    const addRecipeToCookbook = (id) => {
+
+        
+        /*
+        ****************************************************************************************************************
+        **********************************************Database part*****************************************************
+        ****************************************************************************************************************
+        */
+       
+        //    var auth = Firebase.auth();
+        //    const user_id = auth.currentUser.uid;
+        
+        // const recipeInfo = {
+        //     "uid": id,
+        //     "userId": user_id,
+        //     "cookbookId": ,
+        // }
+        
+        // Axios.post(baseURL + 'userAccount/getUserAccount', recipeInfo, {
+        //     headers: {
+        //       'content-type': 'application/json',
+        //       'Access-Control-Allow-Origin': '*',
+    
+        //     }
+        //   }).then((response) => {
+        //     // if(response.data.uid ||;
+        //     console.log(response);
+        //     if (response.data) {
+        //       setSecurityQuestion(response.data.securityQuestion)
+        //       setResponse(response.data.response);
+        //       setUserFound(true);
+        //     }
+        //     else {
+        //       setError("noUser", 'no user', "no account uses this email");
+        //     }
+        //   }).catch(error => {
+        //     // setLoading(false);
+        //     console.log("Error" + error);
+        //   });
     }
 
     const downloadRecipe = () => {
@@ -354,9 +405,47 @@ function ViewRecipe({ navigation, recipeDetail }) {
               onPress={() => {
                 navigation.navigate('Shopping', makeJsontoObject(ingred));
               }}><Text>View Shopping List</Text></TouchableOpacity>
+                   
+                </View>
 
-            {/* </View > */}
-          </View>
+                {/* <CookbookModal show={showModal}/> */}
+                <Provider>
+                    <Portal>
+                        <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
+                            {/* {console.log('ModalVisible in visible', modalVisible)} */}
+                            <View >
+                                <Card.Content>
+                                    <Title style={{ fontSize: 30 }}>Cookbook List</Title>
+                                    <View style={{justifyContent:'flex-start', flexDirection: 'row', width: 'auto'}}>
+                                    <Subheading style={{fontSize: 20, color: '#E91E63', marginTop: 10 }}>{recipeDetail.title} </Subheading>
+                                    <Button title='Add' style={{justifyContent:'flex-end'}} 
+                                    onPress={()=>{
+                                        addRecipeToCookbook(recipeDetail.id);
+                                        console.log('Recipe Id has been added')
+                                    }}>
+                                    </Button>
+                                    </View>
+                                    <TouchableHighlight
+                                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                        onPress={() => {
+                                            // props.show = false;
+                                            setShowModal(false);
+                                            console.log("hi i am clicked", showModal)
+                                            // { console.log('ModalVisible when user clicks hide', modalVisible) }
+                                        }}
+                                    >
+                                        <Text style={styles.textStyle}>Hide Modal</Text>
+                                    </TouchableHighlight>
+                                    {/* <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained">Close and ReLogin </Button> */}
+                                </Card.Content>
+                            </View>
+                        </Modal>
+                    </Portal>
+                </Provider>
+
+            </ScrollView>
+        </SafeAreaView>
+    );
 
           {/* </View > */}
 
