@@ -182,11 +182,25 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const addToList = () => {
         if (iconName == 'bookmark-plus')
             setIconName('bookmark-check');
+
+            
+
         else
             setIconName('bookmark-plus');
 
     }
 
+    const saveRecipe = () => {
+
+        // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
+
+    }
+
+    const downloadRecipe = () => {
+
+        // SOMEHOW MAKE INTO A PDF AND SAVE
+
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -264,6 +278,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 </View>
 
                 <View style={styles.viewBoxStyle}>
+                    <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity style={styles.button} onPress={() => { saveRecipe()}}>
+                        <Text>Save Recipe</Text>
+                    </TouchableOpacity>
+                    <Text style={{marginHorizontal: 10}}> </Text>
+                    <TouchableOpacity style={styles.button} onPress={() => { downloadRecipe()}}>
+                        <Text>Download Recipe</Text>
+                    </TouchableOpacity>
+                    </View>
+                </View>
+
+                <View style={styles.viewBoxStyle}>
                     {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
                     <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
                     {ingred.map((oneIngred, index) => {
@@ -296,6 +322,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     {/* </View > */}
                 </View>
 
+                
 
                 <View style={styles.viewBoxStyle}>
                     {/* <View style={styles.viewBoxStyle}> */}

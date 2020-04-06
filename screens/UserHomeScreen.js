@@ -264,6 +264,7 @@ class UserHomeScreen extends React.Component {
     {id: 549100, title: "Sweet Pork Taco Bowls", uri: "https://spoonacular.com/recipeImages/549100-312x231.jpg"},
     {id: 737543, title: "Chicken Pie", uri: "https://spoonacular.com/recipeImages/737543-312x231.jpeg"},
     {id: 499139, title: "Chicken Kiev", uri: "https://spoonacular.com/recipeImages/499139-312x231.jpg"}];
+    // REMOVE ABOVE AFTER IMPLEMENTING API
 
     for(var i in savedRecipes) {
 
