@@ -68,11 +68,12 @@ function SearchForm({ props }) {
   const [autoComplete, setAutoComplete] = useState([])
   const [selectedCuisine, setSelectedCuisine] = useState('None');
   const [text, setText] = useState("");
-  const [selectedDietary, setSelectedDietary] = useState([]);
+  const [selectedMealType, setSelectedMealType] = useState('None');
   const [ingredients, setIngredients] = useState([]);
   const [chips, setChips] = useState([]);
   const cuisine = ['None', 'African', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American', 'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Vietnamese', 'Thai', 'Spanish'];
-  const dietary = ['None', 'Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat']
+  const mealType = ['None', 'Appetizer', 'Side Dish', 'Main Course', 'Desert']
+
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const _showModal = () => { setVisibleModal(true) };
   const _hideModal = () => { setVisibleModal(false) };
@@ -80,24 +81,25 @@ function SearchForm({ props }) {
 
   const onSubmit = data => {
 
-    results.includeIngredients = "";
+    results.includeIngredients = [];
     results.cuisine = "";
     results.query = "";
-    results.intolerances = "";
+    results.mealType = "";
+    console.log("Ingredients")
+    console.log(ingredients);
+    console.log("chips");
+    console.log(chips);
 
     var num = 0;
 
-    for (var i in chips) {
+    for (var i in ingredients) {
 
       num++;
-      if (i > 0 && chips[i].name.name != "") {
-
-        results.includeIngredients += ',';
-
-      }
-      if (chips[i].name.name != '') {
-
-        results.includeIngredients += chips[i].name.name;
+      if (ingredients[i].name != "") {  //If there is an ingredient to show,
+        if (i > 0) {  //If it is not the first ingredient,
+          //  results.includeIngredients += ',';// add a comma.
+        }
+        results.includeIngredients.push(ingredients[i].name);//Add the ingredient.
       }
     }
 
@@ -113,21 +115,21 @@ function SearchForm({ props }) {
 
     }
 
-    if (selectedDietary[i] != 'None') {
-
-      results.intolerances = selectedDietary;
-
-    }
+    if (selectedMealType != "None") {
+      num++;
+      results.mealType = selectedMealType;
+    }//TODO make mealType an array that can support multiple values.  Requires changing input type before supporting it here.
 
     const result = JSON.stringify(results);
-
+    console.log('Final Query:: ', results);
     if (num > 0) {
 
       props.navigate("Results", { results: result });
 
     } else {
 
-      setError("search", 'search', "Invalid User Details");
+      setError("search", 'search', "Invalid Search Terms");
+      //TODO this seems like the wrong error message, this seems to be reached when no search parameters are entered
 
     }
   }
@@ -149,7 +151,7 @@ function SearchForm({ props }) {
 
     return (
 
-      <Chip onClose={() => removeChip(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>{c.name.name.toString()}</Chip>
+      <Chip onClose={() => removeIngredient(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>{ingredient.name.toString()}</Chip>
 
     );
 
@@ -157,39 +159,34 @@ function SearchForm({ props }) {
 
   const updateIngredient = (name, i) => {
 
-    let temp = [...ingredients];
-    let item = { ...temp[i] };
-    item.name = name;
-    temp[i] = item;
-    setIngredients(temp);
-    updateChips(name);
+    var isAlreadyUsed = false;
+    for (var i in ingredients) {
 
-  }
+      if (ingredient.name == ingredients[i].name) {
 
-  const updateChips = (name, i) => {
+        const updateChips = (name, i) => {
 
-    var good = true;
-    for (var j in chips) {
+          var good = true;
+          for (var j in chips) {
 
-      if (name == chips[j].name.name) {
+          }
+          if (!isAlreadyUsed) {
+            let temp = [...ingredients];
+            temp[ingredients.length] = ingredient;
+            setIngredients(temp);
+          }
 
-        good = false;
+          good = false;
+
+        }
+
+        let temp = [...ingredients];
+        temp.splice(i, 1);
+        setIngredients(temp);
 
       }
-
     }
-    if (good) {
-      i = chips.length;
-      let temp = [...chips];
-      let item = { ...temp[i] };
-      item.name = name;
-      temp[i] = item;
-
-      setChips(temp);
-    }
-
   }
-
   const showCuisinePicker = cuisine.map((c, i) => {
 
     var key = 'cuisine' + i.toString();
@@ -202,9 +199,9 @@ function SearchForm({ props }) {
 
   });
 
-  const showDietPicker = dietary.map((c, i) => {
+  const showDietPicker = mealType.map((c, i) => {
 
-    var key = 'diet' + i.toString();
+    var key = 'type' + i.toString();
 
     return (
 
@@ -234,8 +231,6 @@ function SearchForm({ props }) {
         setAutoComplete(res.data);
 
       })
-
-    return arr;
   };
 
 
@@ -291,8 +286,8 @@ function SearchForm({ props }) {
 
             </Picker>
 
-            <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Dietary Restrictions</Subheading>
-            <Picker style={{ backgroundColor: "#FFD54F", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedDietary} onValueChange={(value) => { setSelectedDietary(value) }}>
+            <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}> Meal Type</Subheading>
+            <Picker style={{ backgroundColor: "#FFD54F", borderRadius: 5, borderColor: "#CCCCCC" }} selectedValue={selectedMealType} onValueChange={(value) => { setSelectedMealType(value) }}>
               {showDietPicker}
             </Picker>
 

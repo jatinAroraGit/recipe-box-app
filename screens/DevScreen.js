@@ -4,7 +4,7 @@ import { Button, Appbar, Snackbar, Menu, Divider, Provider, Subheading, Title } 
 import TopNavbar from '../components/TopNavbar';
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import UserProfileForm from './UserProfileForm';
+import DevForm from '../components/DevForm';
 import '../configure/apiKey.json'
 
 const baseStyle = StyleSheet.create({
@@ -92,14 +92,13 @@ class DevScreen extends React.Component {
         <TopNavbar title={this.props.navigation.state.routeName}></TopNavbar>
         <ScrollView style={baseStyle.scrollViewBase}>
 
-          <ImageBackground source={require('../assets/images/multicolored_abstract.jpg')} style={{ flex: 3, width: '100%', height: '100%', position: "absolute" }}>
 
 
-            <Title style={{ marginBottom: 3 }}>Results</Title>
-            {this.state.recipes.map(r => <Text>{r.title}</Text>)}
+          <Title style={{ marginBottom: 3 }}>Results</Title>
+
+          <DevForm props={this.props.navigation}></DevForm>
 
 
-          </ImageBackground>
 
         </ScrollView>
       </SafeAreaView>
