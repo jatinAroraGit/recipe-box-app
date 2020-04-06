@@ -19,9 +19,7 @@ export default class RecipeCards extends React.PureComponent {
   render() {
 
 
-    //console.log(this.props)
     var id = JSON.stringify(this.props.oneitem);
-
     return (
       <View>
 

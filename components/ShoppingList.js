@@ -11,9 +11,6 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
   const [noZero, setnoZero] = useState([]);
   // const [hasZero, setHasZero] = useState(ingredSent);
-  console.log('what are the inside in ingredSent - start');
-  console.log(JSON.parse(ingredSent[0]));
-  console.log('what are the inside in ingredSent - end');
   let ingredCopy = [];
 
   useEffect(() => {
@@ -32,38 +29,20 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
 
   //  extractJSON(hasZero);
-  console.log('This is the length of the ingredSent');
-  console.log(ingredSent.length);
 
   function extractJSON(arr) {
-    console.log('YOOO')
-    console.log(arr);
 
     let noJSON = [];
 
     for (let i = 0; i < arr.length; i++) {
 
       noJSON.push(JSON.parse(arr[i]));
-
-      console.log('Hi ingredSent'); //whenever I change I need to go back to the first page, otherwise it would not be called at all.
-      console.log(JSON.parse(arr[i]));
-      console.log('Bye ingredSent');
     }
-
-
-
-    console.log('Hi noJSON');
-    console.log(noJSON)
-    console.log('Bye noJSON');
 
     // return noJSON;
     removeZero(noJSON);
 
   }
-
-  // console.log('Start - shoppingList');
-  // console.log(ingredSent);
-  // console.log('end - shoppingList');
 
   //const { ingredSent } = route.params;
   // const [noZero, setnoZero] = useState([]);
@@ -73,16 +52,7 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
   function removeZero(ingredArray) {
 
-
-    console.log('Hello the function removeZero is called successfully');
-    console.log(ingredArray);
-    console.log('IngredArray is called');
-
-
     ingredArray.forEach((oneIngred) => {
-      // console.log('Hi this is oneIngred');
-      // console.log(oneIngred);
-      // console.log('Bye oneIngred');
       if (oneIngred.count > 0) {
         ingredCopy.push(oneIngred);
       }
@@ -91,22 +61,12 @@ export default function ShoppingList({ navigation, ingredSent }) {
     // noZero = ingredCopy;
     setnoZero(ingredCopy);
 
-    console.log('Hi this is ingredCopy');
-    console.log(ingredCopy);
-    console.log('Bye ingredCopy');
   }
 
-  // console.log('Hi this is no zero');
-  // console.log(noZero);
-  // console.log('Bye noZero');
 
   const deleteIngredients = (oneIngred) => {
-    console.log('before');
-    console.log(noZero)
     let deletedArr = noZero.filter(element => element.id !== oneIngred.id);
     setnoZero(deletedArr);
-    console.log('after');
-    console.log(noZero);
 
     // noZero = _.reject(noZero, function(el) { return el.id === oneIngred.id });
   };

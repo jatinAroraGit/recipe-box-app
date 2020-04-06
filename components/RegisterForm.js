@@ -78,17 +78,14 @@ var errorb = false;
 function RegisterForm({ nav }) {
 
   const navigation = nav;
-  console.log(navigation);
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({});
   const onSubmit = data => {
-    console.log("Form Data = ")
 
     //  JSON.
     JSON.stringify(data);
-    console.log(data);
 
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
 
@@ -99,10 +96,8 @@ function RegisterForm({ nav }) {
         errorb = false;
         //Create User with Email and Password
         Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.email + "&smtp=1&format=1").then(res => {
-          console.log('REQ SUCCESSFUL');
           if (!(res.data.smtp_check)) {
             setLoading(false);
-            console.log('SMTP ERROR');
             setError("email", "invalid");
             var testID = "dsaddsa"
 
@@ -114,7 +109,6 @@ function RegisterForm({ nav }) {
               const baseURL = apiKey.baseURL;
               const sendData = JSON.stringify(userObj);
 
-              console.log("SENDING DATA : " + userObj);
               Axios.post(baseURL + '/userAccount/createUserAccount', sendData, {
                 headers: {
                   'content-type': 'application/json',
@@ -122,20 +116,15 @@ function RegisterForm({ nav }) {
 
                 }
               }).then(() => {
-                console.log('Success');
               }).catch(error => {
                 setLoading(false);
-                console.log("Error" + error);
               });
 
               result.user.sendEmailVerification().then(function () {
 
-                console.log('Verification Email sent to new user : ' + user.email);
                 Firebase.auth().signOut();
               }).catch(function (error) {
-                console.log(' Already Verified.');
                 setLoading(false);
-                console.log(error);
               });
               return result.user.updateProfile({ displayName: name })
 
@@ -146,10 +135,6 @@ function RegisterForm({ nav }) {
               var errorCode = error.code;
               errorb = true;
               var errorMessage = error.message;
-              console.log("ErrorCode");
-              console.log(errorCode);
-              console.log("ErrorMessage");
-              console.log(errorMessage);
               setLoading(false);
               setError("firebase", 'error', errorMessage);
             });
@@ -175,12 +160,10 @@ function RegisterForm({ nav }) {
 
             } else {
               setLoading(false);
-              console.log("oops");
             }
 
           });
         }).catch(error => {
-          console.log(error);
           setLoading(false);
         });
 
@@ -188,14 +171,12 @@ function RegisterForm({ nav }) {
         setLoading(false);
         if (data.email != data.confirmEmail) {
 
-          console.log("email no good");
           setError("matchEmail", 'no match', "Emails do not match");
 
         }
 
         if (data.password != data.confirmPassword) {
 
-          console.log("password no good");
           setError("matchPassword", 'no pmatch', "Passwords do not match");
 
         }
@@ -214,16 +195,11 @@ function RegisterForm({ nav }) {
 
         if (data.question == data.answer) {
 
-          console.log("password no good");
           setError("same", 'match', "Question and Answer must differ");
 
         }
 
       }
-    } else {
-
-      console.log('bad');
-
     }
 
   }

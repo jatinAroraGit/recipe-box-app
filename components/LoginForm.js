@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
 
 
 function LoginForm({ props }) {
-  console.log('LOGIN FORM: ******')
 
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const [unverified, setNotVerified] = useState(2);
@@ -123,8 +122,6 @@ function LoginForm({ props }) {
         var errorCode = error.code;
         var errorMessage = error.message;
         setError("invalid", 'no match', "Invalid User Details");
-        console.log(errorCode);
-        console.log(errorMessage);
       });
 
       await Firebase.auth().onAuthStateChanged(function (user) {
@@ -132,12 +129,9 @@ function LoginForm({ props }) {
           // User is signed in.
           setUser(user);
           // setNotVerified(0)
-          console.log('Username' + user.email);
           if (user.emailVerified) {
-            console.log('IS VERIFIED: ' + user.emailVerified);
             setNotVerified(0);
             setLoading(false);
-            console.log('good');
             //  props.navigate('Home', undefined, StackActions.replace('UserProfile'));
 
             props.navigate("UserHomeScreen");
@@ -146,7 +140,6 @@ function LoginForm({ props }) {
           else
             if (!user.emailVerified) {
               setLoading(false);
-              console.log('bad');
               setNotVerified(1);
 
             }
@@ -157,8 +150,6 @@ function LoginForm({ props }) {
     else {
       setLoading(false);
       setNotVerified(2);
-
-      console.log('Please fill in both email and password fields');
     }
 
   }
@@ -172,8 +163,6 @@ function LoginForm({ props }) {
   const closeModal = () => {
     // setUser({});
     setNotVerified(2);
-    console.log('Status:: ');
-    console.log({ unverified });
 
   }
   const sendVerification = async () => {
@@ -184,11 +173,7 @@ function LoginForm({ props }) {
       // this.setState({ currentUser: user });
       user.sendEmailVerification().then(function () {
         setShowSnack(true);
-        console.log(' Email sent to : ' + user.email);
 
-      }).catch(function (error) {
-
-        console.log(error);
       });
 
 

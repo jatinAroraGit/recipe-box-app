@@ -53,7 +53,6 @@ function DevForm({ props }) {
   const { register, handleSubmit } = useForm();
 /*
   const onSubmit = data => {
-    console.log(data);
   };
 
   const addStep = () => {
@@ -67,7 +66,6 @@ function DevForm({ props }) {
   };
 
   const clearSteps = () => {
-    console.log(indexes);
   };
 */
   return (

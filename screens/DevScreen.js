@@ -68,7 +68,6 @@ class DevScreen extends React.Component {
       this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
       // this.props.navigation.navigate('Login');
     } catch (error) {
-      console.error(error);
     }
   };
   componentDidUpdate(prevProps) {
@@ -80,7 +79,6 @@ class DevScreen extends React.Component {
       axios.get('https://api.spoonacular.com/recipes/search?apiKey=' + apiKey.key + '&query=' + query + '&number=40')
         .then(res => {
           const recipes = res.data.results;
-          console.log(recipes)
           this.setState({ recipes });
         })
     }
@@ -88,9 +86,6 @@ class DevScreen extends React.Component {
   render() {
 
     const { navigation } = this.props.navigation;
-    console.log(navigation);
-    console.log('NAVIGATION USER %%%%%%% ');
-    console.log(this.props.navigation.state.routeName);
     return (
 
       <SafeAreaView style={{ flex: 3, backgroundColor: '#B2EBF2' }}>

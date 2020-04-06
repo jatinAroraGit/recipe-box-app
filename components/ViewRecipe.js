@@ -8,6 +8,8 @@ import axios from 'axios';
 function ViewRecipe({ navigation, recipeDetail }) {
     recipeDetail = JSON.parse(recipeDetail.props);
 
+    
+
     const [iconName, setIconName] = useState('playlist-plus');
     const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
     const [step, setStep] = useState([]);
@@ -32,8 +34,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
             //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
             axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/information?apiKey=' + apiKey.key)
                 .then(res => {
-                    console.log('Receipe API is called');
-                    console.log(recipeId);
                     const prepareMin = res.data.preparationMinutes;
                     setPrepareMinute(prepareMin)
                     const hScore = res.data.healthScore;
@@ -125,8 +125,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
         //ingredElement is each element of ingredientsArray, index is 0,1,2..., self is ingredientsArray, t is basically same as the ingredElement
         // if the index is not matching returned number made by self.findIndex, it would not return. 
 
-        console.log('Hello no dupes', ingredientsArray)
-
         setIngred(ingredientsArray);
 
 
@@ -174,7 +172,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
                 JsonObject[i] = JSON.stringify(JsonObject[i]);
             }
         } else {
-            console.log('Hey you should pick at least one of the ingredients.');
         }
 
         return JsonObject;

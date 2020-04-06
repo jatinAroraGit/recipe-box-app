@@ -15,7 +15,6 @@ class ChangeEmailScreen extends React.Component {
 
     callbackFunction = (childData) => {
         this.setState({login: childData});
-        console.log("login complete!")
     }
   
   render() {
