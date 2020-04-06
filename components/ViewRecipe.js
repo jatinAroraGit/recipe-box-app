@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
+import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Firebase from '../configure/Firebase';
 import axios from 'axios';
 
 
@@ -16,6 +17,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const [healthScore, setHealthScore] = useState(0);
     const [cookingMinute, setCookingMinute] = useState(0);
     const [switchValue, setSwitchValue] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    // const [modalVisible, setModalVisible] = useState(false);
     var ingredientsArray = [];
     var stepArray = [];
     var mapArr = [];
@@ -42,6 +45,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     setCookingMinute(cookingMin);
                     const ingredients = res.data.extendedIngredients;
                     extractIngredients(ingredients)
+                    // addToList();
 
                     if (res.data.analyzedInstructions.length != 0) {
                         const info = res.data.analyzedInstructions[0].steps;
@@ -65,7 +69,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     const map = step.map((step, index) => {
         return (
             // <View key={index} style={styles.instructionStyle}>
-                <Text key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
+            <Text key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
             // </View>
         )
     })
@@ -188,6 +192,49 @@ function ViewRecipe({ navigation, recipeDetail }) {
         else
             setIconName('bookmark-plus');
 
+        setShowModal(true);
+        console.log('showModal', showModal);
+    }
+
+    const addRecipeToCookbook = (id) => {
+
+        
+        /*
+        ****************************************************************************************************************
+        **********************************************Database part*****************************************************
+        ****************************************************************************************************************
+        */
+       
+        //    var auth = Firebase.auth();
+        //    const user_id = auth.currentUser.uid;
+        
+        // const recipeInfo = {
+        //     "uid": id,
+        //     "userId": user_id,
+        //     "cookbookId": ,
+        // }
+        
+        // Axios.post(baseURL + 'userAccount/getUserAccount', recipeInfo, {
+        //     headers: {
+        //       'content-type': 'application/json',
+        //       'Access-Control-Allow-Origin': '*',
+    
+        //     }
+        //   }).then((response) => {
+        //     // if(response.data.uid ||;
+        //     console.log(response);
+        //     if (response.data) {
+        //       setSecurityQuestion(response.data.securityQuestion)
+        //       setResponse(response.data.response);
+        //       setUserFound(true);
+        //     }
+        //     else {
+        //       setError("noUser", 'no user', "no account uses this email");
+        //     }
+        //   }).catch(error => {
+        //     // setLoading(false);
+        //     console.log("Error" + error);
+        //   });
     }
 
 
@@ -195,12 +242,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
-                    /*
-                <View style={styles.titleBar}>
-                    <Ionicons name="ios-arrow-back" size={24} color="rgb(82,87,93)"></Ionicons>
-                    <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
-                </View>
-                */
+
                 }
                 <View style={{ alignSelf: "center" }}>
                     <View style={styles.profileImage}>
@@ -214,19 +256,15 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     <View style={styles.active}></View>
                     <View style={styles.add}>
                         <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
-                        {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
                     </View>
                 </View>
+
 
 
                 <View style={styles.infoContainer}>
                     <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
                     <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>World Best!</Text>
                 </View>
-
-                {/* <View style={styles.ratingContainer}>
-                    <Rating rating={0} numStars={5} starColor="orange" />
-                </View> */}
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statsBox}>
@@ -243,31 +281,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     </View>
                 </View>
 
-                <View style={{ marginTop: 32 }}>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        {/* 
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={{ uri: recipeDetail.image }} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View>
-                        <View style={styles.mediaImageContainer}>
-                            <Image source={require("../assets/images/background.jpg")} style={styles.image} resizeMode="cover"></Image>
-                        </View> */}
+                {/* <CookbookModal show={showModal}/> */}
 
-                    </ScrollView>
-                    {/* <View style={styles.mediaCount}>
-                        <Text style={[styles.text, { fontSize: 24, color: "#DFD8C8", fontWeight: "300" }]}>70</Text>
-                        <Text style={[styles.text, { fontSize: 12, color: "#DFD8C8", textTransform: "uppercase" }]}>Media</Text>
-                    </View> */}
-                </View>
+
 
                 <View style={styles.viewBoxStyle}>
-                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
                     <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
                     {ingred.map((oneIngred, index) => {
                         return (
@@ -291,7 +309,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
                     })}
 
                     <TouchableOpacity style={styles.button}
-                        // color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }}
                         onPress={() => {
                             navigation.navigate('Shopping', makeJsontoObject(ingred));
                         }}><Text>View Shopping List</Text></TouchableOpacity>
@@ -301,7 +318,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
                 <View style={styles.viewBoxStyle}>
-                    {/* <View style={styles.viewBoxStyle}> */}
                     <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>View Instruction</Headline>
                     <View style={styles.switchStyle}>
                         <Switch
@@ -317,22 +333,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
                         }
                     </View>
                 </View>
-
-                {/* {
-                    noSteps ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', fontSize: 100 }}><Text>No Steps Included</Text></View> :  
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                    {step.map((step, index) => {
-                        return (
-                            <View key={index} style={{ flexDirection: "row" }}>
-                                <Text style={[styles.text, { fontSize: 14 }]}>{index + 1}: {step}</Text>
-                            </View>
-
-                        )
-                    })}
-                </View>
-                } */}
-
-
 
 
                 <Text style={{ alignItems: "right" }, [styles.subText, styles.recent]}>Recent Activity</Text>
@@ -358,9 +358,44 @@ function ViewRecipe({ navigation, recipeDetail }) {
                         </View>
                     </View>
                 </View>
+
+                {/* <CookbookModal show={showModal}/> */}
+                <Provider>
+                    <Portal>
+                        <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
+                            {/* {console.log('ModalVisible in visible', modalVisible)} */}
+                            <View >
+                                <Card.Content>
+                                    <Title style={{ fontSize: 30 }}>Cookbook List</Title>
+                                    <View style={{justifyContent:'flex-start', flexDirection: 'row', width: 'auto'}}>
+                                    <Subheading style={{fontSize: 20, color: '#E91E63', marginTop: 10 }}>{recipeDetail.title} </Subheading>
+                                    <Button title='Add' style={{justifyContent:'flex-end'}} 
+                                    onPress={()=>{
+                                        addRecipeToCookbook(recipeDetail.id);
+                                        console.log('Recipe Id has been added')
+                                    }}>
+                                    </Button>
+                                    </View>
+                                    <TouchableHighlight
+                                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                        onPress={() => {
+                                            // props.show = false;
+                                            setShowModal(false);
+                                            console.log("hi i am clicked", showModal)
+                                            // { console.log('ModalVisible when user clicks hide', modalVisible) }
+                                        }}
+                                    >
+                                        <Text style={styles.textStyle}>Hide Modal</Text>
+                                    </TouchableHighlight>
+                                    {/* <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained">Close and ReLogin </Button> */}
+                                </Card.Content>
+                            </View>
+                        </Modal>
+                    </Portal>
+                </Provider>
+
             </ScrollView>
         </SafeAreaView>
-
     );
 
 }
@@ -368,12 +403,33 @@ function ViewRecipe({ navigation, recipeDetail }) {
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
+    modalStyle: {
+        flex: 3,
+        justifyContent: 'center',
+        paddingTop: 3,
+        padding: 8,
+        backgroundColor: '#FFFFFF',
+        ...Platform.select({
+          ios: {
+            //  width: (Dimensions.get('screen').width - 50),
+            // height: (Dimensions.get('screen').height - 50)
+          },
+          web: {
+            width: (Dimensions.get('window').width - 50),
+            height: (Dimensions.get('window').height - 50)
+          },
+          android: {
+            // width: (Dimensions.get('screen').width - 50),
+            // height: (Dimensions.get('screen').height - 50)
+          },
+        })
+      },
     button: {
         alignItems: "center",
         backgroundColor: "#d2f2fc",
         padding: 10,
         borderRadius: 10,
-      },
+    },
     instructionStyle: {
         padding: 0,
         borderRadius: 10,

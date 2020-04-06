@@ -125,7 +125,7 @@ function ForgotPasswordForm({ props }) {
       console.log('Valid email entered.');
       const query = { "userEmail": data.email };
       const sendData = JSON.stringify(query);
-
+    
       Axios.post(baseURL + 'userAccount/getUserAccount', sendData, {
         headers: {
           'content-type': 'application/json',

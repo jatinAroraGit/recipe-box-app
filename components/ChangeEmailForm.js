@@ -252,7 +252,6 @@ function ChangeEmailForm({ props }) {
               </Card.Content>
             </View>
           </Modal>
-
         </Portal>
       </Provider>
     </KeyboardAvoidingView>
