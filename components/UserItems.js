@@ -125,6 +125,29 @@ const customStyles = StyleSheet.create({
 
     }),
   },
+  customListItemsStyle: {
+    padding: 0,
+    borderRadius: 10,
+    backgroundColor: '#FCE4EC',
+    margin: 5,
+    flexWrap: 'wrap',
+    alignItems: "flex-start",
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 270
+      },
+      android: {
+        width: 270
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+      }
+
+    }),
+  },
   viewBoxStyle: {
     marginTop: 10,
     backgroundColor: '#81D4FA',
@@ -192,6 +215,7 @@ function UserItems({ props }) {
   const [refresh, setRefresh] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [editingCookbooks, setEditingCookbook] = useState(false);
 
   
   let [responseStr, setResponseTxt] = useState();
@@ -272,7 +296,7 @@ function UserItems({ props }) {
   },[]);
 
  
-  const openCookbook = async (cookbook) => {
+  const editCookbook = async (cookbook) => {
     var baseURL = apiKey.baseURL;
     let userId = Firebase.auth().currentUser.uid;
 
@@ -299,8 +323,8 @@ function UserItems({ props }) {
         //   console.log(items);
        // setUserRecipes(items);
         setLoading(false);
-        setShowEditModal(true);
-      
+       // setShowEditModal(true);
+      setEditingCookbook(true);
 
       }
       else {
@@ -488,11 +512,13 @@ function UserItems({ props }) {
   }
 
   let recipeFlatList =
+  
     <FlatList
     scrollEnabled={true}
       initialNumToRender={1}
       style={styles.container}
       extraData={refresh}
+      ListHeaderComponent={<Text style={{textAlign:"center",color:"#FFFFFF", fontWeight:'600',fontSize:18}}>{userRecipes.length} Saved Recipes</Text>}
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Saved</Title></Card.Content></Card>}
       snapToAlignment={"center"}
       horizontal={((Platform.OS == 'web') ? false : false)}
@@ -506,8 +532,8 @@ function UserItems({ props }) {
             <Card.Content>
               {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
 
-              <Title style={{ justifyContent: "flex-start" }}>{item.recipeTitle}</Title>
-              <Text>{item.uid}</Text>
+              <Subheading style={{ justifyContent: "flex-start", fontWeight: "500"  }}>{item.recipeTitle}</Subheading>
+              
             </Card.Content>
             <Card.Actions>
               <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => props.navigate('EditRecipe', { mode: 'edit', uid: item.uid })}>Edit</Button>
@@ -539,7 +565,7 @@ function UserItems({ props }) {
               
             </Card.Content>
             <Card.Actions>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => openCookbook(item)}>Edit</Button>
+              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => editCookbook(item)}>Edit</Button>
               <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteUserRecipe(item, index)}>Delete</Button>
             </Card.Actions>
           </Card>
@@ -551,10 +577,11 @@ function UserItems({ props }) {
 
   let cookbookRecipesList =
     <FlatList
-      scrollEnabled={true}
+      scrollEnabled={false}
       initialNumToRender={1}
       style={styles.container}
       extraData={refresh}
+      ListHeaderComponent={<Subheading style={{textAlign:"center", fontWeight:"500"}}>List Of Recipes In The Cookbook</Subheading>}
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
       snapToAlignment={"center"}
       horizontal={((Platform.OS == 'web') ? false : false)}
@@ -563,12 +590,12 @@ function UserItems({ props }) {
       renderItem={
         ({ item, index }) =>
 
-          <Card onPress={() => props.navigate('ViewRecipe', { props: item })} style={customStyles.nestedCardStyle}>
+          <Card onPress={() => props.navigate('ViewRecipe', { props: item })} style={customStyles.customListItemsStyle}>
 
             <Card.Content>
               {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
 
-              <Title style={{ justifyContent: "flex-start" }}>{item.recipeTitle}</Title>
+              <Title style={{ justifyContent: "flex-start" }}>{item.title}</Title>
               <Text>{item.uid}</Text>
             </Card.Content>
             <Card.Actions>
@@ -593,9 +620,58 @@ function UserItems({ props }) {
       </SafeAreaView>
     )
   }
+else if(editingCookbooks){
+  return(
+    <SafeAreaView style={{backgroundColor:'#FFFFFF', borderRadius:10, width:'100%', padding:8}}>
+      <KeyboardAwareScrollView style={{padding:10}} extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
+
+         
+          <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Editing Cookbook</Title>
+
+          <View style={{ marginBottom: 10 }}>
+            <Subheading style={styles.label}>Title</Subheading>
+            <Controller
+              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              name="title"
+              defaultValue={activeCookbook.title}
+              control={control}
+              onChange={onChange}
+              rules={{ min:1,required:true }}
+            />
+            {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
+
+            <Subheading style={styles.label}>Description (Optional)</Subheading>
+            <Controller
+              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
+              name="description"
+                    defaultValue={activeCookbook.description}
+              control={control}
+              onChange={onChange}
+
+              rules={{ required: false }}
+            />
 
 
-  else {
+          </View>
+
+            {cookbookRecipesList}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+             Update
+  
+            </Button>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#D50000' }} color="#FFFFFF" onPress={() => setShowEditModal(false)}>
+              Cancel
+            </Button>
+
+          </View>
+
+              </KeyboardAwareScrollView>
+    </SafeAreaView>
+  )
+}
+
+  else if(!loading) {
     return (
 
       <SafeAreaView style={{ flex: 3 }}>
@@ -607,12 +683,14 @@ function UserItems({ props }) {
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
                   <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Saved Recipes</Headline>
-                  <Button style={{ marginHorizontal: 10, backgroundColor: '#F48FB1' }} color="#FFFFFF" onPress={() => props.navigate('EditRecipe', { mode: 'create' })}>
+                  <Button style={{ marginHorizontal: 10, backgroundColor: '#F48FB1',marginBottom:10 }} color="#FFFFFF" onPress={() => props.navigate('EditRecipe', { mode: 'create' })}>
                     Create Recipe
             </Button>
                 </View>
+              <Subheading>Scroll Through Your Favorites</Subheading>
+                <ScrollView style={{maxHeight:350}} indicatorStyle={"blue"}>
                 {recipeFlatList}
-
+              </ScrollView>
               </View>
 
             </View>
@@ -622,7 +700,7 @@ function UserItems({ props }) {
             <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
-                  <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Your Saved Cookbooks</Headline>
+                  <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Your Cookbooks</Headline>
                   <Button style={{ marginHorizontal: 10, backgroundColor: '#FF9800' }} color="#FFFFFF" onPress={() => setShowModal(true)}>
                     Create Cookbook
             </Button>
