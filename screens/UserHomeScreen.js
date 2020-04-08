@@ -308,7 +308,7 @@ class UserHomeScreen extends React.Component {
           style={styles.container}
 
           snapToAlignment={"center"}
-          horizontal={((Platform.OS == 'web') ? false : true)}
+          horizontal={((Platform.OS == 'web') ? true : true)}
           data={this.state.items}
           keyExtractor={(item, index) => index.toString()}
           renderItem={

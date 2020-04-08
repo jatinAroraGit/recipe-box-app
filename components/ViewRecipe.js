@@ -9,699 +9,778 @@ var sanitizeHtml = require('sanitize-html');
 var stripHtml = require('string-strip-html');
 
 function ViewRecipe({ navigation, recipeDetail }) {
-  recipeDetail = JSON.parse(recipeDetail.props);
-  let htmlMain = ""
-  let htmlTitle = "<h1>" + recipeDetail.title + "</h1>";
-  let htmlDescrition = "";
-  let htmlIngredients = "";
-  let htmlSteps = "";
-  let htmlInfo = "";
-  let htmlExtra = "";
-  let htmlImage = "";
-  // console.log('navigation in ViewRecipe - start');
-  console.log("html title ::")
-  console.log(htmlTitle);
-  const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
-  const [iconName, setIconName] = useState('playlist-plus');
-  const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
-  const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState([]);
-  let [noSteps, setNoSteps] = useState(false);
-  let [isFound, setIsFound] = useState(false);
-  const [readyInMinutes, setreadyInMinutes] = useState(0);
-  const [servings, setservings] = useState(0);
-  const [recipeInfo, setRecipeInfo] = useState();
-  const [summary, setsummary] = useState(0);
-  const [switchValue, setSwitchValue] = useState(false);
-  var ingredientsArray = [];
-  var stepArray = [];
-  var mapArr = [];
-  var noInstruction = true;
-  // let noSteps = false;
+    recipeDetail = JSON.parse(recipeDetail.props);
+    let htmlMain = ""
+    let htmlTitle = "<h1>" + recipeDetail.title + "</h1>";
+    let htmlDescrition = "";
+    let htmlIngredients = "";
+    let htmlSteps = "";
+    let htmlInfo = "";
+    let htmlExtra = "";
+    let htmlImage = "";
+    // console.log('navigation in ViewRecipe - start');
+    console.log("html title ::")
+    console.log(htmlTitle);
+    const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
+    const [iconName, setIconName] = useState('playlist-plus');
+    const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
+    const [loading, setLoading] = useState(true);
+    const [step, setStep] = useState([]);
+    let [noSteps, setNoSteps] = useState(false);
+    let [isFound, setIsFound] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [cookbookShowModal, setCookbookShowModal] = useState(false);
+    const [readyInMinutes, setreadyInMinutes] = useState(0);
+    const [servings, setservings] = useState(0);
+    const [recipeInfo, setRecipeInfo] = useState();
+    const [summary, setsummary] = useState(0);
+    const [switchValue, setSwitchValue] = useState(false);
+    var ingredientsArray = [];
+    var stepArray = [];
+    var mapArr = [];
+    var noInstruction = true;
+    // let noSteps = false;
 
-  useEffect(() => {
+    useEffect(() => {
 
-    let apiKey = require('../configure/apiKey.json');
-    let recipeId = { "id": recipeDetail.id };
+        let apiKey = require('../configure/apiKey.json');
+        let recipeId = { "id": recipeDetail.id };
 
-    // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
+        // axios.get('https://api.spoonacular.com/recipes/495111/information?apiKey=5c0548b90b2f4c1aa183c5b455dea8da')
 
-    //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
-    console.log('Calling API: ' + apiKey.baseURL + 'recipes/detail' + "With Obj: ", recipeId);
-    axios.post(apiKey.baseURL + 'recipes/detail', recipeId, {
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      withCredentials: false,
-    },
-    ).then((res) => {
+        //axios.get('https://api.spoonacular.com/recipes/' + recipeId + '/analyzedInstructions?apiKey=' + apiKey.key) //Need to change the id and apiKey
+        console.log('Calling API: ' + apiKey.baseURL + 'recipes/detail' + "With Obj: ", recipeId);
+        axios.post(apiKey.baseURL + 'recipes/detail', recipeId, {  //3086,3094,3100
+            headers: {
+                'content-type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: false,
+        },
+        ).then((res) => {
 
-      if (res.data) {
-        console.log('Recipe Detail');
-        //console.log(res);
-        setIsFound(true);
-        setRecipeInfo(res.data);
-        console.log(recipeInfo);
-        const readyInMin = res.data.readyInMinutes;
-        setreadyInMinutes(readyInMin)
-        const serves = res.data.servings
-        setservings(serves);
-        const recSummary = res.data.summary;
+            if (res.data) {
+                console.log('Recipe Detail');
+                //console.log(res);
+                setIsFound(true);
+                setRecipeInfo(res.data);
+                console.log(recipeInfo);
+                const readyInMin = res.data.readyInMinutes;
+                setreadyInMinutes(readyInMin)
+                const serves = res.data.servings
+                setservings(serves);
+                const recSummary = res.data.summary;
 
-        var cleanSummary = sanitizeHtml(recSummary);
-        let pureTextSummary = stripHtml(cleanSummary);
-        htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
-        setsummary(pureTextSummary);
-        const ingredients = res.data.includedIngredients;
+                var cleanSummary = sanitizeHtml(recSummary);
+                let pureTextSummary = stripHtml(cleanSummary);
+                htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
+                setsummary(pureTextSummary);
+                const ingredients = res.data.includedIngredients;
 
-        console.log(ingredients);
-        extractIngredients(ingredients)
+                console.log(ingredients);
+                extractIngredients(ingredients)
 
-        if (res.data.instructions.length != 0) {
-          //  const info = res.data.analyzedInstructions[0].steps;
-          //extractRecipeInformation(res.data.instructions);
-          // console.log('HAS STUFF')
-          console.log("Instrcuions");
-          console.log(res.data.instructions);
+                if (res.data.instructions.length != 0) {
+                    //  const info = res.data.analyzedInstructions[0].steps;
+                    //extractRecipeInformation(res.data.instructions);
+                    // console.log('HAS STUFF')
+                    console.log("Instrcuions");
+                    console.log(res.data.instructions);
 
-          setStep(res.data.instructions);
-          setLoading(false);
-        } else {
-          setNoSteps(() => {
-            noSteps = true;
-          });
-          console.log(noSteps);
-          console.log('Hi bro');
-        }
-        //  setLoading(false);
-      }
-      else {
-        setLoading(false);
-        setIsFound(false);
-        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-        setError("noUser", 'no user', "no account uses this email");
-      }
-    }).catch(error => {
+                    setStep(res.data.instructions);
+                    setLoading(false);
+                } else {
+                    setNoSteps(() => {
+                        noSteps = true;
+                    });
+                    console.log(noSteps);
+                    console.log('Hi bro');
+                }
+                //  setLoading(false);
+            }
+            else {
+                setLoading(false);
+                setIsFound(false);
+                setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+                setError("noUser", 'no user', "no account uses this email");
+            }
+        }).catch(error => {
 
-      setIsFound(false);
-      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-      setLoading(false);
-      console.log(error);
-    });
-  }, []);
-
-  const map = step.map((step, index) => {
-    return (
-
-      <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{"\n"}{index + 1}) {step.description} {"\n"}</Subheading >
-    )
-  })
-
+            setIsFound(false);
+            console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+            setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+            setLoading(false);
+            console.log(error);
+        });
+    }, []);
 
     const map = step.map((step, index) => {
         return (
-            // <View key={index} style={styles.instructionStyle}>
-            <Text key={index} style={{ color: '#000000', fontWeight: "400" }}>{index + 1}. {step}</Text>
-            // </View>
+
+            <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{"\n"}{index + 1}) {step.description} {"\n"}</Subheading >
         )
     })
 
 
 
-  const toggleSwitch = (value) => {
-    setSwitchValue(value);
-  }
-
-  const extractRecipeInformation = (info) => {
-
-    htmlSteps = "<div><h2>Instructions: </h2><ul>"
-    for (let i = 0; i < info.length; i++) {
-      stepArray.push(info[i].step);
-      htmlSteps = htmlSteps + "<li>" + info[i].step + "</li>";
-      // console.log(info[i].step);
+    const toggleSwitch = (value) => {
+        setSwitchValue(value);
     }
 
-    setStep(stepArray);
-    htmlSteps = htmlSteps + "</ul></li ></div > "
-    console.log("PDF HTML***");
+    const extractRecipeInformation = (info) => {
 
-    console.log(htmlTitle + htmlDescrition + htmlSteps);
-
-
-  };
-
-  const extractIngredients = (ingreds) => {
-
-    for (let i = 0; i < ingreds.length; i++) {
-      ingredientsArray.push(
-
-        {
-          id: ingreds[i].id,
-          name: ingreds[i].name,
-          amount: ingreds[i].amount,
-          unit: ingreds[i].unit,
-          count: 0
-
+        htmlSteps = "<div><h2>Instructions: </h2><ul>"
+        for (let i = 0; i < info.length; i++) {
+            stepArray.push(info[i].step);
+            htmlSteps = htmlSteps + "<li>" + info[i].step + "</li>";
+            // console.log(info[i].step);
         }
 
-      );
+        setStep(stepArray);
+        htmlSteps = htmlSteps + "</ul></li ></div > "
+        console.log("PDF HTML***");
+
+        console.log(htmlTitle + htmlDescrition + htmlSteps);
+
+
+    };
+
+    const extractIngredients = (ingreds) => {
+
+        for (let i = 0; i < ingreds.length; i++) {
+            ingredientsArray.push(
+
+                {
+                    id: ingreds[i].id,
+                    name: ingreds[i].name,
+                    amount: ingreds[i].amount,
+                    unit: ingreds[i].unit,
+                    count: 0
+
+                }
+
+            );
+        }
+
+
+        ingredientsArray = ingredientsArray.filter((ingredElement, index, self) =>
+            index === self.findIndex((t) => (
+                t.id === ingredElement.id
+            ))
+        )
+
+        setIngred(ingredientsArray);
+
+        setIngred(ingredientsArray);
+
+
+        /*
+        ingred - an array of steps. 
+        each step is another object, object has an array of ingredients. 
+        the ingredients array has many objects that has name as name of ingred. 
+        */
+    };
+
+    const incrementCountHandler = (incomingIngred) => {
+
+        let ingredsCopy = Array.from(ingred);
+
+        ingredsCopy.forEach((curr) => {
+            if (curr.id === incomingIngred.id) {
+                if (curr.count >= 0) {
+                    curr.count = curr.count + 1;
+                }
+            }
+        })
+
+        setIngred(ingredsCopy);
+    };
+
+
+    const decrementCountHandler = (incomingIngred) => {
+
+        let ingredsCopy = Array.from(ingred);
+
+        ingredsCopy.forEach((curr) => {
+            if (curr.id === incomingIngred.id) {
+                if (curr.count > 0) {
+                    curr.count = curr.count - 1;
+                }
+            }
+
+        })
+        setIngred(ingredsCopy);
+    };
+
+    const makeJsontoObject = (JsonObject) => {
+        if (JsonObject.length != 0) {
+            for (let i = 0; i < JsonObject.length; i++) {
+                JsonObject[i] = JSON.stringify(JsonObject[i]);
+            }
+        } else {
+            console.log('Hey you should pick at least one of the ingredients.');
+        }
+
+        return JsonObject;
+
+
     }
 
-
-    ingredientsArray = ingredientsArray.filter((ingredElement, index, self) =>
-      index === self.findIndex((t) => (
-        t.id === ingredElement.id
-      ))
-    )
-
-    setIngred(ingredientsArray);
-
-    setIngred(ingredientsArray);
-
-
-    /*
-    ingred - an array of steps. 
-    each step is another object, object has an array of ingredients. 
-    the ingredients array has many objects that has name as name of ingred. 
-    */
-  };
-
-  const incrementCountHandler = (incomingIngred) => {
-
-    let ingredsCopy = Array.from(ingred);
-
-    ingredsCopy.forEach((curr) => {
-      if (curr.id === incomingIngred.id) {
-        if (curr.count >= 0) {
-          curr.count = curr.count + 1;
-        }
-      }
-    })
-
-    setIngred(ingredsCopy);
-  };
-
-
-  const decrementCountHandler = (incomingIngred) => {
-
-    let ingredsCopy = Array.from(ingred);
-
-    ingredsCopy.forEach((curr) => {
-      if (curr.id === incomingIngred.id) {
-        if (curr.count > 0) {
-          curr.count = curr.count - 1;
-        }
-      }
-
-    })
-    setIngred(ingredsCopy);
-  };
-
-  const makeJsontoObject = (JsonObject) => {
-    if (JsonObject.length != 0) {
-      for (let i = 0; i < JsonObject.length; i++) {
-        JsonObject[i] = JSON.stringify(JsonObject[i]);
-      }
-    } else {
-      console.log('Hey you should pick at least one of the ingredients.');
-    }
-
-    return JsonObject;
-
-
-  }
-
-  const addToList = () => {
-    if (iconName == 'bookmark-plus')
-      setIconName('bookmark-check');
-    else
-      setIconName('bookmark-plus');
-
-  }
-  if (loading) {
-    return (
-      <SafeAreaView style={{ flex: 3 }}>
-
-
-        <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
-
-      </SafeAreaView>
-    )
-  } else if (!loading) {
-
-    const saveRecipe = () => {
-
-      // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
+    const addToList = () => {
+        if (iconName == 'bookmark-plus')
+            setIconName('bookmark-check');
+        else
+            setIconName('bookmark-plus');
 
         setShowModal(true);
-        console.log('showModal', showModal);
-    }
-
-    const addRecipeToCookbook = (id) => {
-
-        
-        /*
-        ****************************************************************************************************************
-        **********************************************Database part*****************************************************
-        ****************************************************************************************************************
-        */
-       
-        //    var auth = Firebase.auth();
-        //    const user_id = auth.currentUser.uid;
-        
-        // const recipeInfo = {
-        //     "uid": id,
-        //     "userId": user_id,
-        //     "cookbookId": ,
-        // }
-        
-        // Axios.post(baseURL + 'userAccount/getUserAccount', recipeInfo, {
-        //     headers: {
-        //       'content-type': 'application/json',
-        //       'Access-Control-Allow-Origin': '*',
-    
-        //     }
-        //   }).then((response) => {
-        //     // if(response.data.uid ||;
-        //     console.log(response);
-        //     if (response.data) {
-        //       setSecurityQuestion(response.data.securityQuestion)
-        //       setResponse(response.data.response);
-        //       setUserFound(true);
-        //     }
-        //     else {
-        //       setError("noUser", 'no user', "no account uses this email");
-        //     }
-        //   }).catch(error => {
-        //     // setLoading(false);
-        //     console.log("Error" + error);
-        //   });
-    }
-
-    const downloadRecipe = () => {
-
-      // SOMEHOW MAKE INTO A PDF AND SAVE
 
     }
 
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {
+
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 3 }}>
+
+
+                <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
+
+            </SafeAreaView>
+        )
+    } else if (!loading) {
+
+        const saveRecipe = () => {
+
+            // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
+
+            setShowModal(true);
+            console.log('showModal', showModal);
+        }
+
+        const addRecipeToCookbook = (id) => {
+
+
             /*
-        <View style={styles.titleBar}>
-            <Ionicons name="ios-arrow-back" size={24} color="rgb(82,87,93)"></Ionicons>
-            <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
-        </View>
-        */
-          }
-          <View style={{ alignSelf: "center" }}>
-            <View style={styles.profileImage}>
+            ****************************************************************************************************************
+            **********************************************Database part*****************************************************
+            ****************************************************************************************************************
+            */
 
-              <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} resizeMode="center"></Image>
-            </View>
-            <View style={styles.dm}>
-              {
-                //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-              }
-            </View>
-            <View style={styles.active}></View>
-            <View style={styles.add}>
-              <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
-              {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
-            </View>
-          </View>
-          <View style={styles.dm}>
-            {
-              //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-            }
-          </View>
-          <View style={styles.active}></View>
-          <View style={styles.add}>
-            <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
-            {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
-          </View>
+            //    var auth = Firebase.auth();
+            //    const user_id = auth.currentUser.uid;
+
+            // const recipeInfo = {
+            //     "uid": id,
+            //     "userId": user_id,
+            //     "cookbookId": ,
+            // }
+
+            // Axios.post(baseURL + 'userAccount/getUserAccount', recipeInfo, {
+            //     headers: {
+            //       'content-type': 'application/json',
+            //       'Access-Control-Allow-Origin': '*',
+
+            //     }
+            //   }).then((response) => {
+            //     // if(response.data.uid ||;
+            //     console.log(response);
+            //     if (response.data) {
+            //       setSecurityQuestion(response.data.securityQuestion)
+            //       setResponse(response.data.response);
+            //       setUserFound(true);
+            //     }
+            //     else {
+            //       setError("noUser", 'no user', "no account uses this email");
+            //     }
+            //   }).catch(error => {
+            //     // setLoading(false);
+            //     console.log("Error" + error);
+            //   });
+        }
+
+        const downloadRecipe = () => {
+
+            // SOMEHOW MAKE INTO A PDF AND SAVE
+
+        }
+
+        return (
+            <SafeAreaView style={styles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    {
+                        /*
+                    <View style={styles.titleBar}>
+                        <Ionicons name="ios-arrow-back" size={24} color="rgb(82,87,93)"></Ionicons>
+                        <Ionicons name="md-more" size={24} color="rgb(82,87,93)"></Ionicons>
+                    </View>
+                    */
+                    }
+                    <View style={{ alignSelf: "center" }}>
+                        <View style={styles.profileImage}>
+
+                            <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} resizeMode="center"></Image>
+                        </View>
+                        <View style={styles.dm}>
+                            {
+                                //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
+                            }
+                        </View>
+                        <View style={styles.active}></View>
+                        <View style={styles.add}>
+                            <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
+                            {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
+                        </View>
+                    </View>
+
+                    <View style={styles.active}></View>
+                    <View style={styles.add}>
+                        <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
+                        {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
+                    </View>
 
 
-          <View style={styles.infoContainer}>
-            <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
+                    <View style={styles.infoContainer}>
+                        <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
 
-          </View>
+                    </View>
 
-          {/* <View style={styles.ratingContainer}>
+                    {/* <View style={styles.ratingContainer}>
                     <Rating rating={0} numStars={5} starColor="orange" />
                 </View> */}
 
-          <View style={styles.statsContainer}>
-            <View style={styles.statsBox}>
-              <Text style={[styles.text, { fontSize: 18 }]}>{readyInMinutes}</Text>
-              <Text style={[styles.text, styles.subText]}>Ready In Minutes</Text>
-            </View>
-            <Text style={{ fontSize: 34, color: '#99ccff' }}> | </Text>
-            <View style={styles.statsBox}>
-              <Text style={[styles.text, { fontSize: 20 }]}>{servings}</Text>
-              <Text style={[styles.text, styles.subText]}>Servings</Text>
-            </View>
-          </View>
-
-          <View style={{ marginTop: 32 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-
-            </ScrollView>
-            {/* <View style={styles.mediaCount}>
-                        <Text style={[styles.text, { fontSize: 24, color: "#DFD8C8", fontWeight: "300" }]}>70</Text>
-                        <Text style={[styles.text, { fontSize: 12, color: "#DFD8C8", textTransform: "uppercase" }]}>Media</Text>
-                    </View> */}
-          </View>
-
-          <View style={styles.viewBoxStyle}>
-            {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
-            <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
-            {ingred.map((oneIngred, index) => {
-              return (
-                <Card key={index + 1} style={styles.nestedCardStyle}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.recentItemIndicator}></View>
-                    <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                    <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
-                      <TouchableOpacity style={styles.button} onPress={() => {
-                        decrementCountHandler(oneIngred);
-                      }}><Text>-</Text></TouchableOpacity>
-                      <Text>{oneIngred.count}</Text>
-                      <TouchableOpacity style={styles.button} onPress={() => {
-                        incrementCountHandler(oneIngred)
-                      }}><Text>+</Text></TouchableOpacity>
+                    <View style={styles.statsContainer}>
+                        <View style={styles.statsBox}>
+                            <Text style={[styles.text, { fontSize: 18 }]}>{readyInMinutes}</Text>
+                            <Text style={[styles.text, styles.subText]}>Ready In Minutes</Text>
+                        </View>
+                        <Text style={{ fontSize: 34, color: '#99ccff' }}> | </Text>
+                        <View style={styles.statsBox}>
+                            <Text style={[styles.text, { fontSize: 20 }]}>{servings}</Text>
+                            <Text style={[styles.text, styles.subText]}>Servings</Text>
+                        </View>
                     </View>
-                  </View>
-                </Card>
 
-              )
-            })}
+                    <View style={{ marginTop: 32 }}>
+                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
 
-            <TouchableOpacity style={styles.button}
-              // color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }}
-              onPress={() => {
-                navigation.navigate('Shopping', makeJsontoObject(ingred));
-              }}><Text>View Shopping List</Text></TouchableOpacity>
-                   
-                </View>
+                        </ScrollView>
 
-                {/* <CookbookModal show={showModal}/> */}
-                <Provider>
-                    <Portal>
-                        <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
-                            {/* {console.log('ModalVisible in visible', modalVisible)} */}
-                            <View >
-                                <Card.Content>
-                                    <Title style={{ fontSize: 30 }}>Cookbook List</Title>
-                                    <View style={{justifyContent:'flex-start', flexDirection: 'row', width: 'auto'}}>
-                                    <Subheading style={{fontSize: 20, color: '#E91E63', marginTop: 10 }}>{recipeDetail.title} </Subheading>
-                                    <Button title='Add' style={{justifyContent:'flex-end'}} 
-                                    onPress={()=>{
-                                        addRecipeToCookbook(recipeDetail.id);
-                                        console.log('Recipe Id has been added')
-                                    }}>
-                                    </Button>
+                    </View>
+
+                    <View style={styles.viewBoxStyle}>
+                        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
+                        <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+                        {ingred.map((oneIngred, index) => {
+                            return (
+                                <Card key={index + 1} style={styles.nestedCardStyle}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={styles.recentItemIndicator}></View>
+                                        <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                                        <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                                            <TouchableOpacity style={styles.button} onPress={() => {
+                                                decrementCountHandler(oneIngred);
+                                            }}><Text>-</Text></TouchableOpacity>
+                                            <Text>{oneIngred.count}</Text>
+                                            <TouchableOpacity style={styles.button} onPress={() => {
+                                                incrementCountHandler(oneIngred)
+                                            }}><Text>+</Text></TouchableOpacity>
+                                        </View>
                                     </View>
-                                    <TouchableHighlight
-                                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                                        onPress={() => {
-                                            // props.show = false;
-                                            setShowModal(false);
-                                            console.log("hi i am clicked", showModal)
-                                            // { console.log('ModalVisible when user clicks hide', modalVisible) }
-                                        }}
-                                    >
-                                        <Text style={styles.textStyle}>Hide Modal</Text>
-                                    </TouchableHighlight>
-                                    {/* <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained">Close and ReLogin </Button> */}
-                                </Card.Content>
-                            </View>
-                        </Modal>
-                    </Portal>
-                </Provider>
+                                </Card>
 
-            </ScrollView>
-        </SafeAreaView>
-    );
+                            )
+                        })}
 
-          {/* </View > */}
+                        <TouchableOpacity style={styles.button}
+                            onPress={() => {
+                                navigation.navigate('Shopping', makeJsontoObject(ingred));
+                            }}><Text>View Shopping List</Text></TouchableOpacity>
+
+                    </View>
+                    <View style={styles.viewBoxStyle}>
+                        {/* <View style={styles.viewBoxStyle}> */}
+                        <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>Instructions</Headline>
+
+                        <View style={{ margin: 10 }}>
+                            <Text> {map} </Text>
+
+                        </View>
+                    </View>
+
+                    <Provider>
+                        <Portal>
+                            <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
+                                <View>
+                                    <Card.Content>
+                                        <Title style={{ fontSize: 30 }}>Cookbook List</Title>
+                                        <View style={{ justifyContent: 'flex-start', flexDirection: 'row', width: 'auto' }}>
+                                            <Subheading style={{ fontSize: 18, color: '#E91E63', marginTop: 10 }}>{recipeDetail.title} </Subheading>
+                                            <Button title='Add' style={{ justifyContent: 'flex-end', backgroundColor: '#ed7094' }}
+                                                onPress={() => {
+                                                    addRecipeToCookbook(recipeDetail.id);
+                                                    console.log('Recipe Id has been added')
+                                                    setCookbookShowModal(true);
+                                                }}>
+                                            </Button>
+                                        </View>
+                                        <TouchableHighlight
+                                            style={{...styles.openButton, backgroundColor: "#ed7094" }}
+                                            onPress={() => {
+                                                // props.show = false;
+                                                setShowModal(false);
+                                                console.log("hi i am clicked", showModal)
+                                                // { console.log('ModalVisible when user clicks hide', modalVisible) }
+                                            }}
+                                        >
+                                            <Text style={styles.textStyle}>Close</Text>
+                                        </TouchableHighlight>
+                                        {/* <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained">Close and ReLogin </Button> */}
+                                    </Card.Content>
+                                </View>
+                            </Modal>
+                        </Portal>
+                    </Provider>
+
+                    <Provider>
+                        <Portal>
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={cookbookShowModal}
+                                onRequestClose={() => {
+                                    Alert.alert("Modal has been closed.");
+                                }}
+                                style={{flex:1}}
+                            >
+                                    <View style={styles.modalView}>
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <Text style={styles.modalText}>Random CookbookList 1 </Text>
+                                        <Button color='#841584' title='Add' onPress={()=>{
+                                            console.log('Button clicked');
+                                        }}></Button>
+                                        </View>
+
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <Text style={styles.modalText}>Random CookbookList 2 </Text>
+                                        <Button title='Add' color='#841584' onPress={()=>{
+                                            console.log('Button clicked');
+                                        }} ></Button>
+                                        </View>
+
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <Text style={styles.modalText}>Random CookbookList 3 </Text>
+                                        <Button title='Add' color='#841584' onPress={()=>{
+                                            console.log('Button clicked');
+                                        }}></Button>
+                                        </View>
 
 
-          <View style={styles.viewBoxStyle}>
-            {/* <View style={styles.viewBoxStyle}> */}
-            <Headline style={{ color: '#FFFFFF', fontWeight: "600", alignItems: 'center' }}>Instructions</Headline>
+                                        <Button title='close'
+                                            style={styles.textStyle,  {backgroundColor: "#ed7094" }}
+                                            onPress={() => {
+                                                setCookbookShowModal(!cookbookShowModal);
+                                            }}
+                                        >
+                                            {/* <Text>  </Text> */}
+                                            {/* <Text style={styles.textStyle}>Close</Text> */}
+                                        </Button>
+                                    </View>
+                            </Modal>
+                        </Portal>
+                    </Provider>
 
-            <View style={{ margin: 10 }}>
-              <Text> {map} </Text>
-
-            </View>
-          </View>
+                </ScrollView>
+            </SafeAreaView>
+        );
 
 
-        </ScrollView>
-      </SafeAreaView >
+    }
+    else if (!isFound) {
+        return (
+            <SafeAreaView>
+                <Title>{responseStr}</Title>
+            </SafeAreaView>
 
-    );
-
-  }
-  else if (!isFound) {
-    return (
-      <SafeAreaView>
-        <Title>{responseStr}</Title>
-      </SafeAreaView>
-
-    );
-  }
+        );
+    }
 }
 
 export default ViewRecipe;
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: "center",
-    backgroundColor: "#d2f2fc",
-    padding: 10,
-    borderRadius: 10,
-  },
-  instructionStyle: {
-    padding: 0,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    margin: 5,
-    height: 'auto',
-    flexDirection: 'row',
-    ...Platform.select({
-      ios: {
-        width: "auto"
+    modalText: {
+        marginBottom: 15,
+        textAlign: "left"
       },
-      android: {
-        width: "auto"
-      },
-      web: {
-        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
-
-
-      }
-
-    }),
-  },
-  switchStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ratingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  nestedCardStyle: {
-    padding: 0,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    margin: 5,
-    height: 'auto',
-    flexDirection: 'row',
-    ...Platform.select({
-      ios: {
-        width: "auto"
-      },
-      android: {
-        width: "auto"
-      },
-      web: {
-        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
-
-
-      }
-
-    }),
-  },
-  viewBoxStyle: {
-    marginTop: 10,
-    backgroundColor: '#99ccff',
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15,
-    borderWidth: 0,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
     },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        // alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    modalStyle: {
+        flex: 3,
+        justifyContent: 'center',
+        paddingTop: 3,
+        padding: 8,
+        backgroundColor: '#FFFFFF',
 
-    elevation: 4,
-    height: 'auto',
-    ...Platform.select({
-      ios: {
-        width: "auto"
-      },
-      android: {
-        width: "auto"
-      },
-      web: {
-        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+        ...Platform.select({
+            ios: {
+                width: (Dimensions.get('screen').width - 15),
+                height: (Dimensions.get('screen').height - 50)
+            },
+            web: {
+                //  width: (Dimensions.get('window').width - 50),
+                //  height: (Dimensions.get('window').height - 50)
+            },
+            android: {
+                // width: (Dimensions.get('screen').width - 50),
+                // height: (Dimensions.get('screen').height - 50)
+            },
+        })
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#d2f2fc",
+        padding: 10,
+        borderRadius: 10,
+    },
+    instructionStyle: {
+        padding: 0,
+        borderRadius: 10,
+        backgroundColor: '#FFFFFF',
+        margin: 5,
+        height: 'auto',
+        flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+                width: "auto"
+            },
+            android: {
+                width: "auto"
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
 
 
-      }
-    })
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  },
-  text: {
+            }
 
-    color: "rgb(82, 87, 93)",
-    textAlign: "center"
-  },
-  subText: {
-    fontSize: 12,
-    color: "#rgb(174, 181, 188)",
-    textTransform: "uppercase",
-    fontWeight: "500"
+        }),
+    },
+    switchStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    ratingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    nestedCardStyle: {
+        padding: 0,
+        borderRadius: 10,
+        backgroundColor: '#FFFFFF',
+        margin: 5,
+        height: 'auto',
+        flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+                width: "auto"
+            },
+            android: {
+                width: "auto"
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
 
-  },
-  image: {
-    flex: 1,
-    width: "auto",
-    height: "auto"
-  },
-  titleBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 24,
-    marginHorizontal: 16
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: "hidden"
-  },
-  dm: {
-    backgroundColor: "rgb(65,68,75)",
-    position: "absolute",
-    top: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  active: {
-    backgroundColor: "#34FF89",
-    position: "absolute",
-    bottom: 20,
-    left: 10,
-    padding: 4,
-    height: 20,
-    width: 20,
-    borderRadius: 10
 
-  },
-  add: {
-    // backgroundColor: "#41444B",
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center"
+            }
 
-  },
-  infoContainer: {
-    alignSelf: "center",
-    alignItems: "center",
-    marginTop: 16
-  },
-  statsContainer: {
-    flexDirection: "row",
-    alignSelf: "center",
-    marginTop: 32
+        }),
+    },
+    viewBoxStyle: {
+        marginTop: 10,
+        backgroundColor: '#99ccff',
+        alignContent: "center",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 15,
+        borderWidth: 0,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
 
-  },
-  statsBox: {
-    alignItems: "center",
-    flex: 1
+        elevation: 4,
+        height: 'auto',
+        ...Platform.select({
+            ios: {
+                width: "auto"
+            },
+            android: {
+                width: "auto"
+            },
+            web: {
+                width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
 
-  },
-  mediaImageContainer: {
-    width: 180,
-    height: 200,
-    borderRadius: 12,
-    overflow: "hidden",
-    marginHorizontal: 10
-  },
-  mediaCount: {
-    backgroundColor: "#41444B",
-    position: "absolute",
-    top: "50%",
-    marginTop: -50,
-    marginLeft: 30,
-    width: 100,
-    height: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    shadowColor: "rgba(0, 0 ,0 ,0.38)",
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 20,
-    shadowOpacity: 1
 
-  },
-  recent: {
-    marginLeft: 78,
-    marginTop: 32,
-    marginBottom: 6,
-    fontSize: 10
-  },
-  recentItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 16
-  },
-  recentItemIndicator: {
-    backgroundColor: "#CABFAB",
-    padding: 4,
-    height: 12,
-    width: 12,
-    borderRadius: 6,
-    marginTop: 12,
-    marginRight: 3
+            }
+        })
+    },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
+    text: {
 
-  },
-  buttonHover: {
-    color: "#CABFAB"
-  }
+        color: "rgb(82, 87, 93)",
+        textAlign: "center"
+    },
+    subText: {
+        fontSize: 12,
+        color: "#rgb(174, 181, 188)",
+        textTransform: "uppercase",
+        fontWeight: "500"
+
+    },
+    image: {
+        flex: 1,
+        width: "auto",
+        height: "auto"
+    },
+    titleBar: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 24,
+        marginHorizontal: 16
+    },
+    profileImage: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        overflow: "hidden"
+    },
+    dm: {
+        backgroundColor: "rgb(65,68,75)",
+        position: "absolute",
+        top: 20,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    active: {
+        backgroundColor: "#34FF89",
+        position: "absolute",
+        bottom: 20,
+        left: 10,
+        padding: 4,
+        height: 20,
+        width: 20,
+        borderRadius: 10
+
+    },
+    add: {
+        // backgroundColor: "#41444B",
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center"
+
+    },
+    infoContainer: {
+        alignSelf: "center",
+        alignItems: "center",
+        marginTop: 16
+    },
+    statsContainer: {
+        flexDirection: "row",
+        alignSelf: "center",
+        marginTop: 32
+
+    },
+    statsBox: {
+        alignItems: "center",
+        flex: 1
+
+    },
+    mediaImageContainer: {
+        width: 180,
+        height: 200,
+        borderRadius: 12,
+        overflow: "hidden",
+        marginHorizontal: 10
+    },
+    mediaCount: {
+        backgroundColor: "#41444B",
+        position: "absolute",
+        top: "50%",
+        marginTop: -50,
+        marginLeft: 30,
+        width: 100,
+        height: 100,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 12,
+        shadowColor: "rgba(0, 0 ,0 ,0.38)",
+        shadowOffset: { width: 0, height: 10 },
+        shadowRadius: 20,
+        shadowOpacity: 1
+
+    },
+    recent: {
+        marginLeft: 78,
+        marginTop: 32,
+        marginBottom: 6,
+        fontSize: 10
+    },
+    recentItem: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginBottom: 16
+    },
+    recentItemIndicator: {
+        backgroundColor: "#CABFAB",
+        padding: 4,
+        height: 12,
+        width: 12,
+        borderRadius: 6,
+        marginTop: 12,
+        marginRight: 3
+
+    },
+    buttonHover: {
+        color: "#CABFAB"
+    }
 
 });
