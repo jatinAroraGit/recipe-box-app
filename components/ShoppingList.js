@@ -75,7 +75,12 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
   return (
     <View>
-      {/* <Text>This is Shopping List Page</Text> */}
+      {/* TODO:
+      Support showing unit as well
+      create a string which is combination of name, quantity and unit
+      throw that into array.
+      send that array to back end.
+      */}
 
       <View style={styles.viewBoxStyle}>
         <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline>
