@@ -375,7 +375,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={styles.recentItemIndicator}></View>
                                         <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                                        <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                                        {/* <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
                                             <TouchableOpacity style={styles.button} onPress={() => {
                                                 decrementCountHandler(oneIngred);
                                             }}><Text>-</Text></TouchableOpacity>
@@ -383,7 +383,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
                                             <TouchableOpacity style={styles.button} onPress={() => {
                                                 incrementCountHandler(oneIngred)
                                             }}><Text>+</Text></TouchableOpacity>
-                                        </View>
+                                        </View> */}
                                     </View>
                                 </Card>
 
@@ -406,87 +406,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
                         </View>
                     </View>
 
-                    <Provider>
-                        <Portal>
-                            <Modal dismissable={false} visible={showModal} contentContainerStyle={styles.modalStyle}>
-                                <View>
-                                    <Card.Content>
-                                        <Title style={{ fontSize: 30 }}>Cookbook List</Title>
-                                        <View style={{ justifyContent: 'flex-start', flexDirection: 'row', width: 'auto' }}>
-                                            <Subheading style={{ fontSize: 18, color: '#E91E63', marginTop: 10 }}>{recipeDetail.title} </Subheading>
-                                            <Button title='Add' style={{ justifyContent: 'flex-end', backgroundColor: '#ed7094' }}
-                                                onPress={() => {
-                                                    addRecipeToCookbook(recipeDetail.id);
-                                                    console.log('Recipe Id has been added')
-                                                    setCookbookShowModal(true);
-                                                }}>
-                                            </Button>
-                                        </View>
-                                        <TouchableHighlight
-                                            style={{...styles.openButton, backgroundColor: "#ed7094" }}
-                                            onPress={() => {
-                                                // props.show = false;
-                                                setShowModal(false);
-                                                console.log("hi i am clicked", showModal)
-                                                // { console.log('ModalVisible when user clicks hide', modalVisible) }
-                                            }}
-                                        >
-                                            <Text style={styles.textStyle}>Close</Text>
-                                        </TouchableHighlight>
-                                        {/* <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained">Close and ReLogin </Button> */}
-                                    </Card.Content>
-                                </View>
-                            </Modal>
-                        </Portal>
-                    </Provider>
-
-                    <Provider>
-                        <Portal>
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={cookbookShowModal}
-                                onRequestClose={() => {
-                                    Alert.alert("Modal has been closed.");
-                                }}
-                                style={{flex:1}}
-                            >
-                                    <View style={styles.modalView}>
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                        <Text style={styles.modalText}>Random CookbookList 1 </Text>
-                                        <Button color='#841584' title='Add' onPress={()=>{
-                                            console.log('Button clicked');
-                                        }}></Button>
-                                        </View>
-
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                        <Text style={styles.modalText}>Random CookbookList 2 </Text>
-                                        <Button title='Add' color='#841584' onPress={()=>{
-                                            console.log('Button clicked');
-                                        }} ></Button>
-                                        </View>
-
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                        <Text style={styles.modalText}>Random CookbookList 3 </Text>
-                                        <Button title='Add' color='#841584' onPress={()=>{
-                                            console.log('Button clicked');
-                                        }}></Button>
-                                        </View>
-
-
-                                        <Button title='close'
-                                            style={styles.textStyle,  {backgroundColor: "#ed7094" }}
-                                            onPress={() => {
-                                                setCookbookShowModal(!cookbookShowModal);
-                                            }}
-                                        >
-                                            {/* <Text>  </Text> */}
-                                            {/* <Text style={styles.textStyle}>Close</Text> */}
-                                        </Button>
-                                    </View>
-                            </Modal>
-                        </Portal>
-                    </Provider>
 
                 </ScrollView>
             </SafeAreaView>
