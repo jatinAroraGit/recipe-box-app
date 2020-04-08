@@ -4,6 +4,7 @@ import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
+import Axios from 'axios';
 
 const styles = StyleSheet.create({
   label: {
@@ -58,12 +59,26 @@ function DeleteUserForm({ props }) {
     if (data.password && data.accept) {
 
       if (data.accept == 'I AM SURE') {
-
+        let sendData = {
+          "userID": user.uid,
+          "userEmail": user.email
+        }
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
 
           user.delete().then(function () {
             props.navigate('Home');
+            Axios.post(baseURL + '/userAccount/delete', sendData, {
+              headers: {
+                'content-type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
 
+              }
+            }).then(() => {
+              console.log("deleted");
+              setLoading(false);
+            }).catch(error => {
+              setLoading(false);
+            });
           }).catch(function (error) {
             var errorCode = error.code;
             var errorMessage = error.message;

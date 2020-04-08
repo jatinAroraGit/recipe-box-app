@@ -254,31 +254,31 @@ class UserHomeScreen extends React.Component {
   toSaved() {
 
     var savedRecipes = [];
-    
+
     var savedCookbooks = [];
-    
+
     // GET SAVED COOKBOOKS HERE AND SET AS savedCookbooks
     // GET SAVED RECIPES HERE AND SET AS savedRecipes
 
-    savedRecipes = [{id: 749013, title: "Pasta", uri: "https://spoonacular.com/recipeImages/749013-312x231.jpeg"},
-    {id: 549100, title: "Sweet Pork Taco Bowls", uri: "https://spoonacular.com/recipeImages/549100-312x231.jpg"},
-    {id: 737543, title: "Chicken Pie", uri: "https://spoonacular.com/recipeImages/737543-312x231.jpeg"},
-    {id: 499139, title: "Chicken Kiev", uri: "https://spoonacular.com/recipeImages/499139-312x231.jpg"}];
+    savedRecipes = [{ id: 749013, title: "Pasta", uri: "https://spoonacular.com/recipeImages/749013-312x231.jpeg" },
+    { id: 549100, title: "Sweet Pork Taco Bowls", uri: "https://spoonacular.com/recipeImages/549100-312x231.jpg" },
+    { id: 737543, title: "Chicken Pie", uri: "https://spoonacular.com/recipeImages/737543-312x231.jpeg" },
+    { id: 499139, title: "Chicken Kiev", uri: "https://spoonacular.com/recipeImages/499139-312x231.jpg" }];
     // REMOVE ABOVE AFTER IMPLEMENTING API
 
-    for(var i in savedRecipes) {
+    for (var i in savedRecipes) {
 
       savedRecipes[i] = JSON.stringify(savedRecipes[i]);
 
     }
 
-    for(var i in savedCookbooks) {
+    for (var i in savedCookbooks) {
 
       savedCookbooks[i] = JSON.stringify(savedCookbooks[i]);
 
     }
 
-    this.props.navigation.navigate('UserItems', {recipes: savedRecipes, cookbooks: savedCookbooks});
+    this.props.navigation.navigate('UserItems', { recipes: savedRecipes, cookbooks: savedCookbooks });
   }
 
   render() {
@@ -288,7 +288,7 @@ class UserHomeScreen extends React.Component {
 
           <View style={{ marginStart: 10, marginEnd: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', borderWidth: 0, borderRadius: 30, overflow: "hidden" }}>
             <PulseIndicator style={{ position: "absolute" }} animating={true} size={180} color='#F06292' />
-            <Title style={{ position: "relative", padding: 10, colo: "#FFFFFF" }}>Loading</Title>
+            <Title style={{ position: "relative", padding: 10, color: "#FFFFFF" }}>Loading</Title>
 
           </View>
 
@@ -349,7 +349,7 @@ class UserHomeScreen extends React.Component {
                     <Text onPress={() => this.props.navigation.push('UserProfile')} style={{ color: '#ffffff', fontSize: 20 }}>View User Profile</Text>
                   </Surface>
                   <Surface style={customStyles.defaultRounded}>
-                    <Text onPress={() => {this.toSaved()}} style={{ color: '#ffffff', fontSize: 20 }}> View Your Saved Cookbooks and Recipes</Text>
+                    <Text onPress={() => { this.toSaved() }} style={{ color: '#ffffff', fontSize: 20 }}> View Your Saved Cookbooks and Recipes</Text>
                   </Surface>
                 </View>
 

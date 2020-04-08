@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView, Picker, SafeAreaView, Image } from 'react-native';
 import { Button, TextInput, Title, Subheading, Chip, List, Modal, Provider, Portal, Card, Checkbox, Switch } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableHighlight, ScrollView } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import { NavigationActions } from 'react-navigation'
 import { PulseIndicator } from 'react-native-indicators';
@@ -66,24 +66,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 8,
+    padding: 1,
     backgroundColor: '#81D4FA',
     borderRadius: 10,
     height: 'auto',
     ...Platform.select({
       ios: {
-        width: 320
+        width: "auto"
       },
       web: {
         width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
       },
       android: {
-        width: 320
+        width: "auto"
       },
     })
   },
   input: {
     backgroundColor: '#FFFFFF',
+    borderWidth: 0,
+    height: 30,
+    padding: 5,
+    borderRadius: 4,
+  },
+  disabledInput: {
+    backgroundColor: '#E0E0E0',
     borderWidth: 0,
     height: 30,
     padding: 5,
@@ -96,8 +103,31 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 4,
   },
+  descInput: {
+    backgroundColor: '#FFFFFF',
+    height: 300,
+    //borderWidth: 0,
+    // padding: 5,
+    //borderRadius: 4,
+  },
+  descInputDisabled: {
+    backgroundColor: '#E0E0E0',
+    height: 300,
+    //borderWidth: 0,
+    // padding: 5,
+    //borderRadius: 4,
+  },
+
   longInput: {
     backgroundColor: '#FFFFFF',
+    height: 130,
+    //borderWidth: 0,
+    // padding: 5,
+    //borderRadius: 4,
+  },
+  longInputDisabled: {
+    backgroundColor: '#E0E0E0',
+    height: 130,
     //borderWidth: 0,
     // padding: 5,
     //borderRadius: 4,
@@ -132,11 +162,23 @@ function EditRecipeForm({ nav }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [published, setPublished] = useState(false);
+  const [ingredientLoading, setIngredientLoading] = useState(false);
+  const [stepLoading, setStepLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  let [published, setPublished] = useState(false);
+  let [publishedPressed, setPublishedPress] = useState(false);
+  let [showSnack, setShowSnack] = useState(false);
+  let [isChanged, setIsChanged] = useState(false);
+  let [isPublishing, setIsPublishing] = useState(false);
+
   var recipeID = nav.state.params.ID;
+
   var isPublished = false;
   var isPublic = false;
   var isShared = false;
+  let publishing = false;
+  let updating = false;
+  let unpublished = false;
   const { control, handleSubmit, clearError, errors, setError } = useForm({ mode: 'onChange', defaultValues: recipe });
 
   //--------------------------------------------------
@@ -195,16 +237,17 @@ function EditRecipeForm({ nav }) {
         }
       }).then((response) => {
         // if(response.data.uid ||;
-        console.log(response);
+        // console.log(response);
         if (response.data) {
           recipe.uid = response.data.id;
           recipe.recipeTitle = response.data.title;
-
+          recipe.recipeImage = response.data.image
           recipe.author = response.data.author;
           recipe.isPublished = response.data.isPublished;
+          setPublished(recipe.isPublished);
           //  recipe.isPublic = false;
-          recipe.sourceName = response.data.sourceName;
-          recipe.description = response.data.summary;
+          recipe.author = response.data.author;
+          recipe.summary = response.data.summary;
           recipe.readyInMinutes = response.data.readyInMinutes;
           recipe.servings = response.data.servings;
           recipe.cuisine = response.data.cuisine;
@@ -214,13 +257,14 @@ function EditRecipeForm({ nav }) {
             for (var s = 0; s < response.data.instructions.length; s++) {
               stepsDescription[s] = response.data.instructions[s].description;
             }
-            console.log(stepsDescription);
+            //console.log(stepsDescription);
             setSteps(stepsDescription);
           }
           if (response.data.includedIngredients.length > 0) {
             setIngredients(response.data.includedIngredients);
-            console.log(response.data.includedIngredients);
+            //  console.log(response.data.includedIngredients);
           }
+          console.log(response.data);
           if (response.data.isPublished) {
             setPublished(true);
           }
@@ -233,11 +277,12 @@ function EditRecipeForm({ nav }) {
         }
         else {
           setLoading(false);
-          setResponseTxt('OOPS! Something Went Wrong. Try Again Please!');
+          // setResponseTxt('OOPS! Something Went Wrong. Try Again Please!');
           setError("noUser", 'no user', "no account uses this email");
         }
       }).catch(error => {
-        // setLoading(false);
+        setLoading(false);
+        setResponseTxt('Oops! Somethings went wrong. Try Again Please');
         console.log("Error" + error);
       });
     }
@@ -245,13 +290,21 @@ function EditRecipeForm({ nav }) {
   };
 
   const showChip = ingredients.map((ingredient, i) => {
-    console.log("New Ingredient", ingredient);
-    return (
+    //console.log("New Ingredient", ingredient);
+    if (!published) {
+      return (
 
-      <Chip onClose={() => removeIngredient(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>
-        {ingredient.name}: {ingredient.amount} {ingredient.unit}</Chip>
+        <Chip onClose={() => removeIngredient(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>
+          {ingredient.name}: {ingredient.amount} {ingredient.unit}</Chip>
 
-    );
+      );
+    }
+    else {
+      return (
+        <Chip key={i} style={{ margin: 5, alignSelf: 'baseline' }}>
+          {ingredient.name}: {ingredient.amount} {ingredient.unit}</Chip>
+      )
+    }
 
   });
   const showUpdateModal = (i) => {
@@ -290,6 +343,7 @@ function EditRecipeForm({ nav }) {
   }
 
   const onIngredient = data => {
+    setIngredientLoading(true);
     let isValid = true;
     console.log("Adding new ingredient", data);
     if (data.ingredientName == "" || !data.ingredientName) {
@@ -319,6 +373,7 @@ function EditRecipeForm({ nav }) {
 
       clearIngredientText();
     }
+    setIngredientLoading(false);
   }
 
   const clearIngredientText = () => {
@@ -326,6 +381,7 @@ function EditRecipeForm({ nav }) {
   }
 
   const onStep = data => {
+    setStepLoading(true);
     if (data.step.length > 2) {
       let tempArray = [...steps];
       tempArray[steps.length] = data.step;
@@ -334,6 +390,7 @@ function EditRecipeForm({ nav }) {
     } else {
       setError("stepShort", 'shortstep', "Step text is too short.");
     }
+    setStepLoading(false);
   }
 
   const removeStep = (i) => {
@@ -350,6 +407,13 @@ function EditRecipeForm({ nav }) {
     setShowModal(false);
 
   };
+
+  const onUnPublish = data => {
+    unpublished = true;
+    onSubmit(data);
+
+  }
+
   const onPublish = data => {
 
     let isValid = true;
@@ -388,6 +452,11 @@ function EditRecipeForm({ nav }) {
     if (isValid) {
       data.isPublished = true;
       setPublished(true);
+      setPublishedPress(true);
+      setIsChanged(true);
+      setIsPublishing(true);
+      publishing = true;
+      updating = true;
       console.log("Published .... ", published);
       onSubmit(data);
     }
@@ -395,14 +464,21 @@ function EditRecipeForm({ nav }) {
 
 
   const onSubmit = data => {
+    updating = true;
 
+    setButtonLoading(true);
+    console.log('DATA FORM ----- ');
+    console.log(data);
     recipe.sourceName = data.recipeAuthor;
-    console.log("Published ==== ", published.valueOf());
-    if (published.valueOf())
-      recipe.isPublished = true;
-    else
-      recipe.isPublished = false;
+    console.log("Published ==== ", data.isPublished);
+    if (data.isPublished) {
+      recipe.isPublished = data.isPublished;
 
+    }
+    else {
+      recipe.isPublished = false;
+      setIsChanged(true);
+    }
     if (data.recipeName)
       recipe.recipeTitle = data.recipeName;
     else
@@ -433,22 +509,29 @@ function EditRecipeForm({ nav }) {
         console.log(response);
         if (response.status == 200) {
 
-
-          setResponseTxt("Saved Your Recipe!");
+          setButtonLoading(false);
+          if (!publishedPressed)
+            setResponseTxt("Saved Your Recipe!");
           // useForm().reset();
+
 
         }
         else {
           setLoading(false);
           setResponseTxt('OOPS! Something Went Wrong. Try Again Please!');
           setError("noUser", 'no user', "no account uses this email");
+          setButtonLoading(false);
         }
       }).catch(error => {
         setLoading(false);
         console.log("Error" + error);
+        setResponseTxt('Oops! Somethings went wrong. Try Again Please');
+
+        setButtonLoading(false);
       });
 
     } else if (mode == "edit") {
+      setLoading(true);
       console.log("Updating Recipe calling api");
       Axios.post(baseURL + 'recipes/updateRecipe', recipe, {
         headers: {
@@ -461,8 +544,33 @@ function EditRecipeForm({ nav }) {
         console.log(response);
         if (response.status == 200) {
 
+          setLoading(false);
+          if (publishing && updating) {
+            setResponseTxt("Updated and Published Your Recipe!");
+            setButtonLoading(false);
+            //setIsPublishing(false);
+            publishing = false;
+            updating = false;
+          }
+          else
+            if (!publishing && updating) {
+              if (unpublished) {
+                //  setResponseTxt("Unpublished Your Recipe!");
+                setPublished(false);
+                setButtonLoading(false);
+                setIsPublishing(false);
+                updating = false;
+                publishing = false;
+              }
+              else if (updating) {
+                setResponseTxt("Updated Your Recipe!");
+                setButtonLoading(false);
+                setIsPublishing(false);
+                updating = false;
+                publishing = false;
+              }
+            }
 
-          setResponseTxt("Updated Your Recipe!");
           // useForm().reset();
 
         }
@@ -470,10 +578,14 @@ function EditRecipeForm({ nav }) {
           setLoading(false);
           setResponseTxt('OOPS! Something Went Wrong. Try Again Please!');
           setError("noUser", 'no user', "no account uses this email");
+          setButtonLoading(false);
         }
       }).catch(error => {
         setLoading(false);
         console.log("Error" + error);
+        setResponseTxt('Oops! Somethings went wrong. Try Again Please');
+
+        setButtonLoading(false);
       });
     }
 
@@ -483,22 +595,29 @@ function EditRecipeForm({ nav }) {
       value: args[0].nativeEvent.text,
     };
   };
+
+  const togglePublished = async () => {
+    console.log('Toggle Publish');
+    setPublished(false);
+
+    handleSubmit(onSubmit)
+  };
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 3 }}>
 
 
-        <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#69F0AE' />
+        <PulseIndicator style={{ position: "relative" }} animating={true} size={180} color='#0D47A1' />
 
       </SafeAreaView>
     )
   }
-  else if (false) { // (responseStr) {
+  else if (responseStr) {
     return (
 
       <SafeAreaView>
-        <Title style={{ color: "#1DE9B6" }}>{responseStr}</Title>
-        <Button mode="contained" >Go To Your Recipes ></Button>
+        <Title style={{ color: "#FFFFFF", fontWeight: "600", fontSize: 24, margin: 10 }}>{responseStr}</Title>
+        <Button style={{ margin: 10 }} mode="contained" onPress={() => nav.goBack()} >Go To Your Recipes ></Button>
       </SafeAreaView>
     );
   }
@@ -512,9 +631,10 @@ function EditRecipeForm({ nav }) {
             <Title style={{ color: '#1E88E5', fontSize: 30, marginTop: 20, alignSelf: 'center' }}>Edit Recipe</Title>
 
           }
+          {(published) ? <Text style={{ textAlign: "center" }}>To Edit this recipe please Unpublish it first.</Text> : <Text></Text>}
           <Subheading style={styles.label}>Recipe Name</Subheading>
           <Controller
-            as={<TextInput style={styles.input} />}
+            as={<TextInput disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="recipeName"
             defaultValue={recipe.recipeTitle}
 
@@ -526,9 +646,9 @@ function EditRecipeForm({ nav }) {
 
           <Subheading style={styles.label}>Recipe Author</Subheading>
           <Controller
-            as={<TextInput style={styles.input} />}
+            as={<TextInput disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="recipeAuthor"
-            defaultValue={recipe.sourceName}
+            defaultValue={recipe.author}
 
             control={control}
             onChange={onChange}
@@ -536,38 +656,43 @@ function EditRecipeForm({ nav }) {
           />
 
           <Subheading style={styles.label}>Short Description</Subheading>
-          <Controller
-            as={<TextInput style={styles.longInput} />}
 
-            multiline={true}
+          <Controller
+            as={
+
+              <TextInput disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
+
             name="recipeDesc"
             defaultValue={recipe.summary}
 
             control={control}
             onChange={onChange}
           />
+
           {errors.recipeDesc && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>
             {errors.recipeDesc.message}</ Subheading>}
 
 
+
           <Subheading style={styles.label}>Recipe Image URL</Subheading>
           <Controller
-            as={<TextInput style={styles.longInput} onChangeText={text => setImageUrl(text)} onBlur={() => setShowImage(true)} />}
+            as={<TextInput disabled={published} style={(published) ? styles.longInputDisabled : styles.longInput} />}
 
             multiline={true}
             name="image"
-
+            defaultValue={recipe.recipeImage}
             control={control}
             onChange={onChange}
           />
 
           <Title style={{ justifyContent: "center", alignSelf: "center" }}>Recipe Ingredients</Title>
-          <Subheading style={styles.label}>Ingredient Name</Subheading>
+
           <View style={{ flexDirection: "column", flexWrap: 'wrap' }}>
             {showChip}
           </View>
+          <Subheading style={styles.label}>Ingredient Name</Subheading>
           <Controller
-            as={<TextInput defaultValue={defaultVar} value={defaultVar} clearTextOnFocus={true} style={styles.input} />}
+            as={<TextInput defaultValue={defaultVar} disabled={published} style={(published) ? styles.disabledInput : styles.input} value={defaultVar} clearTextOnFocus={true} />}
             name="ingredientName"
             id="ingredientName"
             defaultValue=""
@@ -581,7 +706,7 @@ function EditRecipeForm({ nav }) {
 
               <Text style={{ justifyContent: 'center', color: '#FFFFFF' }}>Quantity</Text>
               <Controller
-                as={<TextInput clearTextOnFocus={true} defaultValue={""} style={styles.input} />}
+                as={<TextInput disabled={published} style={(published) ? styles.disabledInput : styles.input} clearTextOnFocus={true} defaultValue={""} />}
                 name="ingredientQuantity"
                 id="ingredientQuantity"
                 defaultValue="0"
@@ -591,12 +716,12 @@ function EditRecipeForm({ nav }) {
 
                 maxLength={5}
                 min="0" />
-              {errors.ingredientQuantity && <Text> </Text>}
+
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', marginHorizontal: 5, marginBottom: 10 }} >
               <Text style={{ justifyContent: 'center', color: '#FFFFFF' }}>Unit (optional)</Text>
               <Controller
-                as={<TextInput clearTextOnFocus={true} style={styles.input} />}
+                as={<TextInput clearTextOnFocus={true} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
                 name="ingredientUnit"
                 id="ingredientUnit"
                 defaultValue=""
@@ -615,11 +740,11 @@ function EditRecipeForm({ nav }) {
           </Subheading>}
 
 
-          <Button style={{ marginHorizontal: 10, marginTop: 12, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onIngredient)}>
+          <Button disabled={published} loading={ingredientLoading} style={{ marginHorizontal: 10, marginTop: 12, backgroundColor: (!published) ? '#1DE9B6' : "#E0E0E0" }} mode="contained" onPress={handleSubmit(onIngredient)}>
             Add Ingredient
 
           </Button>
-          {errors.ingredientQuantity && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Quantity must be more than 0.</Subheading>}
+
           <Title style={{ justifyContent: "center", alignSelf: "center" }}>Recipe Instructions</Title>
 
 
@@ -627,7 +752,7 @@ function EditRecipeForm({ nav }) {
           {showSteps}
           <Subheading style={styles.label}>Step Description</Subheading>
           <Controller
-            as={<TextInput clearTextOnFocus={true} placeholder="add a new step" style={styles.longInput} />}
+            as={<TextInput clearTextOnFocus={true} placeholder="add a new step" disabled={published} style={(published) ? styles.longInputDisabled : styles.longInput} />}
 
             multiline={true}
             name="step"
@@ -637,7 +762,7 @@ function EditRecipeForm({ nav }) {
             onChange={onChange}
 
           />
-          <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onStep)}>
+          <Button disabled={published} loading={stepLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: (!published) ? '#1DE9B6' : "#E0E0E0" }} mode="contained" onPress={handleSubmit(onStep)}>
             Add step
       </Button>
 
@@ -648,10 +773,11 @@ function EditRecipeForm({ nav }) {
 
           <Subheading style={styles.label}>Ready In Minutes</Subheading>
           <Controller
-            as={<TextInput maxLength={5} keyboardType={"number-pad"} style={styles.input} onChangeText={text => setImageUrl(text)} onBlur={() => setShowImage(true)} />}
+            as={<TextInput defaultValue={String(recipe.readyInMinutes)}
+              disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="readyInMinutes"
-            defaultValue={recipe.readyInMinutes}
-
+            defaultValue={String(recipe.readyInMinutes)}
+            keyboardType="numeric"
             min={1}
             control={control}
             onChange={onChange}
@@ -661,11 +787,11 @@ function EditRecipeForm({ nav }) {
 
           <Subheading style={styles.label}>Servings</Subheading>
           <Controller
-            as={<TextInput maxLength={5} keyboardType={"number-pad"} style={styles.input} onChangeText={text => setImageUrl(text)} onBlur={() => setShowImage(true)} />}
+            as={<TextInput defaultValue={String(recipe.servings)} maxLength={5} keyboardType={"number-pad"} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="servings"
             min={1}
             defaultValue={recipe.servings}
-
+            keyboardType="numeric"
             control={control}
             onChange={onChange}
           />
@@ -673,9 +799,8 @@ function EditRecipeForm({ nav }) {
           </Subheading>}
           <Subheading style={styles.label}>Cuisine</Subheading>
           <Controller
-            as={<TextInput maxLength={5} style={styles.input} onChangeText={text => setImageUrl(text)} onBlur={() => setShowImage(true)} />}
+            as={<TextInput maxLength={35} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="cuisine"
-            min={1}
             defaultValue={recipe.cuisine}
 
             control={control}
@@ -683,7 +808,7 @@ function EditRecipeForm({ nav }) {
           />
           <Subheading style={styles.label}>Meal Type</Subheading>
           <Controller
-            as={<TextInput maxLength={25} style={styles.input} onChangeText={text => setImageUrl(text)} onBlur={() => setShowImage(true)} />}
+            as={<TextInput maxLength={25} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="mealType"
             defaultValue={recipe.mealType}
             control={control}
@@ -692,16 +817,16 @@ function EditRecipeForm({ nav }) {
 
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
 
-            {(mode == "create") ? <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
+            {(mode == "create") ? <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
               Save Recipe
-        </Button> : <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
+        </Button> : (!published) ? <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>
                 Update Recipe
-        </Button>}
+        </Button> : <Text></Text>}
 
-            {published ? <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={() => setPublished(false)}>
+            {published ? <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onUnPublish)}>
               UnPublish Recipe*
         </Button>
-              : <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onPublish)}>
+              : <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onPublish)}>
                 Publish Recipe*
         </Button>
             }

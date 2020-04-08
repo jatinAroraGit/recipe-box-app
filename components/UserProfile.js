@@ -76,10 +76,116 @@ const styles = StyleSheet.create({
 
 
 function UserProfile({ props, user }) {
+  console.log('USER PROFLE: ******')
+
+  const [showSnack, setShowSnack] = useState(false);
+  var firstName = 'User';
+  var lastName = 'Profile';
+  console.log('USER IS ))))))))))) : ')
+  console.log(user);
+
+  /*if(params.names) {
+    firstName = params.names.firstName;
+    lastName = params.names.lastName;
+  }*/
+  // Fill with data from API call for user saved recipes  
+  const savedRecipes = [
+    /*{ title: "Recipe 1", source: 'https://picsum.photos/200', key: 'item1' },
+    { title: "Recipe 2", source: 'https://picsum.photos/200', key: 'item2' },
+    { title: "Recipe 3", source: 'https://picsum.photos/200', key: 'item3' }*/
+  ];
+
+  // Fill with data from API call for user cookbooks  
+  const savedCookbooks = [
+    /*{title: "Cookbook 1", source: 'https://picsum.photos/200', key: 'item1'},
+    {title: "Cookbook 2", source: 'https://picsum.photos/200', key: 'item2'},
+    {title: "Cookbook 3", source: 'https://picsum.photos/200', key: 'item3'}*/
+  ];
+
+  // Adds a space between the cards in the Flatlist
+  const seperator = () => { return <View style={{ width: 20, height: 20 }} /> }
+
+  // Returns the cards for saved Recipes
+  const showRecipeCard = ({ item: item }) => {
+
+    return (
+      <Card key={item.key} style={{ width: 200 }} onPress={() => props.navigate('Recipes')}>
+        <Card.Cover source={{ uri: item.source }}></Card.Cover>
+        <Card.Content>
+          <Title >{item.title}</Title>
+        </Card.Content>
+      </Card>);
+
+  }
+
+  // Returns the cards for Cookbooks
+  const showCookbookCard = ({ item: item }) => {
+
+    return (
+      <Card key={item.key} style={{ width: 200 }} onPress={() => props.navigate('Cookbook')}>
+        <Card.Cover source={{ uri: item.source }}></Card.Cover>
+        <Card.Content>
+          <Title >{item.title}</Title>
+        </Card.Content>
+      </Card>);
+
+  }
+
+  // Renders a button to search Recipes if no saved recipes are found
+  const noSavedCookbooks = () => {
+
+    return (
+      <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('CreateCookbook')}>
+        Create a Cookbook
+      </Button>
+    )
+
+  }
+
+  // Renders a button to create cookbook if no cookbooks are found
+  const noSavedRecipes = () => {
+
+    return (
+      <View>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => props.navigate('Search')}>
+          Go to Recipes
+      </Button>
+        <Button style={{ marginHorizontal: 10, marginVertical: 20, backgroundColor: '#64B5F6' }} mode="contained" onPress={() => setShowSnack(true)}>
+          Create A Recipe
+      </Button>
+      </View>
+    )
+
+  }
 
   return (
     <SafeAreaView style={{ flex: 3 }}>
-      
+      <Snackbar
+        visible={showSnack}
+        onDismiss={() => setShowSnack(false)}
+
+        action={{
+          label: 'Undo',
+          onPress: () => {
+            // Do something
+          },
+        }}
+      >
+        Hey there! I'm a Snackbar.
+        </Snackbar>
+      <Banner
+        visible={showSnack}
+        style={{ backgroundColor: '#EEEEEE' }}
+        actions={[
+          {
+            label: 'Dismiss',
+            onPress: () => { setShowSnack(false) },
+          }
+        ]}
+
+      >
+        Under Development
+      </Banner>
       <View style={styles.innerContainer}>
         <Title>Welcome, {user.displayName}</Title>
       </View>
@@ -96,6 +202,9 @@ function UserProfile({ props, user }) {
           Delete Account
           </Button>
       </View>
+
+
+
     </SafeAreaView>
 
   );

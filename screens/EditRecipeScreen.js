@@ -6,9 +6,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 const baseStyle = StyleSheet.create({
   scrollViewBase: {
-    backgroundColor: '#263238',
+    backgroundColor: '#81D4FA',
     elevation: 5,
     margin: 8,
+    paddingBottom: 10,
     marginBottom: 0,
     borderLeftWidth: 1,
     borderRightWidth: 1,
@@ -17,6 +18,8 @@ const baseStyle = StyleSheet.create({
     borderTopColor: 'transparent',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    borderBottomEndRadius: 30,
+    borderBottomStartRadius: 30,
   }
 });
 
@@ -38,7 +41,7 @@ class EditRecipeScreen extends React.Component {
     return (
 
       <SafeAreaView style={{ flex: 3, backgroundColor: '#1E88E5' }}>
-        <TopNavbar title='Edit Recipe'></TopNavbar>
+        <TopNavbar title='Recipe'></TopNavbar>
         <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
 
           <ScrollView style={baseStyle.scrollViewBase}>

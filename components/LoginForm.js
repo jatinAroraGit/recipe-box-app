@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
 
 function LoginForm({ props }) {
 
-  const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
+  const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
   const [unverified, setNotVerified] = useState(2);
   const [showSnack, setShowSnack] = useState(false);
   const [currentUser, setUser] = useState({});
@@ -121,6 +121,7 @@ function LoginForm({ props }) {
         setLoading(false);
         var errorCode = error.code;
         var errorMessage = error.message;
+        handleSubmit(reset);
         setError("invalid", 'no match', "Invalid User Details");
       });
 
@@ -150,6 +151,7 @@ function LoginForm({ props }) {
     else {
       setLoading(false);
       setNotVerified(2);
+
     }
 
   }
@@ -197,7 +199,7 @@ function LoginForm({ props }) {
         <View style={{ marginBottom: 10 }}>
           <Subheading style={styles.label}>Email</Subheading>
           <Controller
-            as={<TextInput disabled={loading} style={styles.input} />}
+            as={<TextInput maxLength={125} clearTextOnFocus={true} disabled={loading} style={styles.input} />}
             name="email"
 
             control={control}
@@ -208,7 +210,7 @@ function LoginForm({ props }) {
 
           <Subheading style={styles.label}>Password</Subheading>
           <Controller
-            as={<TextInput maxLength={25} disabled={loading} style={styles.input} secureTextEntry={true} />}
+            as={<TextInput clearTextOnFocus={true} maxLength={25} disabled={loading} style={styles.input} secureTextEntry={true} />}
             name="password"
 
             control={control}

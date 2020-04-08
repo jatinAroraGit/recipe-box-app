@@ -37,6 +37,9 @@ const HomeStack = createStackNavigator(
   {
     UserHomeScreen: UserHomeScreen,
     ViewRandomRecipe: ViewRecipeScreen,
+    UserItems: UserItemsScreen,
+    EditRecipe: EditRecipeScreen,
+
 
   },
   config
@@ -63,7 +66,6 @@ const AccountStack = createStackNavigator(
     ForgotPassword: ForgotPasswordScreen,
 
     SecurityQuestion: SecurityQuestionScreen,
-    UserItems: UserItemsScreen,
     Verification: VerificationScreen,
     CreateCookbook: PageNotFound,
     ChangeEmail: ChangeEmailScreen,
@@ -121,8 +123,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: DevScreen,
-    EditRecipe: EditRecipeScreen,
+    Options: DevScreen
   },
   config
 );

@@ -51,7 +51,8 @@
     "react-navigation-stack": "~1.10.3",
     "react-navigation-tabs": "~2.6.2",
     "sanitize-html": "^1.22.1",
-    "string-strip-html": "^4.3.18"
+    "string-strip-html": "^4.3.18",
+    "expo-mail-composer": "~8.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "~8.0.0",
