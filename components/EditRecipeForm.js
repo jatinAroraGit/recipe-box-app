@@ -105,7 +105,9 @@ const styles = StyleSheet.create({
   },
   descInput: {
     backgroundColor: '#FFFFFF',
-    height: 300,
+    height: 150,
+    paddingBottom: 10,
+    width: 300
     //borderWidth: 0,
     // padding: 5,
     //borderRadius: 4,
@@ -216,12 +218,25 @@ function EditRecipeForm({ nav }) {
 
   useEffect(() => {
     // Update the document title using the browser API
-    if (mode == "edit") {
-      getUserRecipe();
-
-    }
-    else {
+    if (mode == "create") {
+      recipe.uid = "";
+      recipe.recipeTitle = "New Recipe";
+      recipe.recipeImage = "";
+      recipe.author = "";
+      recipe.isPublished = false;
+      setPublished(recipe.isPublished);
+      //  recipe.isPublic = false;
+      recipe.author = "";
+      recipe.summary = "";
+      recipe.readyInMinutes = 0;
+      recipe.servings = 0;
+      recipe.cuisine = "";
+      recipe.mealType = "";
+      console.log('Creating');
       setLoading(false);
+    }
+    else if (mode == "edit") {
+      getUserRecipe();
     }
   }, []);
 
@@ -264,7 +279,7 @@ function EditRecipeForm({ nav }) {
             setIngredients(response.data.includedIngredients);
             //  console.log(response.data.includedIngredients);
           }
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.isPublished) {
             setPublished(true);
           }
@@ -660,7 +675,7 @@ function EditRecipeForm({ nav }) {
           <Controller
             as={
 
-              <TextInput disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
+              <TextInput multiline={true} scrollEnabled={true} disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
 
             name="recipeDesc"
             defaultValue={recipe.summary}

@@ -251,7 +251,9 @@ export default function ShoppingList({ navigation, ingredSent }) {
         <KeyboardAvoidingView>
 
           <View style={{ marginBottom: 10 }}>
-            <Subheading style={styles.label}>Quantity</Subheading>
+            <Subheading style={styles.label}>Quantity(Must Be Atleas 1)</Subheading>
+            <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must Be Atleat 1</Subheading>
+
             <Controller
               as={<TextInput keyboardType="decimal-pad" maxLength={6} style={customStyles.input} />}
               name="listQuantity"
@@ -261,7 +263,6 @@ export default function ShoppingList({ navigation, ingredSent }) {
               rules={{ min: 1 }}
 
             />
-            <Text style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must Be Atleat 1</Text>
 
             <Subheading style={styles.label}>Unit Of Quantity</Subheading>
             <Controller

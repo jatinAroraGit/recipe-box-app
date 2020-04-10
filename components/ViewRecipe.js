@@ -672,12 +672,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} resizeMode="center"></Image>
               </View>
-              <View style={styles.dm}>
-                {
-                  //<MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
-                }
-              </View>
-              <View style={styles.active}></View>
+
+
               <View style={styles.add}>
 
                 <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>

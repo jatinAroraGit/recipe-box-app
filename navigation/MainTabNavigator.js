@@ -30,6 +30,7 @@ import EditRecipeScreen from '../screens/EditRecipeScreen';
 import UserItemsScreen from '../screens/UserItemsScreen';
 import ViewCookbookScreen from '../components/ViewCookbookScreen';
 import ViewCookbook from '../components/ViewCookbook';
+import ViewBasic from '../components/ViewBasic';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -40,8 +41,10 @@ const HomeStack = createStackNavigator(
   {
     UserHomeScreen: UserHomeScreen,
     ViewRandomRecipe: ViewRecipeScreen,
+    Shopping: ShoppingListScreen,
     UserItems: UserItemsScreen,
     EditRecipe: EditRecipeScreen,
+    ViewBasicRecipe: ViewBasic,
     ViewCookbook: ViewCookbook
 
 

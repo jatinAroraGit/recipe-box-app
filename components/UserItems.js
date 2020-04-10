@@ -344,7 +344,6 @@ function UserItems({ props }) {
 
   };
   
-
  const deleteRecipeFromCookbook= async(recipe, i)=>{
    var baseURL = apiKey.baseURL;
    let userId = Firebase.auth().currentUser.uid;
@@ -694,13 +693,13 @@ const getUpdatedCookbooks = async(cookbookId)=>{
       renderItem={
         ({ item, index }) =>
 
-          <Card onPress={() => props.navigate('ViewRecipe', { props: item })} style={customStyles.nestedCardStyle}>
+          <Card onPress={() => props.navigate('ViewBasicRecipe', { props: item.uid })} style={customStyles.nestedCardStyle}>
 
             <Card.Content>
               {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
 
               <Subheading style={{ justifyContent: "flex-start", fontWeight: "500"  }}>{item.recipeTitle}</Subheading>
-              
+               <Text>{item.uid}</Text>
             </Card.Content>
             <Card.Actions>
               <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => props.navigate('EditRecipe', { mode: 'edit', uid: item.uid })}>Edit</Button>

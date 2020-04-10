@@ -86,72 +86,83 @@ function ChangeEmailForm({ props }) {
     setLoading(true);
 
     if (data.password && data.newEmail && data.confirmNewEmail) {
+      let oldEmail = Firebase.auth().currentUser.email;
+      console.log('OldEMail' + oldEmail);
+      if (data.newEmail == oldEmail) {
+        setError("sameEmail", 'no ematch', "New Email  same as old email");
+        setLoading(false)
+      }
+      else
+        if (data.newEmail == data.confirmNewEmail) {
 
-      if (data.newEmail == data.confirmNewEmail) {
+          auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
+            Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.newEmail + "&smtp=1&format=1").then(res => {
 
-        auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
-          Axios.get("http://apilayer.net/api/check?access_key=" + apiKey.emailValidator + "&email=" + data.newEmail + "&smtp=1&format=1").then(res => {
+              if (!(res.data.smtp_check)) {
+                setLoading(false);
 
-            if (!(res.data.smtp_check)) {
-              setLoading(false);
+                setError("newEmail", "invalid");
+              }
+              else {
+                user.updateEmail(data.newEmail).then(function () {
 
-              setError("newEmail", "invalid");
-            }
-            else {
-              user.updateEmail(data.newEmail).then(function () {
+                  user.sendEmailVerification().then(function () {
 
-                user.sendEmailVerification().then(function () {
+                    setLoading(false);
+                    setShowModal(true)
 
-                  setLoading(false);
-                  setShowModal(true)
+                    // await Firebase.auth().currentUser.delete;
+                    // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
 
-                  // await Firebase.auth().currentUser.delete;
-                  // this.setState({ user: null, loggedIn: false }); // Remember to remove the user from your app's state as well
+                    // this.props.navigation.navigate('Auth');
+                    // this.props.navigation.navigate('Login');
+                    const resetAction = StackActions.replace({
+                      key: 'AuthHome',
+                      routeName: 'AuthHome',
+                      newKey: 'Login',
+                    });
 
-                  // this.props.navigation.navigate('Auth');
-                  // this.props.navigation.navigate('Login');
-                  const resetAction = StackActions.replace({
-                    key: 'AuthHome',
-                    routeName: 'AuthHome',
-                    newKey: 'Login',
+
+                    //props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
+
+
                   });
 
 
-                  //props.navigate('Login', "", StackActions.replace('AuthAccountStack'));
 
-
+                }).catch(function (error) {
+                  console.log(error);
+                  setLoading(false);
+                  setError('inUse', 'inUse');
                 });
+              }
+              onVerification();
+            });
 
 
 
-              });
-            }
-            onVerification();
+
+            /*
+                      user.updateEmail(data.newEmail).then(function () {
+                        props.navigate('UserProfile');
+            
+                      }).catch(function (error) {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                      });
+            */
+          }).catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            setError("invalid", 'wrong password', "Wrong Password");
+            setLoading(false);
           });
 
+        } else {
+          setLoading(false);
+          setError("matchEmail", 'no ematch', "Emails do not match");
 
-
-
-          /*
-                    user.updateEmail(data.newEmail).then(function () {
-                      props.navigate('UserProfile');
-          
-                    }).catch(function (error) {
-                      var errorCode = error.code;
-                      var errorMessage = error.message;
-                    });
-          */
-        }).catch(function (error) {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          setError("invalid", 'wrong password', "Wrong Password");
-        });
-
-      } else {
-
-        setError("matchEmail", 'no ematch', "Emails do not match");
-
-      }
+        }
 
     }
 
@@ -197,7 +208,8 @@ function ChangeEmailForm({ props }) {
         />
 
         {errors.newEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Email Address</Subheading>}
-
+        {errors.sameEmail && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Your new and old email are same.</Subheading>}
+        {errors.inUse && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}> Email Already In Use.</Subheading>}
         <Subheading style={styles.label}>Confirm New Email</Subheading>
         <Controller
           as={<TextInput disabled={loading} style={styles.input} />}
