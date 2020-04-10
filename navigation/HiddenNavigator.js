@@ -29,80 +29,34 @@ const config = Platform.select({
   default: {},
 });
 
-
-
-
-const AuthHomeStack = createStackNavigator(
+const HiddenStack = createStackNavigator(
   {
-    AuthHome: HomeScreen,
-    Features: PageNotFound
+    ResetPass: ResetPasswordScreen
+
   },
   config
 );
-AuthHomeStack.navigationOptions = {
+
+HiddenStack.navigationOptions = {
+
   tabBarLabel: <Text style={{ fontSize: 14 }}> Home </Text>,
+
   size: 30,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={'home'}
     />
+
   ),
-  tabBarColor: '#EF5350'
 };
 
-AuthHomeStack.path = '';
+HiddenStack.path = '/resetPass';
 
-const AuthAccountStack = createStackNavigator(
 
-  {
+const hiddenNavigator = createMaterialBottomTabNavigator({
+  HiddenStack
 
-    Login: (true) ? LoginScreen : VerificationScreen,
-    Register: RegisterScreen,
-    ForgotPassword: ForgotPasswordScreen,
-    UserAccount: UserProfileFormScreen,
-    SecurityQuestion: SecurityQuestionScreen,
-    UserProfile: UserProfileScreen,
-    ResetPasword: ResetPasswordScreen,
-    // Verification: VerificationScreen,
-
-  },
-  config
-);
-
-AuthAccountStack.navigationOptions = {
-
-  tabBarLabel: <Text style={{ fontSize: 14 }}> Account </Text>,
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'account'} />
-  ),
-  tabBarColor: '#5C6BC0'
-};
-
-AuthAccountStack.path = '';
-const AuthSearchStack = createStackNavigator(
-  {
-    SimpleSearch: SearchScreen,
-    //Results: SearchResults,
-    Results: SearchResultScreen,
-    ViewRecipe: ViewRecipeScreen,
-  },
-  config
-);
-
-AuthSearchStack.navigationOptions = {
-  tabBarLabel: <Text style={{ fontSize: 14 }}> Search </Text>,
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'magnify'} />
-  ),
-  tabBarColor: '#4CAF50'
-};
-
-AuthSearchStack.path = '';
-const authTabNavigator = createMaterialBottomTabNavigator({
-  AuthHomeStack,
-  AuthAccountStack,
-  AuthSearchStack,
 }, {
     inactiveColor: '#37474F',
     activeColor: '#FFFFFF',
@@ -111,5 +65,5 @@ const authTabNavigator = createMaterialBottomTabNavigator({
 
   });
 
-authTabNavigator.path = '';
-export default authTabNavigator;
+hiddenNavigator.path = '/resetXYX';
+export default hiddenNavigator;

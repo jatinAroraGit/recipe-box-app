@@ -1,11 +1,17 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
+import {
+  StyleSheet, Text, Picker, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, KeyboardAvoidingView, TouchableOpacity, Alert, TouchableHighlight,
+  TextInput
+} from "react-native";
 import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
 import Firebase from '../configure/Firebase.js';
 import { FlatList } from 'react-native-gesture-handler';
+import TopNavbar from './TopNavbar.js';
+import { useForm, Controller } from 'react-hook-form'
+
 var sanitizeHtml = require('sanitize-html');
 var stripHtml = require('string-strip-html');
 let apiKey = require('../configure/apiKey.json');
@@ -22,6 +28,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
   let htmlExtra = "";
   let htmlImage = "";
   // console.log('navigation in ViewRecipe - start');
+  let quantiyForList = 1;
+  let unitForList = '';
   console.log("html title ::")
   console.log(htmlTitle);
   const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
@@ -34,6 +42,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
   let [isFound, setIsFound] = useState(false);
   const [readyInMinutes, setreadyInMinutes] = useState(0);
   const [cookbooksList, setCookbooksList] = useState(0);
+  const [listQuantity, setListQuantity] = useState(0);
+  let [listUnit, setListUnit] = useState('');
 
   const [servings, setservings] = useState(0);
   let [recipeInfo, setRecipeInfo] = useState({});
@@ -42,6 +52,9 @@ function ViewRecipe({ navigation, recipeDetail }) {
   const [cookbookShowModal, setCookbookShowModal] = useState(false);
   const [switchValue, setSwitchValue] = useState(false);
   const [refresh, setRefresh] = useState(true);
+  const [listModal, setListModal] = useState(false);
+  const [currItem, setCurrItem] = useState({});
+  const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
 
   const [addToCookbook, setAddToCookbook] = useState(false);
   const [successfulAdd, setSuccessfulAdd] = useState(false);
@@ -186,7 +199,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
           name: ingreds[i].name,
           amount: ingreds[i].amount,
           unit: ingreds[i].unit,
-          count: 0
+          count: 1
 
         }
 
@@ -213,7 +226,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   const incrementCountHandler = (incomingIngred) => {
 
     let ingredsCopy = Array.from(ingred);
-
+    console.log(incomingIngred);
     ingredsCopy.forEach((curr) => {
       if (curr.id === incomingIngred.id) {
 
@@ -367,6 +380,13 @@ function ViewRecipe({ navigation, recipeDetail }) {
     });
 
   }
+
+  const addToShoppingList = async (data) => {
+    console.log(listQuantity);
+    let ingreds = makeJsontoObject(ingred);
+    console.log("Ingreds", ingreds);
+  }
+
   const makeJsontoObject = (JsonObject) => {
     if (JsonObject.length != 0) {
       for (let i = 0; i < JsonObject.length; i++) {
@@ -429,6 +449,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
     });
 
   }
+  const openListScreen = (item) => {
+    console.log(item);
+    setCurrItem(item);
+    setListModal(true);
+  }
   const saveRecipe = () => {
 
     // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
@@ -436,13 +461,97 @@ function ViewRecipe({ navigation, recipeDetail }) {
     setShowModal(true);
     console.log('showModal', showModal);
   }
+  const unitTypes = ['None', 'Unit', 'Piece(s)', 'Bag', 'Carton', 'Pack', 'Dozen', 'Pack', 'Bunch', 'Cups', 'Packet', 'Grams', 'Pound', 'Kilograms', 'Handful', 'Box', 'Bottle(s)', 'Case', 'Container', 'Package']
+
+  const showUnitPicker = unitTypes.map((c, i) => {
+
+    var key = 'unit' + i.toString();
+
+    return (
+
+      <Picker.Item key={key} label={c} value={c} />
+
+    );
+
+  });
 
   const goBackToRecipe = () => {
 
     setAddToCookbook(false);
     setSuccessfulAdd(false);
     console.log('showModal', showModal);
+
   }
+
+
+  const onSubmit = async data => {
+    let item = ''
+    if (!data.listUnit) {
+      item = currItem.name + '~' + data.listQuantity;
+    }
+    else {
+      item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit;
+    }
+    console.log('Sendign To List: ' + item);
+    let sendData = {
+      userId: userId,
+      listItems: item,
+    }
+    console.log('SUBMIT');
+    axios.post(apiKey.baseURL + 'shoppingList/updateShoppingList', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((res) => {
+
+      if (res.data) {
+        console.log('Recipe Added To User List');
+        //console.log(res);
+        setListModal(false);
+        // setIsFound(true);
+        //setRecipeInfo(res.data);
+        if (res.status == 200) {
+
+        }
+        console.log(recipeInfo);
+        console.log("Complete Recipe Info Object: ");
+
+        setLoading(false);
+      }
+      else {
+        setLoading(false);
+        setIsFound(false);
+        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+
+      setIsFound(false);
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
+
+  }
+
+
+  const onChange = args => {
+    return {
+      value: args[0].nativeEvent.text,
+    };
+  };
+
+
+  const changeQuantity = (q) => {
+    quantiyForList = quantiyForList + q;
+    console.log('quantiyForList: ', q);
+
+  }
+
 
   let cookBookFlatList =
     <FlatList
@@ -485,6 +594,52 @@ function ViewRecipe({ navigation, recipeDetail }) {
       </SafeAreaView>
     )
   }
+  else if (listModal) {
+    return (
+
+      <SafeAreaView >
+        <Title style={{ color: '#B50900' }}>Adding To Shopping List</Title>
+        <Subheading style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>{currItem.name}</Subheading>
+        <KeyboardAvoidingView>
+
+          <View style={{ marginBottom: 10 }}>
+            <Subheading style={styles.label}>Quantity</Subheading>
+            <Controller
+              as={<TextInput maxLength={6} style={customStyles.input} />}
+              name="listQuantity"
+
+              control={control}
+              onChange={onChange}
+
+            />
+
+            <Subheading style={styles.label}>Unit Of Quantity</Subheading>
+            <Controller
+              as={<TextInput maxLength={25} style={customStyles.input} />}
+              name="listUnit"
+
+              control={control}
+              onChange={onChange}
+
+
+            />
+
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+              Add To List
+
+            </Button>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => setListModal(false)} >
+              Cancel
+            </Button>
+
+          </View>
+        </KeyboardAvoidingView>
+
+      </SafeAreaView >
+    )
+  }
   else if (addToCookbook) {
     return (
       <SafeAreaView >
@@ -524,6 +679,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
               </View>
               <View style={styles.active}></View>
               <View style={styles.add}>
+
                 <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
                 {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
               </View>
@@ -534,10 +690,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
             <View style={styles.infoContainer}>
               <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
+              {(!ownsRecipe) ? < Button mode="contained" onPress={addRecipeToUser}>Add Recipe To Your Recipes</Button> : <Text></Text>}
 
               <View style={styles.statsContainer}>
                 <View style={styles.statsBox}>
-                  <Text>New View</Text>
                   <Text style={[styles.text, { fontSize: 18 }]}>{readyInMinutes}</Text>
                   <Text style={[styles.text, styles.subText]}>Ready In Minutes</Text>
                 </View>
@@ -568,7 +724,9 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               </View>
             </View>
+
             <View style={styles.viewBoxStyle}>
+
               {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
               <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
               {ingred.map((oneIngred, index) => {
@@ -579,7 +737,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
                       <Text style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
                       <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
                         <TouchableOpacity style={styles.button} onPress={() => {
-                          decrementCountHandler(oneIngred);
+                          openListScreen(oneIngred);
+                        }}><Text style={{ fontWeight: "700" }}> * </Text></TouchableOpacity>
+
+                        <TouchableOpacity style={styles.button} onPress={() => {
+                          setListModal(true)
                         }}><Text style={{ fontWeight: "700" }}> - </Text></TouchableOpacity>
                         <Text>{' ' + oneIngred.count + ' '}</Text>
                         <TouchableOpacity style={styles.button} onPress={() => {
@@ -591,12 +753,27 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 )
               })}
+              <Provider>
+                <Portal>
+                  <Modal dismissable={false} visible={false} contentContainerStyle={styles.modalStyle}>
+                    <View >
+                      <Card.Content>
+                        <Title style={{ fontSize: 20 }}>Shop List</Title>
+                        <Subheading style={{ fontSize: 15, color: '#000000', marginTop: 10 }}>You need to verify your account to proceed further</Subheading>
+                        <Subheading style={{ fontSize: 15, color: '#E91E63', marginTop: 10 }}>A verification email has been sent to your email.
+                </Subheading>
+                        <Subheading style={{ fontSize: 15, color: '#E91E63', marginTop: 10 }}> </Subheading>
+                        <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained" onPress={() => console.log('presss')}>Close  </Button>
+                      </Card.Content>
+                    </View>
+                  </Modal>
+                </Portal>
+              </Provider>
 
               <TouchableOpacity style={styles.button}
                 onPress={() => {
                   navigation.navigate('Shopping', makeJsontoObject(ingred));
                 }}><Text>View Shopping List</Text></TouchableOpacity>
-
             </View>
             <View style={styles.viewBoxStyle}>
               {/* <View style={styles.viewBoxStyle}> */}
@@ -667,7 +844,7 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     zIndex: 1500,
-    position: "absolute",
+    position: "relative",
     flex: 1,
     justifyContent: 'center',
     alignContent: "center",
@@ -681,8 +858,8 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
 
-        width: '100%',
-        height: '80%'
+        width: 'auto',
+        height: 'auto'
       },
       web: {
         //  width: (Dimensions.get('window').width - 50),
@@ -1019,5 +1196,14 @@ const customStyles = StyleSheet.create({
 
       }
     }),
-  }
+  },
+  input: {
+    backgroundColor: '#B2DFDB',
+    borderWidth: 0,
+    height: 40,
+    padding: 5,
+    width: "auto",
+    borderRadius: 4,
+    alignSelf: "stretch"
+  },
 });

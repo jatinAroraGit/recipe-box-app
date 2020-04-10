@@ -95,29 +95,32 @@ function ForgotPasswordForm({ props }) {
 
       if (data.answer == response) {//TODO change 'true' to checking for the email in the database.
         //TODO read security questions from database instead of hardcoding.
-        
 
+        props.navigate('ResetPasword', { userEmail: data.email })
+        /*
+      auth.sendPasswordResetEmail(data.email).then(function () {
+        // Email sent.
+        setIsEmailSent(true);
+        //   props.navigate('Login');
 
-        auth.sendPasswordResetEmail(data.email).then(function () {
-          // Email sent.
-          setIsEmailSent(true);
-          //   props.navigate('Login');
-
-        }).catch(function (error) {
-          // An error happened.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          setError("noUser", 'no user', "no account uses this email");
-        });
+      }).catch(function (error) {
+        // An error happened.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        setError("noUser", 'no user', "no account uses this email");
+      });
+      */
 
       } else {
         setError("wrongAnswer", 'wrong answer', "security question answer is incorrect");
 
       }
+
+
     } else if (data.email && !userFound) {
       const query = { "userEmail": data.email };
       const sendData = JSON.stringify(query);
-    
+
       Axios.post(baseURL + 'userAccount/getUserAccount', sendData, {
         headers: {
           'content-type': 'application/json',
@@ -195,7 +198,7 @@ function ForgotPasswordForm({ props }) {
         }
         {userFound && (
           <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
-            Send Reset Email
+            Verify
         </Button>
         )
         }

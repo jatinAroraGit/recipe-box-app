@@ -28,10 +28,13 @@ import ViewRecipeScreen from '../screens/ViewRecipeScreen';
 import UserHomeScreen from '../screens/UserHomeScreen';
 import EditRecipeScreen from '../screens/EditRecipeScreen';
 import UserItemsScreen from '../screens/UserItemsScreen';
+import ViewCookbookScreen from '../components/ViewCookbookScreen';
+import ViewCookbook from '../components/ViewCookbook';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
 });
+
 
 const HomeStack = createStackNavigator(
   {
@@ -39,6 +42,7 @@ const HomeStack = createStackNavigator(
     ViewRandomRecipe: ViewRecipeScreen,
     UserItems: UserItemsScreen,
     EditRecipe: EditRecipeScreen,
+    ViewCookbook: ViewCookbook
 
 
   },
@@ -46,13 +50,17 @@ const HomeStack = createStackNavigator(
 );
 
 HomeStack.navigationOptions = {
+
   tabBarLabel: <Text style={{ fontSize: 14 }}> Home </Text>,
+
   size: 30,
+
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={'home'}
     />
+
   ),
 };
 

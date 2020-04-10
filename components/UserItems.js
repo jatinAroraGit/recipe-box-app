@@ -210,8 +210,9 @@ function UserItems({ props }) {
   const [userCookbooks, setUserCookbooks] = useState([]);
   const [cookbookRecipes, setCookbookRecipes] = useState([]);
   const [activeCookbook, setActiveCookbook] = useState({});
-
+ // Different Screens and Status States 
   const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -297,11 +298,12 @@ function UserItems({ props }) {
 
  
   const editCookbook = async (cookbook) => {
+    setBtnLoading(true);
     var baseURL = apiKey.baseURL;
     let userId = Firebase.auth().currentUser.uid;
 
     let sendData={
-    cookbookId: activeCookbook.cookbookId
+    cookbookId: cookbook.cookbookId
     }   
     setActiveCookbook(cookbook)
     axios.post(baseURL + 'cookbooks/cookbookDetail', sendData, {
@@ -324,6 +326,7 @@ function UserItems({ props }) {
        // setUserRecipes(items);
         setLoading(false);
        // setShowEditModal(true);
+        setBtnLoading(false);
       setEditingCookbook(true);
 
       }
@@ -343,7 +346,51 @@ function UserItems({ props }) {
   
 
  const deleteRecipeFromCookbook= async(recipe, i)=>{
-    
+   var baseURL = apiKey.baseURL;
+   let userId = Firebase.auth().currentUser.uid;
+
+   console.log("recipe To Delete " + i);
+   console.log(recipe);
+   let userRecipesList = userRecipes;
+
+ 
+   let sendData = {
+     cookbookId: activeCookbook.cookbookId,
+     userId: userId,
+     recipeId: recipe.id
+   }
+   console.log('Deleting: ' + baseURL + 'cookbooks/deleteCookbookRecipe', sendData);
+   //setRefresh(!refresh);
+
+   axios.post(baseURL + 'cookbooks/deleteCookbookRecipe', sendData, {
+     headers: {
+       'content-type': 'application/json',
+       'Access-Control-Allow-Origin': '*',
+     },
+     withCredentials: false,
+   },
+   ).then((response) => {
+     console.log(response);
+     if (response.data == 'Success') {
+       console.log(response.data);
+       let cookbookRecipesList = cookbookRecipes;
+       cookbookRecipesList.splice(i, 1)
+       setCookbookRecipes(cookbookRecipesList);
+       setRefresh(!refresh);
+       // setItemCount(items.length);
+       setLoading(false);
+     }
+     else {
+       //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+       // setError("noUser", 'no user', "no account uses this email");
+     }
+   }).catch(error => {
+     console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+     //setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+     setLoading(false);
+     console.log(error);
+   });
+
   }
 
   const deleteUserRecipe = async (recipe, i) => {
@@ -392,6 +439,90 @@ function UserItems({ props }) {
     });
 
   }
+
+  
+  const deleteCookbook = async (cookbook, i) => {
+    var baseURL = apiKey.baseURL;
+    let userId = Firebase.auth().currentUser.uid;
+
+    let sendData = {
+      cookbookId: cookbook.cookbookId,
+      userId: userId,
+    }
+    console.log('Deleting: ' + baseURL + 'cookbooks/deleteCookbook', sendData);
+    //setRefresh(!refresh);
+
+    axios.post(baseURL + 'cookbooks/deleteCookbook', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((response) => {
+      console.log(response);
+      if (response.data == 'Success') {
+        console.log(response.data);
+        let newCookbooksList = userCookbooks;
+        newCookbooksList.splice(i, 1)
+        setUserCookbooks(newCookbooksList);
+        setRefresh(!refresh);
+        // setItemCount(items.length);
+        setLoading(false);
+      }
+      else {
+        //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        // setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      //setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
+
+  }
+
+const getUpdatedCookbooks = async(cookbookId)=>{
+  var baseURL = apiKey.baseURL;
+ setLoading(true);
+  let sendData={
+    cookbookId: cookbookId,
+    userId : userId
+  }
+
+  axios.post(baseURL + 'cookbooks/allCookbooksByUserId', sendData, {
+    headers: {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentials: false,
+  },
+  ).then((response) => {
+    // console.log(response);
+    if (response.data) {
+      //  console.log(response.data);
+      const items = response.data;
+      //   console.log(items);
+      setUserCookbooks(items);
+      // setItemCount(items.length);
+      setLoading(false);
+
+    }
+    else {
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setError("noUser", 'no user', "no account uses this email");
+    }
+  }).catch(error => {
+    console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+    setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+    setLoading(false);
+    console.log(error);
+  });
+
+}
+
+
   const onUpdate = async data => {
     setLoading(true);
     var baseURL = apiKey.baseURL;
@@ -452,8 +583,31 @@ function UserItems({ props }) {
        description: data.description
      }
     if (data.title) {
-      console.log('Calling Api ' + baseURL + 'cookbooks/createCookbook', sendData);
-      axios.post(baseURL + 'cookbooks/createCookbook', sendData, {
+    
+      let cookbookUrl='';
+      if(editingCookbooks)
+                {
+        sendData = {
+          userId: userId,
+          title: data.title,
+          description: data.description,
+          cookbookId: activeCookbook.cookbookId
+          
+        }
+         cookbookUrl = baseURL + 'cookbooks/updateCookbookInfo'
+                  
+                
+                }
+      else if (!editingCookbooks){
+        sendData = {
+          userId: userId,
+          title: data.title,
+          description: data.description
+        }
+       cookbookUrl =  baseURL + 'cookbooks/createCookbook'
+      }
+      console.log('Calling Api ' + cookbookUrl, sendData);
+      axios.post(cookbookUrl, sendData, {
         headers: {
           'content-type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -463,12 +617,21 @@ function UserItems({ props }) {
       ).then((response) => {
         // console.log(response);
         if (response.data) {
+          if(!editingCookbooks){
           let cookbooksList = userCookbooks;
+          console.log('Pushing..');
           cookbooksList.push(response.data);
           setUserCookbooks(cookbooksList);
-          setRefresh(!refresh);
-          setLoading(false);
-
+          setShowModal(false)
+           setEditingCookbook(false);
+        }
+          else if (editingCookbooks){
+            setRefresh(!refresh);
+        getUpdatedCookbooks(activeCookbook.cookbookId);
+          setShowEditModal(false);
+            setEditingCookbook(false);
+         
+        }
         }
         else {
           setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
@@ -490,6 +653,10 @@ function UserItems({ props }) {
 
     }
 
+  }
+  const closeEditModal = ()=>{
+    console.log('cancel');
+    setShowEditModal(false);
   }
   const onChange = args => {
     return {
@@ -555,7 +722,7 @@ function UserItems({ props }) {
       data={userCookbooks}
       keyExtractor={(item, index) => index.toString()}
       renderItem={
-        ({ item }) =>
+        ({ item,index }) =>
 
           <Card onPress={() => props.navigate('PageNotFound', { props: JSON.stringify(item) })} style={customStyles.nestedCardStyle}>
 
@@ -565,8 +732,8 @@ function UserItems({ props }) {
               
             </Card.Content>
             <Card.Actions>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => editCookbook(item)}>Edit</Button>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteUserRecipe(item, index)}>Delete</Button>
+              <Button loading={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => editCookbook(item)}>Edit </Button>
+              <Button disabled={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteCookbook(item, index)}>Delete ck</Button>
             </Card.Actions>
           </Card>
       }
@@ -584,13 +751,12 @@ function UserItems({ props }) {
       ListHeaderComponent={<Subheading style={{textAlign:"center", fontWeight:"500"}}>List Of Recipes In The Cookbook</Subheading>}
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
       snapToAlignment={"center"}
-      horizontal={((Platform.OS == 'web') ? false : false)}
       data={cookbookRecipes}
       keyExtractor={(item, index) => index.toString()}
       renderItem={
         ({ item, index }) =>
 
-          <Card onPress={() => props.navigate('ViewRecipe', { props: item })} style={customStyles.customListItemsStyle}>
+          <Card  style={customStyles.customListItemsStyle}>
 
             <Card.Content>
               {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
@@ -600,7 +766,7 @@ function UserItems({ props }) {
             </Card.Content>
             <Card.Actions>
             
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteRecipeFromCookbook(item, index)}>Remove</Button>
+              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteRecipeFromCookbook(item, index)}>Remove From Cookbok</Button>
             </Card.Actions>
           </Card>
       }
@@ -623,12 +789,107 @@ function UserItems({ props }) {
 else if(editingCookbooks){
   return(
     <SafeAreaView style={{backgroundColor:'#FFFFFF', borderRadius:10, width:'100%', padding:8}}>
-      <KeyboardAwareScrollView style={{padding:10}} extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
+     <KeyboardAvoidingView>
 
          
           <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Editing Cookbook</Title>
 
+          <View style={{ marginBottom: 1 }}>
+            <Subheading style={styles.label}>Title</Subheading>
+            <Controller
+              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              name="title"
+              defaultValue={activeCookbook.title}
+              control={control}
+              onChange={onChange}
+              rules={{ min:1,required:true }}
+            />
+            {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
+
+            <Subheading style={styles.label}>Description (Optional)</Subheading>
+            <Controller
+              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
+              name="description"
+                    defaultValue={activeCookbook.description}
+              control={control}
+              onChange={onChange}
+
+              rules={{ required: false }}
+            />
+
+
+          </View>
+<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 1 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 5, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+             Update Info
+  
+            </Button>
+            <Button  style={{ marginHorizontal: 10, marginTop: 5, backgroundColor: '#D50000' }} color="#FFFFFF" onPress={() => setEditingCookbook(false)}>
+              Cancel
+            </Button>
+
+          </View>
+            {cookbookRecipesList}
+          
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  )
+}
+else if(showModal){
+  return(
+    <SafeAreaView>
+             <KeyboardAvoidingView style={{padding:10}}>
+  
+         
+          <Title style={{ color: '#FFFFFF', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Create A Cookbook</Title>
+
           <View style={{ marginBottom: 10 }}>
+            <Subheading style={styles.label}>Title</Subheading>
+            <Controller
+              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              name="title"
+
+              control={control}
+              onChange={onChange}
+              rules={{ min:1,required:true }}
+            />
+            {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
+
+            <Subheading style={styles.label}>Description (Optional)</Subheading>
+            <Controller
+              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
+              name="description"
+
+              control={control}
+              onChange={onChange}
+
+              rules={{ required: false }}
+            />
+
+
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+             Done
+  
+            </Button>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#D50000' }} color="#FFFFFF" onPress={() => setShowModal(false)}>
+              Cancel
+            </Button>
+
+          </View>
+      </KeyboardAvoidingView>
+</SafeAreaView>
+  )
+}
+else if(showEditModal){
+  return (
+    <SafeAreaView style={{ padding: 20 }}>
+             <KeyboardAvoidingView style={{margin:20}}>
+         
+          <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Editing Cookbook</Title>
+
+          <View style={{ marginBottom: 10, padding:8 }}>
             <Subheading style={styles.label}>Title</Subheading>
             <Controller
               as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
@@ -660,17 +921,17 @@ else if(editingCookbooks){
              Update
   
             </Button>
-            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#D50000' }} color="#FFFFFF" onPress={() => setShowEditModal(false)}>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#D50000' }} color="#FFFFFF" 
+            onPress={() => closeEditModal()}>
               Cancel
             </Button>
 
           </View>
 
-              </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
-
   else if(!loading) {
     return (
 
@@ -682,6 +943,7 @@ else if(editingCookbooks){
             <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
+                  <Button onPress={()=> props.navigate('ViewCookbook')}>View Your Cookbook</Button>
                   <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Saved Recipes</Headline>
                   <Button style={{ marginHorizontal: 10, backgroundColor: '#F48FB1',marginBottom:10 }} color="#FFFFFF" onPress={() => props.navigate('EditRecipe', { mode: 'create' })}>
                     Create Recipe
@@ -716,11 +978,11 @@ else if(editingCookbooks){
 
           <Provider>
             <Portal>
-              <Modal visible={showModal} contentContainerStyle={styles.modalStyle}>
+              <Modal visible={false} contentContainerStyle={styles.modalStyle}>
 
               <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 170 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
   
-          <Image source={require('../assets/images/checked.png')} style={{ alignSelf: "center", width: 80, height: 80, position: "relative" }}></Image>
+         
           <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Create A Cookbook</Title>
 
           <View style={{ marginBottom: 10 }}>
@@ -766,59 +1028,6 @@ else if(editingCookbooks){
             </Portal>
           </Provider>
 
-           <Provider>
-            <Portal>
-              <Modal visible={showEditModal} contentContainerStyle={styles.modalStyle}>
-
-              <KeyboardAwareScrollView extraScrollHeight={Platform.OS === 'ios' ? 70 : 180} enableResetScrollToCoords={false} enableOnAndroid={true} >
-
-         
-          <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Editing Cookbook</Title>
-
-          <View style={{ marginBottom: 10 }}>
-            <Subheading style={styles.label}>Title</Subheading>
-            <Controller
-              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
-              name="title"
-              defaultValue={activeCookbook.title}
-              control={control}
-              onChange={onChange}
-              rules={{ min:1,required:true }}
-            />
-            {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
-
-            <Subheading style={styles.label}>Description (Optional)</Subheading>
-            <Controller
-              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
-              name="description"
-                    defaultValue={activeCookbook.description}
-              control={control}
-              onChange={onChange}
-
-              rules={{ required: false }}
-            />
-
-
-          </View>
-
-            {cookbookRecipesList}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
-             Update
-  
-            </Button>
-            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#D50000' }} color="#FFFFFF" onPress={() => setShowEditModal(false)}>
-              Cancel
-            </Button>
-
-          </View>
-
-              </KeyboardAwareScrollView>
-
-              </Modal>
-
-            </Portal>
-          </Provider>
       </SafeAreaView>
     );
   }

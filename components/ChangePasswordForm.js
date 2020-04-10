@@ -62,9 +62,7 @@ function ChangePasswordForm({ props }) {
       if (data.newPassword == data.confirmNewPassword) {
 
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
-          Axios.post('http://localhost:8082/rest-api/recipe/example', sendData).then(() => {
-            
-          });
+
           user.updatePassword(data.newPassword).then(function () {
             props.navigate('UserProfile');
 

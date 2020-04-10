@@ -157,11 +157,11 @@ class UserHomeScreen extends React.Component {
         if (user.emailVerified)
           set.setState({ currentUser: user });
 
-
+        this.setState({ loading: false });
       }
 
     });
-    this.getRandomRecipes();
+
     this.unsubscribe();
 
   }
@@ -216,40 +216,7 @@ class UserHomeScreen extends React.Component {
     }
   };
 
-  async getRandomRecipes() {
-    var baseUri = "https://api.spoonacular.com/recipes/random?";
-    var tag = "";
-    var hours = new Date().getHours();
-    if (hours >= 12 && hours <= 18) {
-      tag = "Our Pick's For Lunch"
-    }
-    else if (hours >= 19 && hours <= 24) {
-      tag = "Our Pick's For Dinner";
-    }
-    else if (hours < 12 && hours >= 0) {
-      tag = "Our Pick's For Breakfast"
-    }
-    this.setState({ tag: tag, loading: true })
-    Axios.get(baseUri + "apiKey=" + apiKey.key + "&tag=" + tag + "&number=5")
-      .then(res => {
-        const items = res.data.recipes;
-        this.setState({ items: items });
-        //setItemCount(items.length);
-        //  setLoading(false);
-        //let newItems = items.splice(counter, counter + resultsPerPage);
-        //let initialLength = newItems.length;
 
-        //setViewItems(newItems);
-
-        //counter = counter + resultsPerPage;
-
-        //numOfItemsViewed = numOfItemsViewed + initialLength;
-
-        this.setState({ loading: false })
-      }).catch(err => {
-        this.setState({ loading: false })
-      });
-  }
 
   toSaved() {
 
@@ -296,37 +263,8 @@ class UserHomeScreen extends React.Component {
       )
     }
     else {
-      let empty =
-        <Surface style={customStyles.defaultRounded}>
-          <Text style={{ color: '#B71C1C', fontSize: 20 }}>Something Went Wrong
-     </Text>
-        </Surface>
 
 
-      let flatList =
-        <FlatList
-          style={styles.container}
-
-          snapToAlignment={"center"}
-          horizontal={((Platform.OS == 'web') ? true : true)}
-          data={this.state.items}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={
-            ({ item }) =>
-
-              <Card onPress={() => this.props.navigation.push('ViewRandomRecipe', { props: item.id })} style={customStyles.nestedCardStyle}>
-
-                <Card.Content>
-
-                  <Title style={{ justifyContent: "flex-start" }}>{item.title}</Title>
-                  <Subheading style={{ justifyContent: "flex-start" }}>Ready in : {item.readyInMinutes} minutes</Subheading>
-                  <Subheading style={{ justifyContent: "flex-start" }}>Serves: {item.servings}</Subheading>
-                </Card.Content>
-              </Card>
-          }
-
-
-        />
       return (
         <ImageBackground source={require('../assets/images/Blush.jpg')} style={{ width: '100%', height: '100%', position: "relative" }} >
           <SafeAreaView style={{ flex: 3 }}>
@@ -355,21 +293,11 @@ class UserHomeScreen extends React.Component {
 
               </View>
 
-              <View animation="fadeIn" style={viewChildrenStyle.sameColumn}>
-                <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
-                  <View style={customStyles.viewBoxStyle}>
-                    <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Our Pick's Of Today</Headline>
-                    <Title>{this.state.tag}</Title>
-
-                    {this.state.items.length > 1 ? flatList : empty}
-
-                  </View>
-
-                </View>
-              </View>
 
             </ScrollView>
-
+            <Button onPress={() => {
+              this.props.navigation.navigate('Shopping');
+            }}>Shopping</Button>
           </SafeAreaView>
         </ImageBackground>
       );

@@ -2,19 +2,76 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, Platform, Dimensions, TouchableOpacity } from 'react-native';
-import { Title, Headline, Subheading, Surface, Card } from 'react-native-paper';
+import { StyleSheet, Text, View, Platform, Dimensions, TouchableOpacity, TextInput, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { Title, Headline, Subheading, Surface, Button, Card, Provider, Portal, Modal } from 'react-native-paper';
 import { createAnimatableComponent } from 'react-native-animatable';
-
+import Firebase from '../configure/Firebase';
+import { useForm, Controller } from 'react-hook-form'
+import axios from 'axios';
+let apiKey = require('../configure/apiKey.json');
 
 export default function ShoppingList({ navigation, ingredSent }) {
 
   const [noZero, setnoZero] = useState([]);
+  const [listItems, setListItems] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currItem, setCurrItem] = useState({});
+  const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
+  const [loading, setLoading] = useState(true);
+
+  let userId = Firebase.auth().currentUser.uid;
+
   // const [hasZero, setHasZero] = useState(ingredSent);
   let ingredCopy = [];
 
   useEffect(() => {
-    extractJSON(ingredSent);
+    let sendData = {
+      userId: userId
+    }
+    console.log('SUBMIT');
+    axios.post(apiKey.baseURL + 'shoppingList/getShoppingList', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((res) => {
+
+      if (res.data) {
+        console.log('Recipe Added To User List');
+        console.log(res.data);
+        setListItems(res.data.items);
+        //console.log(res);
+        // setListModal(false);
+        // setIsFound(true);
+        //setRecipeInfo(res.data);
+        if (res.status == 200) {
+
+        }
+        console.log(recipeInfo);
+        console.log("Complete Recipe Info Object: ");
+
+        setLoading(false);
+      }
+      else {
+        setLoading(false);
+
+        // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+
+
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
+
+
+
+    // extractJSON(ingredSent);
   }, [])
 
   // when we create the useState of noZero, it loops infinitively because whenever the noZero is being called, it re-render the whole component
@@ -22,9 +79,66 @@ export default function ShoppingList({ navigation, ingredSent }) {
   // Let's say the user put the setState function out of the component function, then it loops again and again. But by using the useEffect function, which is special function to render the compoent, it blocks looping.
 
 
+  const onSubmit = async data => {
+    if (!data.listUnit) {
+      data.listUnit = '';
+    }
+    let item = currItem.name + ' ' + data.listQuantity + ' ' + data.listUnit;
+    console.log('Sendign To List: ' + item);
+    let sendData = {
+      userId: userId,
+      name: currItem.name,
+      quantity: data.listQuantity,
+      unit: data.listUnit
+    }
+    console.log('SUBMIT');
+    axios.post(apiKey.baseURL + 'shoppingList/updateShoppingListOneItem', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((res) => {
+
+      if (res.data) {
+        console.log('Recipe Added To User List');
+        //console.log(res);
+        // setListModal(false);
+        // setIsFound(true);
+        //setRecipeInfo(res.data);
+        if (res.status == 200) {
+
+        }
+        // console.log(recipeInfo);
+        console.log("Complete Recipe Info Object: ");
+        setShowModal(false);
+        setLoading(false);
+      }
+      else {
+        setLoading(false);
+        //  setIsFound(false);
+        //   setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+
+      // setIsFound(false);
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
+
+  }
 
 
 
+  const onChange = args => {
+    return {
+      value: args[0].nativeEvent.text,
+    };
+  };
 
 
 
@@ -64,62 +178,174 @@ export default function ShoppingList({ navigation, ingredSent }) {
   }
 
 
-  const deleteIngredients = (oneIngred) => {
-    let deletedArr = noZero.filter(element => element.id !== oneIngred.id);
-    setnoZero(deletedArr);
+  const deleteIngredients = (oneIngred, i) => {
+    console.log(oneIngred, i);
+    setLoading(true);
+    if (!oneIngred.unit) {
+      oneIngred.unit = '';
+    }
+    let item = oneIngred.name + ' ' + oneIngred.quantity + ' ' + oneIngred.unit;
+    console.log('Sendign To List: ' + item);
+    let sendData = {
+      userId: userId,
+      name: oneIngred.name,
+      quantity: oneIngred.quantity,
+      unit: oneIngred.unit
+    }
+    console.log('SUBMIT');
+    axios.post(apiKey.baseURL + 'shoppingList/deleteShoppingListItem', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((res) => {
+
+      if (res.data) {
+        console.log('Recipe Added To User List');
+        //console.log(res);
+        // setListModal(false);
+        // setIsFound(true);
+        //setRecipeInfo(res.data);
+        if (res.status == 200) {
+          let shopItems = listItems;
+          shopItems.splice(i, 1);
+          setListItems(shopItems);
+          setShowModal(false);
+        }
+        // con
+        setLoading(false);
+      }
+      else {
+        setLoading(false);
+        //  setIsFound(false);
+        //   setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+
+      // setIsFound(false);
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
 
     // noZero = _.reject(noZero, function(el) { return el.id === oneIngred.id });
   };
 
+  const editListItem = (oneIngred) => {
+    setCurrItem(oneIngred);
+    console.log('CurrITem');
+
+    console.log(currItem);
+    setShowModal(true);
+  };
+  if (showModal) {
+    return (
+
+      <SafeAreaView>
+        <Title style={{ color: '#B50900' }}>Editing Shopping List Item</Title>
+        <Subheading style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>{currItem.name}</Subheading>
+        <KeyboardAvoidingView>
+
+          <View style={{ marginBottom: 10 }}>
+            <Subheading style={styles.label}>Quantity</Subheading>
+            <Controller
+              as={<TextInput keyboardType="decimal-pad" maxLength={6} style={customStyles.input} />}
+              name="listQuantity"
+              defaultValue={currItem.quantity}
+              control={control}
+              onChange={onChange}
+              rules={{ min: 1 }}
+
+            />
+            <Text style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must Be Atleat 1</Text>
+
+            <Subheading style={styles.label}>Unit Of Quantity</Subheading>
+            <Controller
+              as={<TextInput editable={false} maxLength={25} style={customStyles.input} />}
+              name="listUnit"
+              defaultValue={currItem.unit}
+              control={control}
+              onChange={onChange}
 
 
-  return (
-    <View>
-      {/* TODO:
+            />
+
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+              Update
+
+            </Button>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => setShowModal(false)} >
+              Cancel
+            </Button>
+
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+
+    )
+  }
+
+  else if (!showModal)
+    return (
+      <View>
+
+        {/* TODO:
       Support showing unit as well
       create a string which is combination of name, quantity and unit
       throw that into array.
       send that array to back end.
       */}
 
-      <View style={styles.viewBoxStyle}>
-        <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline>
-        {noZero.map((oneIngred) => {
-          return (
-            <View key={oneIngred.id} >
-              <Card style={styles.nestedCardStyle}>
-                <View style={{ flexDirection: 'row' }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <View style={styles.recentItemIndicator}></View>
-                  <Subheading style={{ justifyContent: "flex-start" }} >{oneIngred.name} : {oneIngred.count}</Subheading>
-                </View>
-                <View style={{justifyContent: 'flex-end'}}>
-                <TouchableOpacity style={styles.button} title='Delete' onPress={ ()=> {
-                    deleteIngredients(oneIngred);
-                  }}><Text>Delete</Text></TouchableOpacity>
-                </View>
-                </View>
-                {/* <View>
+        <View style={styles.viewBoxStyle}>
+          <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline>
+
+          {listItems.map((oneIngred, i) => {
+            return (
+              <View key={oneIngred.id} >
+                <Card style={styles.nestedCardStyle}>
+                  <View style={{ flexDirection: 'column', padding: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+
+                      <Subheading style={{ justifyContent: "center", textAlign: "center" }} >{oneIngred.name} : {oneIngred.quantity} {oneIngred.unit} </Subheading>
+                    </View>
+                    <View style={{ justifyContent: 'flex-end', flexDirection: "row" }}>
+                      <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
+                        editListItem(oneIngred);
+                      }}><Text>Edit</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
+                        deleteIngredients(oneIngred, i);
+                      }}><Text style={{ color: '#D50000' }}>Delete</Text></TouchableOpacity>
+                    </View>
+                  </View>
+                  {/* <View>
                   
                 </View> */}
-              </Card>
-            </View>
+                </Card>
+              </View>
 
-          )
-        })}
-      </View>
-    </View >
+            )
+          })}
+        </View>
 
-  )
+      </View >
+
+    )
 }
 
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    backgroundColor: "#f9deff",
+    backgroundColor: "#F8BBD0",
     padding: 10,
     borderRadius: 10,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginRight: 10
   },
   recentItemIndicator: {
     backgroundColor: "#CABFAB",
@@ -140,7 +366,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 15,
     borderWidth: 0,
-    padding: 10,
+    padding: 18,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -190,3 +416,132 @@ const styles = StyleSheet.create({
   },
 
 })
+
+const customStyles = StyleSheet.create({
+  modalStyle: {
+    zIndex: 1500,
+    position: "absolute",
+    flex: 3,
+    justifyContent: 'center',
+    alignContent: "center",
+    alignSelf: "center",
+    borderRadius: 10,
+    padding: 8,
+    backgroundColor: '#FFFFFF',
+
+    ...Platform.select({
+      ios: {
+
+        width: 'auto',
+        height: 'auto'
+      },
+      web: {
+        //  width: (Dimensions.get('window').width - 50),
+        //  height: (Dimensions.get('window').height - 50)
+      },
+      android: {
+        width: 330,
+        height: 600
+      },
+    })
+  },
+  defaultRounded: {
+    margin: 6,
+    marginTop: 12,
+    borderWidth: 0,
+    borderRadius: 10,
+    padding: 8,
+    height: 'auto',
+    width: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+    backgroundColor: '#4FC3F7'
+  },
+  customStyle: {
+    borderWidth: 0,
+    borderRadius: 10,
+    backgroundColor: '#81D4FA',
+    margin: 18,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 400
+      },
+      android: {
+        width: 400
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+
+
+      }
+    }),
+  },
+
+  nestedCardStyle: {
+    padding: 0,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    margin: 5,
+    flexWrap: 'wrap',
+    alignItems: "flex-start",
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 270
+      },
+      android: {
+        width: 270
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+      }
+
+    }),
+  },
+  viewBoxStyle: {
+    marginTop: 10,
+    backgroundColor: '#81D4FA',
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    borderWidth: 0,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 300
+      },
+      android: {
+        width: 300
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+
+
+      }
+    }),
+  },
+  input: {
+    backgroundColor: '#B2DFDB',
+    borderWidth: 0,
+    height: 40,
+    padding: 5,
+    width: "auto",
+    borderRadius: 4,
+    alignSelf: "stretch"
+  },
+});
