@@ -11,6 +11,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 var apiKey = require('../configure/apiKey.json');
 import axios from 'axios';
 import TopNavbar from './TopNavbar.js';
+import ViewBasicRecipe from './ViewBasicRecipe.js';
+import ViewRecipe from './ViewRecipe.js';
 
 const styles = StyleSheet.create({
   buttonOuterLayout: {
@@ -202,10 +204,13 @@ const viewChildrenStyle = StyleSheet.create({
 });
 
 
-function ViewCookbookScreen({ props }) {
-
+function ViewCookbookScreen({ props, cookbook }) {
+  let id = cookbook;
+  console.log('IDDDDDDD');
+  console.log(cookbook);
   var recipes = [];
-  recipes = '12';//props.state.params.recipes;
+  let cookbookId = props.state.params.cookbookId;
+  console.log('Cookbook Id Recievedin screen ' + cookbookId);
   const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
   const [userRecipes, setUserRecipes] = useState([]); //useState is initial state to manage items being updated.
   const [userCookbooks, setUserCookbooks] = useState([]);
@@ -218,7 +223,7 @@ function ViewCookbookScreen({ props }) {
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCookbooks, setEditingCookbook] = useState(false);
-
+  const [cookbookInfo, setCookbookInfo] = useState({});
 
   let [responseStr, setResponseTxt] = useState();
 
@@ -230,70 +235,39 @@ function ViewCookbookScreen({ props }) {
 
     setLoading(false);
     let sendData = {
-      userId: userId
+      cookbookId: id
     }
-    /*
-        axios.post(baseURL + 'recipes/allUserRecipes', sendData, {
-          headers: {
-            'content-type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: false,
-        },
-        ).then((response) => {
-          // console.log(response);
-          if (response.data) {
-            //  console.log(response.data);
-            const items = response.data;
-            //   console.log(items);
-            setUserRecipes(items);
-            // setItemCount(items.length);
-            setLoading(false);
-    
-          }
-          else {
-            setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-            setError("noUser", 'no user', "no account uses this email");
-          }
-        }).catch(error => {
-          console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-          setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-          setLoading(false);
-          console.log(error);
-        });
-    // Getting Cookbooks
-        setLoading(true);
-        axios.post(baseURL + 'cookbooks/allCookbooksByUserId', sendData, {
-          headers: {
-            'content-type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: false,
-        },
-        ).then((response) => {
-          // console.log(response);
-          if (response.data) {
-            //  console.log(response.data);
-            const items = response.data;
-            //   console.log(items);
-            setUserCookbooks(items);
-            // setItemCount(items.length);
-            setLoading(false);
-    
-          }
-          else {
-            setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-            setError("noUser", 'no user', "no account uses this email");
-          }
-        }).catch(error => {
-          console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-          setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-          setLoading(false);
-          console.log(error);
-        });
-    
-    */
+    console.log('Calling APi: ' + baseURL + 'cookbooks/cookbookDetail');
+    axios.post(baseURL + 'cookbooks/cookbookDetail', sendData, {
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      withCredentials: false,
+    },
+    ).then((response) => {
+      // console.log(response);
+      if (response.data) {
+        //  console.log(response.data);
+        const items = response.data;
+        console.log(items);
+        setCookbookInfo(items);
+        // setItemCount(items.length);
+        setLoading(false);
 
+      }
+      else {
+        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setError("noUser", 'no user', "no account uses this email");
+      }
+    }).catch(error => {
+      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setLoading(false);
+      console.log(error);
+    });
+    // Getting Cookbooks
+    setLoading(true);
 
   }, []);
 
@@ -673,39 +647,30 @@ function ViewCookbookScreen({ props }) {
   }
 
 
-  /*
-    let cookbookRecipesList =
-      <FlatList
-        scrollEnabled={false}
-        initialNumToRender={1}
-        style={styles.container}
-        extraData={refresh}
-        ListHeaderComponent={<Subheading style={{textAlign:"center", fontWeight:"500"}}>List Of Recipes In The Cookbook</Subheading>}
-        ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
-        snapToAlignment={"center"}
-        data={cookbookRecipes}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={
-          ({ item, index }) =>
-  
-            <Card  style={customStyles.customListItemsStyle}>
-  
-              <Card.Content>
-                {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
-  
-                <Title style={{ justifyContent: "flex-start" }}>{item.title}</Title>
-                <Text>{item.uid}</Text>
-              </Card.Content>
-              <Card.Actions>
-              
-                <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteRecipeFromCookbook(item, index)}>Remove From Cookbok</Button>
-              </Card.Actions>
-            </Card>
-        }
-  
-  
-      />
-  */
+
+  let cookbookRecipesList =
+    <FlatList
+      scrollEnabled={false}
+      initialNumToRender={1}
+      style={styles.container}
+      extraData={refresh}
+      ListHeaderComponent={<Subheading style={{ textAlign: "center", fontWeight: "500" }}>List Of Recipes In The Cookbook</Subheading>}
+      ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
+      snapToAlignment={"center"}
+      data={cookbookInfo.cookbookRecipes}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={
+        ({ item, index }) =>
+          <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, marginTop: 10 }} >
+            <Title style={{ textAlign: "center" }}>{item.title}</Title>
+
+            <Button onPress={() => props.navigate('ViewBasicRecipe', { props: item.id })}>View Recipe</Button>
+          </View >
+      }
+
+
+    />
+
 
 
   if (loading) {
@@ -729,14 +694,22 @@ function ViewCookbookScreen({ props }) {
           <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
             <View style={customStyles.viewBoxStyle}>
               <View style={{ flexDirection: "column" }}>
-                <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Cookbook Recipes</Headline>
+                <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Cookbook </Headline>
 
               </View>
-              <Subheading>Scroll Through Your Favorites</Subheading>
-              <ScrollView style={{ maxHeight: 350 }} indicatorStyle={"blue"}>
-                {//recipeFlatList
-                }
-              </ScrollView>
+
+
+              <View style={{ marginBottom: 1 }}>
+                <Title style={{ color: "#F06292", flexWrap: "wrap", margin: 5, textAlign: "center" }} >{cookbookInfo.userCookbook.title}</Title>
+
+                <Subheading style={styles.label}>Description </Subheading>
+                <Text style={{ flexWrap: "wrap", margin: 5, textAlign: "center" }}> {(cookbookInfo.userCookbook.description && cookbookInfo.userCookbook.description.trim() != '') ? cookbookInfo.userCookbook.description : 'N/A'} </Text>
+
+
+              </View>
+              {cookbookRecipesList}
+
+
             </View>
 
           </View>

@@ -13,7 +13,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
-import DevScreen from '../screens/DevScreen';
+import ContactScreen from '../screens/ContactScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SearchResults from '../components/SearchResults';
 import VerificationScreen from '../screens/VerificationScreen';
@@ -82,18 +82,15 @@ AuthAccountStack.navigationOptions = {
 AuthAccountStack.path = '';
 const AuthSearchStack = createStackNavigator(
   {
-    SimpleSearch: SearchScreen,
-    //Results: SearchResults,
-    Results: SearchResultScreen,
-    ViewRecipe: ViewRecipeScreen,
+    Contact: ContactScreen
   },
   config
 );
 
 AuthSearchStack.navigationOptions = {
-  tabBarLabel: <Text style={{ fontSize: 14 }}> Search </Text>,
+  tabBarLabel: <Text style={{ fontSize: 14 }}> Contact Us </Text>,
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'magnify'} />
+    <TabBarIcon focused={focused} name={'help-box'} />
   ),
   tabBarColor: '#4CAF50'
 };

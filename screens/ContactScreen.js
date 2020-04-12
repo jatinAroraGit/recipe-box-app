@@ -5,7 +5,6 @@ import TopNavbar from '../components/TopNavbar';
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import * as MailComposer from 'expo-mail-composer';
-import DevForm from '../components/DevForm';
 import '../configure/apiKey.json'
 
 const baseStyle = StyleSheet.create({
@@ -71,7 +70,7 @@ const appbarCustom = StyleSheet.create({
   }
 })
 
-class DevScreen extends React.Component {
+class ContactScreen extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -147,7 +146,7 @@ class DevScreen extends React.Component {
   }
 }
 
-DevScreen.navigationOptions = {
+ContactScreen.navigationOptions = {
   header: null,
 };
-export default DevScreen;
+export default ContactScreen;

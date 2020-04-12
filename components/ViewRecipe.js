@@ -3,7 +3,7 @@ import {
   StyleSheet, Text, Picker, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, KeyboardAvoidingView, TouchableOpacity, Alert, TouchableHighlight,
   TextInput
 } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button } from 'react-native-paper';
+import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button, IconButton } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
@@ -11,11 +11,13 @@ import Firebase from '../configure/Firebase.js';
 import { FlatList } from 'react-native-gesture-handler';
 import TopNavbar from './TopNavbar.js';
 import { useForm, Controller } from 'react-hook-form'
+import * as Print from 'expo-print';
+
 
 var sanitizeHtml = require('sanitize-html');
 var stripHtml = require('string-strip-html');
 let apiKey = require('../configure/apiKey.json');
-
+let bakRecipeInfo;
 function ViewRecipe({ navigation, recipeDetail }) {
   recipeDetail = JSON.parse(recipeDetail.props);
   let recipeCompleteDetail = {};
@@ -30,8 +32,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   // console.log('navigation in ViewRecipe - start');
   let quantiyForList = 1;
   let unitForList = '';
-  console.log("html title ::")
-  console.log(htmlTitle);
+
   const [responseStr, setResponseTxt] = useState("Oops! Something Went Wrong. Try Again Please.");
   const [iconName, setIconName] = useState('playlist-plus');
   const [ingred, setIngred] = useState([]); //setIngred is such a '=' sign to connect ingred and ingredientsArray to pass the ingredientsArray to ingred.
@@ -46,7 +47,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   let [listUnit, setListUnit] = useState('');
 
   const [servings, setservings] = useState(0);
-  let [recipeInfo, setRecipeInfo] = useState({});
+  const [recipeInfo, setRecipeInfo] = useState({});
   const [summary, setsummary] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [cookbookShowModal, setCookbookShowModal] = useState(false);
@@ -85,14 +86,13 @@ function ViewRecipe({ navigation, recipeDetail }) {
     ).then((res) => {
 
       if (res.data) {
-        console.log('Recipe Detail');
-        console.log(res);
+
         setIsFound(true);
         let info = res.data;
         if (res.data.userId == userId) {
           setOwnsRecipe(true);
         }
-        console.log(info);
+
         //  info.userId = "ok9wULEb9cYUn2JYJSSRpo9vtj13";
         setRecipeInfo(info);
         // recipeCompleteDetail = JSON.stringify(res.data);
@@ -115,16 +115,15 @@ function ViewRecipe({ navigation, recipeDetail }) {
           setsummary('N/A');
         }
         const ingredients = res.data.includedIngredients;
-        console.log('aLL Ingredients');
-        console.log(ingredients);
+
         extractIngredients(ingredients)
 
         if (res.data.instructions.length != 0) {
+          htmlSteps = "<div><h2>Instructions: </h2><ul>"
           //  const info = res.data.analyzedInstructions[0].steps;
           //extractRecipeInformation(res.data.instructions);
           // console.log('HAS STUFF')
-          console.log("Instrcuions");
-          console.log(res.data.instructions);
+
 
           setStep(res.data.instructions);
           setLoading(false);
@@ -132,8 +131,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
           setNoSteps(() => {
             noSteps = true;
           });
-          console.log(noSteps);
-          console.log('Hi bro');
+
           setLoading(false);
         }
 
@@ -147,7 +145,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     }).catch(error => {
 
       setIsFound(false);
-      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+
       setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
       setLoading(false);
       console.log(error);
@@ -310,6 +308,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
   }
   const addRecipeToUser = () => {
+    setLoading(true);
     recipeInfo.userId = userId;
     console.log("caling api to add to user recipe: " + apiKey.baseURL + 'recipes/addRecipe', recipeInfo);
 
@@ -323,46 +322,33 @@ function ViewRecipe({ navigation, recipeDetail }) {
     ).then((res) => {
 
       if (res.data) {
-        console.log('Recipe Added To User List');
+        //console.log('Recipe Added To User List');
         //console.log(res);
         // setIsFound(true);
         //setRecipeInfo(res.data);
-        recipeCompleteDetail = res.data;
-        console.log(recipeInfo);
-        console.log("Complete Recipe Info Object: ", recipeCompleteDetail);
+        // recipeCompleteDetail = res.data;
+        //console.log(recipeInfo);
+        //console.log("Complete Recipe Info Object: ", recipeCompleteDetail);
 
-        const readyInMin = res.data.readyInMinutes;
-        setreadyInMinutes(readyInMin)
-        const serves = res.data.servings
-        setservings(serves);
-        const recSummary = res.data.summary;
+        //  const readyInMin = res.data.readyInMinutes;
+        //  setreadyInMinutes(readyInMin)
+        // const serves = res.data.servings
+        // setservings(serves);
+        //  const recSummary = res.data.summary;
 
-        var cleanSummary = sanitizeHtml(recSummary);
-        let pureTextSummary = stripHtml(cleanSummary);
-        htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
-        setsummary(pureTextSummary);
-        const ingredients = res.data.includedIngredients;
+        // var cleanSummary = sanitizeHtml(recSummary);
+        //   let pureTextSummary = stripHtml(cleanSummary);
+        //  htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
+        // setsummary(pureTextSummary);
+        //  const ingredients = res.data.includedIngredients;
 
-        console.log(ingredients);
-        extractIngredients(ingredients)
+        //console.log(ingredients);
+        //  extractIngredients(ingredients)
 
-        if (res.data.instructions.length != 0) {
-          //  const info = res.data.analyzedInstructions[0].steps;
-          //extractRecipeInformation(res.data.instructions);
-          // console.log('HAS STUFF')
-          console.log("Instrcuions");
-          console.log(res.data.instructions);
 
-          setStep(res.data.instructions);
-          setLoading(false);
-        } else {
-          setNoSteps(() => {
-            noSteps = true;
-          });
-          console.log(noSteps);
-          console.log('Hi bro');
-        }
-        //  setLoading(false);
+        //console.log('Hi bro');
+
+        setLoading(false);
       }
       else {
         setLoading(false);
@@ -450,6 +436,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
   }
   const openListScreen = (item) => {
+    bakRecipeInfo = recipeInfo;
+    console.log('Bak Up Reciep Info ', bakRecipeInfo);
     console.log(item);
     setCurrItem(item);
     setListModal(true);
@@ -485,13 +473,19 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
   const onSubmit = async data => {
-    let item = ''
+    console.log('before' + data.listUnit);
+
+    console.log('After', data.listUnit);
     if (!data.listUnit) {
-      item = currItem.name + '~' + data.listQuantity;
+      console.log('no trim', data.listUnit);
+      data.listUnit = '';
     }
-    else {
-      item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit;
+    else if (data.listUnit) {
+      console.log('trimmer', data.listUnit);
+      data.listUnit = data.listUnit.trim();
     }
+    item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit;
+
     console.log('Sendign To List: ' + item);
     let sendData = {
       userId: userId,
@@ -511,6 +505,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
         console.log('Recipe Added To User List');
         //console.log(res);
         setListModal(false);
+        setCurrItem();
         // setIsFound(true);
         //setRecipeInfo(res.data);
         if (res.status == 200) {
@@ -524,15 +519,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
       else {
         setLoading(false);
         setIsFound(false);
+        setListModal(false)
         setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
         setError("noUser", 'no user', "no account uses this email");
       }
     }).catch(error => {
-
+      setLoading(false);
+      setIsFound(false);
+      setListModal(false);
       setIsFound(false);
       console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
       setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-      setLoading(false);
+
       console.log(error);
     });
 
@@ -545,12 +543,88 @@ function ViewRecipe({ navigation, recipeDetail }) {
     };
   };
 
+  const downloadRecipe = async () => {
+
+
+    let htmlStepsTitle = "<div><h2>Steps</h2><ul>"
+    if (step.length > 0) {
+      step.forEach(i => {
+        htmlSteps = htmlSteps + "<li>" + i.description + "</li>"
+      })
+    }
+    else {
+      htmlSteps = "<li>" + "Not Available" + "</li>"
+    }
+    htmlSteps = htmlSteps + "</ul></div>"
+
+    let htmlIngredientsTitle = "<div><h2>Ingredients</h2><ul>"
+    if (ingred.length > 0) {
+      console.log(ingred[0]);
+      ingred.forEach(i => {
+        htmlIngredients = htmlIngredients + "<li>" + i.name + ' ' + i.amount + " " + i.unit + "" + "</li>"
+      })
+    }
+    else {
+      htmlIngredients = "<li>" + "Not Available" + "</li>"
+    }
+    htmlIngredients = htmlIngredients + "</ul></div>"
+    htmlDescrition = "<p>" + summary + "</p>"
+
+    let finalPdfHtml = "<div style='margin:20px'>" + htmlTitle + htmlDescrition + htmlIngredientsTitle + htmlIngredients + htmlStepsTitle + htmlSteps + "</div>";
+
+    const options = { html: finalPdfHtml, base64: false };
+
+    // Put this in an onPress for a button or in a function you want to print from
+
+    Print.printAsync(options).catch((err) => {
+      console.log(err);
+    });
+
+  };
+
 
   const changeQuantity = (q) => {
     quantiyForList = quantiyForList + q;
     console.log('quantiyForList: ', q);
 
   }
+
+  const resetViewRecipe = () => {
+    setLoading(true);
+    setTimeout(setLoading(false), 8000);
+
+    setRecipeInfo(bakRecipeInfo);
+    setListModal(false);
+    console.log('Reset Recipe Info', recipeInfo);
+    setLoading(false);
+    setRecipeInfo(recipeInfo);
+  }
+  let ingredientsList =
+
+    <FlatList
+      scrollEnabled={true}
+      initialNumToRender={1}
+      style={styles.container}
+      extraData={refresh}
+      ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Ingredients</Title></Card.Content></Card>}
+      snapToAlignment={"center"}
+      horizontal={((Platform.OS == 'web') ? false : false)}
+      data={ingred}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={
+        ({ item, index }) =>
+
+          <View style={{ flexDirection: "row", width: 'auto', margin: 10, borderRadius: 10 }}>
+            <Text style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flexWrap: "wrap" }}>{item.name} ( {item.amount} {item.unit} )</Text>
+            <IconButton style={{ backgroundColor: "#D50000" }} onPress={() => openListScreen(item)} icon="cart-plus" size={20} />
+          </View>
+
+
+
+      }
+
+
+    />
 
 
   let cookBookFlatList =
@@ -604,13 +678,14 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
           <View style={{ marginBottom: 10 }}>
             <Subheading style={styles.label}>Quantity</Subheading>
+            <Text style={{ color: "#FFC300" }}>Should be atleast 0.5</Text>
             <Controller
-              as={<TextInput maxLength={6} style={customStyles.input} />}
+              as={<TextInput keyboardType={"number-pad"} maxLength={6} style={customStyles.input} />}
               name="listQuantity"
 
               control={control}
               onChange={onChange}
-
+              rules={{ min: 0.5 }}
             />
 
             <Subheading style={styles.label}>Unit Of Quantity</Subheading>
@@ -630,7 +705,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
               Add To List
 
             </Button>
-            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => setListModal(false)} >
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => resetViewRecipe()} >
               Cancel
             </Button>
 
@@ -674,11 +749,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
               </View>
 
 
-              <View style={styles.add}>
-
-                <FAB icon={iconName} small={false} size={48} color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}> </FAB>
-                {/* <Ionicons name="ios-add" size={48} color="#DFD8C8" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons> */}
-              </View>
             </View>
 
 
@@ -686,8 +756,17 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
             <View style={styles.infoContainer}>
               <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeDetail.title}</Headline>
-              {(!ownsRecipe) ? < Button mode="contained" onPress={addRecipeToUser}>Add Recipe To Your Recipes</Button> : <Text></Text>}
-
+              <Subheading style={{ fontWeight: '600', flexWrap: "wrap" }}>From: {(recipeInfo.author) ? recipeInfo.author : 'Anonymous'}</Subheading>
+              {(!ownsRecipe) ? < Button mode="contained" onPress={addRecipeToUser}>Add Recipe To Your Recipes</Button> : <Text>This Recipe Is By You</Text>}
+              {(!ownsRecipe) ?
+                <Text style={{ fontWeight: "600", textAlign: "center", fontSize: 20, color: "#D81B60" }}>OR</Text>
+                : <Text></Text>
+              }
+              {(!ownsRecipe) ?
+                <Button mode="contained" color="#DFD8C8" onPress={addToList} style={{ marginTop: 6, marginLeft: 2 }}>Add To Cookbook </Button>
+                : <Text></Text>
+              }
+              < Button mode="contained" style={{ margin: 10, backgroundColor: "#FF80AB" }} onPress={downloadRecipe}>Print Recipe</Button>
               <View style={styles.statsContainer}>
                 <View style={styles.statsBox}>
                   <Text style={[styles.text, { fontSize: 18 }]}>{readyInMinutes}</Text>
@@ -725,24 +804,18 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
               <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+
+
               {ingred.map((oneIngred, index) => {
                 return (
                   <Card key={index + 1} style={styles.nestedCardStyle}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <View style={styles.recentItemIndicator}></View>
+                    <View style={{ flexDirection: 'row', margin: 5 }}>
+
                       <Text style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
                       <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
                         <TouchableOpacity style={styles.button} onPress={() => {
                           openListScreen(oneIngred);
-                        }}><Text style={{ fontWeight: "700" }}> * </Text></TouchableOpacity>
-
-                        <TouchableOpacity style={styles.button} onPress={() => {
-                          setListModal(true)
-                        }}><Text style={{ fontWeight: "700" }}> - </Text></TouchableOpacity>
-                        <Text>{' ' + oneIngred.count + ' '}</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => {
-                          incrementCountHandler(oneIngred)
-                        }}><Text>+</Text></TouchableOpacity>
+                        }}><IconButton icon="cart-plus" size={20} /></TouchableOpacity>
                       </View>
                     </View>
                   </Card>
@@ -768,7 +841,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               <TouchableOpacity style={styles.button}
                 onPress={() => {
-                  navigation.navigate('Shopping', makeJsontoObject(ingred));
+                  navigation.navigate('Shopping');
                 }}><Text>View Shopping List</Text></TouchableOpacity>
             </View>
             <View style={styles.viewBoxStyle}>
@@ -925,9 +998,9 @@ const styles = StyleSheet.create({
   },
   profileImage: {
     width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: "hidden"
+    height: 150,
+    borderRadius: 0,
+    overflow: "visible"
   },
   dm: {
     backgroundColor: "rgb(65,68,75)",

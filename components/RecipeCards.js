@@ -33,7 +33,7 @@ export default class RecipeCards extends React.PureComponent {
               <Text style={styles.cardText}>Serving Size: {this.props.oneitem.servings}</Text>
               <Text style={styles.cardText}>Ready in minutes: {this.props.oneitem.readyInMinutes}</Text>
 
-              <Text style={{ color: "#00BFA5" }}>{(this.props.oneitem.userRecipe) ? "From Our User" : ""}</Text>
+              <Text style={{ color: "#00BFA5", textAlign: "center", fontSize: 18, fontWeight: "500" }}>{(this.props.oneitem.userRecipe) ? "From Our User" : ""}</Text>
             </View>
 
           </View>

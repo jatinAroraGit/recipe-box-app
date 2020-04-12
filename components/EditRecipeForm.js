@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, Platform, Text, Dimensions, KeyboardAvoidingView, Picker, SafeAreaView, Image } from 'react-native';
-import { Button, TextInput, Title, Subheading, Chip, List, Modal, Provider, Portal, Card, Checkbox, Switch } from 'react-native-paper';
+import { Button, TextInput, Title, Subheading, Chip, List, Modal, Provider, Portal, Card, Checkbox, Switch, Dialog } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight, ScrollView } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: 3,
-    padding: 1,
+    padding: 3,
     backgroundColor: '#81D4FA',
     borderRadius: 10,
     height: 'auto',
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
     height: 30,
+    maxWidth: 310,
     padding: 5,
     borderRadius: 4,
   },
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   multilineInput: {
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
-    minHeight: 130,
+    height: "auto",
     padding: 5,
     borderRadius: 4,
   },
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
 
   longInput: {
     backgroundColor: '#FFFFFF',
-    height: 130,
+    height: 80,
     //borderWidth: 0,
     // padding: 5,
     //borderRadius: 4,
@@ -172,6 +173,10 @@ function EditRecipeForm({ nav }) {
   let [showSnack, setShowSnack] = useState(false);
   let [isChanged, setIsChanged] = useState(false);
   let [isPublishing, setIsPublishing] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [editingStep, setEditingStep] = useState(false);
+  const [pubError, setPubError] = useState("");
+
 
   var recipeID = nav.state.params.ID;
 
@@ -316,15 +321,17 @@ function EditRecipeForm({ nav }) {
     }
     else {
       return (
-        <Chip key={i} style={{ margin: 5, alignSelf: 'baseline' }}>
-          {ingredient.name}: {ingredient.amount} {ingredient.unit}</Chip>
+        <Chip key={i} children={<Text> {ingredient.name}: {ingredient.amount} {ingredient.unit}</Text>} style={{ margin: 2, alignSelf: 'baseline', flexWrap: "wrap" }}>
+        </Chip>
       )
     }
 
   });
   const showUpdateModal = (i) => {
     setCurrentStep(i);
-    setShowModal(true);
+    //setShowModal(true);
+    setEditingStep(true);
+    setDialog(true);
   }
 
   const showSteps = steps.map((step, i) => {
@@ -333,7 +340,7 @@ function EditRecipeForm({ nav }) {
 
         <View style={{ marginBottom: 10, backgroundColor: '#dddddd', padding: 6, zIndex: 1000 }} key={i} >
           <Subheading style={{ color: "#222222" }} >Step {i + 1}:</Subheading>
-          <Subheading>{step}</Subheading>
+          <Subheading style={{ flexWrap: "wrap" }}>{step}</Subheading>
           <View style={{ flexDirection: "row", alignContent: "center", alignItems: "center", justifyContent: "center" }}>
             <Button style={{ backgroundColor: '#D50000', height: 32, margin: 8 }} mode="contained" onPress={() => removeStep(i)}>
               Remove
@@ -361,16 +368,17 @@ function EditRecipeForm({ nav }) {
     setIngredientLoading(true);
     let isValid = true;
     console.log("Adding new ingredient", data);
+    data.ingredientName = data.ingredientName.trim();
     if (data.ingredientName == "" || !data.ingredientName) {
       isValid = false;
       setError("ingredientText", 'ingredient', "Must enter the ingredient to add.");
     }
-    else if (data.ingredientName.length < 2) {
+    else if (data.ingredientName.length < 1) {
       isValid = false;
       setError("ingredientShort", 'shortingredient', "Ingredient text is too short.");
     } else {
       for (var i in ingredients) {
-        if (data.ingredientName == ingredients[i].name) {
+        if (data.ingredientName.toLowerCase() == ingredients[i].name.toLowerCase()) {
           isValid = false;
           setError("ingredientUsed", 'usedingredient', "Ingredient name missing.");
         }
@@ -397,6 +405,7 @@ function EditRecipeForm({ nav }) {
 
   const onStep = data => {
     setStepLoading(true);
+    data.step = data.step.trim();
     if (data.step.length > 2) {
       let tempArray = [...steps];
       tempArray[steps.length] = data.step;
@@ -419,8 +428,8 @@ function EditRecipeForm({ nav }) {
 
     temp[i] = newStep;
     setSteps(temp);
-    setShowModal(false);
-
+    // setShowModal(false);
+    setEditingStep(false);
   };
 
   const onUnPublish = data => {
@@ -439,10 +448,12 @@ function EditRecipeForm({ nav }) {
         setError("recipeName", 'descname', "Publishing Error: You need to have a longer recipe name");
       }
     }
-    else if (!data.recipeName) {
+
+    else if (!data.recipeName || data.recipeName.trim() == "") {
       isValid = false;
       setError("recipeName", 'descname', "Publishing Error: You need to have a proper recipe name");
     }
+    data.recipeDesc = data.recipeDesc.trim();
     if (!data.recipeDesc) {
       isValid = false;
       setError("recipeDesc", 'descname', "Publishing Error: You need to have description");
@@ -463,7 +474,9 @@ function EditRecipeForm({ nav }) {
       isValid = false;
       setError("servings", 'descname', "Publishing Error: You need to provide number of servings to be more than 0");
     }
-
+    if (!isValid) {
+      setPubError("Oops! Looks Like You have not filled all the fields to publish recipe yet.");
+    }
     if (isValid) {
       data.isPublished = true;
       setPublished(true);
@@ -473,6 +486,7 @@ function EditRecipeForm({ nav }) {
       publishing = true;
       updating = true;
       console.log("Published .... ", published);
+      setPubError("");
       onSubmit(data);
     }
   }
@@ -492,13 +506,53 @@ function EditRecipeForm({ nav }) {
     }
     else {
       recipe.isPublished = false;
+
       setIsChanged(true);
     }
-    if (data.recipeName)
-      recipe.recipeTitle = data.recipeName;
-    else
-      recipe.recipeTitle = "New Recipe";
+    if (data.recipeAuthor) {
+      console.log('Trimmed auth')
+      recipe.author = data.recipeAuthor.trim();
+    }
+    else if (data.recipeAuthor == "") {
+      recipe.author = data.recipeAuthor.trim();
+    }
+    if (data.recipeName) {
+      data.recipeName = data.recipeName.trim();
+      if (data.recipeName == "") {
+        data.recipeName = "New Recipe"
+      }
+    } else if (!data.recipeName) {
+      data.recipeName = "New Recipe"
+    }
+    if (data.image) {
+      data.image = data.image.trim();
+      if (data.image == "") {
+        data.image = null;
+      }
+    } else if (!data.image) {
+      data.image = null;
+    }
 
+    if (data.cuisine) {
+      data.cuisine = data.cuisine.trim();
+      if (data.cuisine == "") {
+        data.cuisine = null;
+      }
+    } else if (!data.cuisine) {
+      data.cuisine = null;
+    }
+
+    if (data.mealType) {
+      data.mealType = data.mealType.trim();
+      if (data.mealType == "") {
+        data.mealType = null;
+      }
+    } else if (!data.mealType) {
+      data.mealType = null;
+    }
+
+
+    recipe.recipeTitle = data.recipeName;
     recipe.userId = userID;
     recipe.summary = data.recipeDesc;
     recipe.ingredients = ingredients;
@@ -636,6 +690,24 @@ function EditRecipeForm({ nav }) {
       </SafeAreaView>
     );
   }
+  else if (editingStep) {
+    return (
+      <SafeAreaView>
+        <View>
+          <Card.Content>
+            <Title>Updating Step</Title>
+            <View style={{ minHeight: 100 }}>
+              <TextInput multiline={true} scrollEnabled={true} defaultValue={steps[currentStep]} editable={true} style={styles.multilineInput} onChangeText={text => setNewStep(text)} />
+
+            </View>
+            <Button style={{ backgroundColor: '#00BFA5', margin: 10 }} color='#FF00FF' mode="contained" onPress={() => updateStep(currentStep)}>Update </Button>
+            <Button style={{ backgroundColor: '#C62828', margin: 10 }} color='#FF00FF' mode="contained" onPress={() => setShowModal(false)}>Cancel </Button>
+
+          </Card.Content>
+        </View>
+      </SafeAreaView>
+    )
+  }
   else {
     return (
 
@@ -675,7 +747,7 @@ function EditRecipeForm({ nav }) {
           <Controller
             as={
 
-              <TextInput multiline={true} scrollEnabled={true} disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
+              <TextInput multiline={true} disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
 
             name="recipeDesc"
             defaultValue={recipe.summary}
@@ -736,7 +808,7 @@ function EditRecipeForm({ nav }) {
             <View style={{ flexDirection: 'column', justifyContent: 'center', marginHorizontal: 5, marginBottom: 10 }} >
               <Text style={{ justifyContent: 'center', color: '#FFFFFF' }}>Unit (optional)</Text>
               <Controller
-                as={<TextInput clearTextOnFocus={true} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
+                as={<TextInput maxLength={15} clearTextOnFocus={true} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
                 name="ingredientUnit"
                 id="ingredientUnit"
                 defaultValue=""
@@ -841,9 +913,13 @@ function EditRecipeForm({ nav }) {
             {published ? <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onUnPublish)}>
               UnPublish Recipe*
         </Button>
-              : <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onPublish)}>
-                Publish Recipe*
+              :
+              <View>
+                <Button loading={buttonLoading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onPublish)}>
+                  Publish Recipe*
         </Button>
+                <Text style={{ margin: 10, color: "#D50000" }}>{pubError}</Text>
+              </View>
             }
             {published ? <Text style={{ marginHorizontal: 10, marginTop: 5 }} mode="contained" >
               * Unpublishing will make the recipe unavailable to other users.
@@ -874,6 +950,7 @@ function EditRecipeForm({ nav }) {
 
           </Portal>
         </Provider>
+
       </KeyboardAvoidingView>
 
     );

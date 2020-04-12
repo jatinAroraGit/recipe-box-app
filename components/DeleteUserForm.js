@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { useState } from 'react'
 import { View, StyleSheet, Platform, Text, Dimensions } from 'react-native';
 import { Button, TextInput, Title, Subheading } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Firebase from '../configure/Firebase';
 import Axios from 'axios';
+var apiKey = require('../configure/apiKey.json');
+var baseURL = apiKey.baseURL;
 
 const styles = StyleSheet.create({
   label: {
@@ -49,9 +52,12 @@ const styles = StyleSheet.create({
 
 
 function DeleteUserForm({ props }) {
-
+  const [resText, setResText] = useState('');
   var auth = Firebase.auth();
-  let user = auth.currentUser;//retrieving current user
+  let user = auth.currentUser;
+
+  let userEmail = Firebase.auth().currentUser.email;//retrieving current user
+  let userUid = Firebase.auth().currentUser.uid;
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const onSubmit = data => {
 
@@ -60,14 +66,14 @@ function DeleteUserForm({ props }) {
 
       if (data.accept == 'I AM SURE') {
         let sendData = {
-          "userID": user.uid,
-          "userEmail": user.email
+          "userId": userUid,
+          "userEmail": userEmail
         }
         auth.signInWithEmailAndPassword(user.email, data.password).then(function () {
 
           user.delete().then(function () {
-            props.navigate('Home');
-            Axios.post(baseURL + '/userAccount/delete', sendData, {
+
+            Axios.post(baseURL + 'userAccount/delete', sendData, {
               headers: {
                 'content-type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
@@ -75,9 +81,10 @@ function DeleteUserForm({ props }) {
               }
             }).then(() => {
               console.log("deleted");
+              props.navigate('Home');
               setLoading(false);
             }).catch(error => {
-              setLoading(false);
+              setResText('oops, something happended. Try again')
             });
           }).catch(function (error) {
             var errorCode = error.code;
@@ -132,7 +139,7 @@ function DeleteUserForm({ props }) {
         rules={{ required: true }}
       />
       {errors.accept && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid confirmation message.</Subheading>}
-
+      <Subheading>{resText}</Subheading>
       <Button style={{ marginHorizontal: 10, marginTop: 20 }} mode="contained" onPress={handleSubmit(onSubmit)}>
         Delete Account
         </Button>

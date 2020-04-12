@@ -287,12 +287,12 @@ class UserHomeScreen extends React.Component {
                     <Text onPress={() => this.props.navigation.push('UserProfile')} style={{ color: '#ffffff', fontSize: 20 }}>View User Profile</Text>
                   </Surface>
                   <Surface style={customStyles.defaultRounded}>
-                    <Text onPress={() => { this.toSaved() }} style={{ color: '#ffffff', fontSize: 20 }}> View Your Saved Cookbooks and Recipes</Text>
+                    <Text onPress={() => { this.toSaved() }} style={{ color: '#ffffff', fontSize: 20, textAlign: "center" }}> View Your Saved Cookbooks and Recipes</Text>
                   </Surface>
                   <Surface style={customStyles.defaultRounded}>
                     <Text onPress={() => {
                       this.props.navigation.navigate('Shopping');
-                    }} style={{ color: '#ffffff', fontSize: 20 }}> Your Shopping List</Text>
+                    }} style={{ color: '#ffffff', fontSize: 20 }}>See Your Shopping List</Text>
                   </Surface>
                 </View>
 

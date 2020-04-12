@@ -16,7 +16,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import SecurityQuestionScreen from '../screens/SecurityQuestionScreen';
-import DevScreen from '../screens/DevScreen';
+import ContactScreen from '../screens/ContactScreen';
 import SearchScreen from '../screens/SearchScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 import ShoppingListScreen from '../screens/ShoppingListScreen';
@@ -134,7 +134,7 @@ SettingsStack.path = '';
 
 const OptionsStack = createStackNavigator(
   {
-    Options: DevScreen
+    ContactUs: ContactScreen
   },
   config
 );
@@ -142,7 +142,7 @@ const OptionsStack = createStackNavigator(
 OptionsStack.navigationOptions = {
   tabBarLabel: <Text style={{ fontSize: 14 }}> Options </Text>,
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'camera-control'} />
+    <TabBarIcon focused={focused} name={'help-box'} />
   ),
 };
 
@@ -152,7 +152,6 @@ const tabNavigator = createMaterialBottomTabNavigator({
   HomeStack,
   AccountStack,
   SearchStack,
-  SettingsStack,
   OptionsStack
 }, {
     inactiveColor: '#BDBDBD',

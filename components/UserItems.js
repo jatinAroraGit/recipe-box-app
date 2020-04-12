@@ -10,6 +10,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 var apiKey = require('../configure/apiKey.json');
 import axios from 'axios';
+import ViewCookbook from './ViewCookbook.js';
 
 const styles = StyleSheet.create({
   buttonOuterLayout: {
@@ -23,16 +24,16 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#E1BEE7',
-
+    width:220,
     borderWidth: 0,
-    height: 40,
+    height: 80,
     padding: 6,
     borderRadius: 4,
     marginBottom: 14
   },
   longInput: {
     backgroundColor: '#E1BEE7',
-
+    width: 220,
     borderWidth: 0,
     height: 80,
     padding: 6,
@@ -295,6 +296,80 @@ function UserItems({ props }) {
 
 
   },[]);
+
+const loadAgain =async() =>{
+  setLoading(true);
+  var baseURL = apiKey.baseURL;
+  let userId = Firebase.auth().currentUser.uid;
+
+
+  let sendData = {
+    userId: userId
+  }
+
+  axios.post(baseURL + 'recipes/allUserRecipes', sendData, {
+    headers: {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentials: false,
+  },
+  ).then((response) => {
+    // console.log(response);
+    if (response.data) {
+      //  console.log(response.data);
+      const items = response.data;
+      //   console.log(items);
+      setUserRecipes(items);
+      // setItemCount(items.length);
+      setLoading(false);
+
+    }
+    else {
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setError("noUser", 'no user', "no account uses this email");
+    }
+  }).catch(error => {
+    console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+    setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+    setLoading(false);
+    console.log(error);
+  });
+  // Getting Cookbooks
+  setLoading(true);
+  axios.post(baseURL + 'cookbooks/allCookbooksByUserId', sendData, {
+    headers: {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentials: false,
+  },
+  ).then((response) => {
+    // console.log(response);
+    if (response.data) {
+      //  console.log(response.data);
+      const items = response.data;
+      //   console.log(items);
+      setUserCookbooks(items);
+      // setItemCount(items.length);
+      setLoading(false);
+
+    }
+    else {
+      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setError("noUser", 'no user', "no account uses this email");
+    }
+  }).catch(error => {
+    console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+    setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+    setLoading(false);
+    console.log(error);
+  });
+
+
+
+}
+
 
  
   const editCookbook = async (cookbook) => {
@@ -581,8 +656,9 @@ const getUpdatedCookbooks = async(cookbookId)=>{
        title: data.title,
        description: data.description
      }
+     data.title = data.title.trim();
     if (data.title) {
-    
+      
       let cookbookUrl='';
       if(editingCookbooks)
                 {
@@ -629,8 +705,10 @@ const getUpdatedCookbooks = async(cookbookId)=>{
         getUpdatedCookbooks(activeCookbook.cookbookId);
           setShowEditModal(false);
             setEditingCookbook(false);
-         
+          
         }
+
+          loadAgain();
         }
         else {
           setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
@@ -648,7 +726,7 @@ const getUpdatedCookbooks = async(cookbookId)=>{
     }
     else {
       setLoading(false);
-     
+      setError("notitle", 'no user', "Must be atleast 1 character");
 
     }
 
@@ -699,9 +777,10 @@ const getUpdatedCookbooks = async(cookbookId)=>{
               {item.isPublished ? <Text style={{ color: "#45D000", textAlign: "left", fontWeight: "600" }}>Public</Text> : <Text style={{ color: "#D50010", textAlign: "left", fontWeight: "600" }}>Private</Text>}
 
               <Subheading style={{ justifyContent: "flex-start", fontWeight: "500"  }}>{item.recipeTitle}</Subheading>
-               <Text>{item.uid}</Text>
+              
             </Card.Content>
             <Card.Actions>
+              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#90CAF9" }} onPress={() => props.navigate('ViewBasicRecipe', { props: item.uid })}>View</Button>
               <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => props.navigate('EditRecipe', { mode: 'edit', uid: item.uid })}>Edit</Button>
               <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteUserRecipe(item, index)}>Delete</Button>
             </Card.Actions>
@@ -723,7 +802,7 @@ const getUpdatedCookbooks = async(cookbookId)=>{
       renderItem={
         ({ item,index }) =>
 
-          <Card onPress={() => props.navigate('PageNotFound', { props: JSON.stringify(item) })} style={customStyles.nestedCardStyle}>
+          <Card  style={customStyles.nestedCardStyle}>
 
             <Card.Content>
 
@@ -731,8 +810,10 @@ const getUpdatedCookbooks = async(cookbookId)=>{
               
             </Card.Content>
             <Card.Actions>
+              <Button disabled={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#90CAF9" }} onPress={() => props.navigate('ViewCookbook', { id: item.cookbookId })}>View </Button>
               <Button loading={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => editCookbook(item)}>Edit </Button>
-              <Button disabled={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteCookbook(item, index)}>Delete ck</Button>
+              <Button disabled={btnLoading} mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteCookbook(item, index)}>Delete </Button>
+            
             </Card.Actions>
           </Card>
       }
@@ -787,16 +868,16 @@ const getUpdatedCookbooks = async(cookbookId)=>{
   }
 else if(editingCookbooks){
   return(
-    <SafeAreaView style={{backgroundColor:'#FFFFFF', borderRadius:10, width:'100%', padding:8}}>
+    <SafeAreaView style={{backgroundColor:'#FFFFFF', borderRadius:10, width:'100%', padding:20}}>
      <KeyboardAvoidingView>
 
-         
+         <View style={{padding:10}}>
           <Title style={{ color: '#9575CD', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Editing Cookbook</Title>
 
           <View style={{ marginBottom: 1 }}>
             <Subheading style={styles.label}>Title</Subheading>
             <Controller
-              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              as={<TextInput maxLength={100}  disabled={loading} style={styles.input} />}
               name="title"
               defaultValue={activeCookbook.title}
               control={control}
@@ -804,10 +885,10 @@ else if(editingCookbooks){
               rules={{ min:1,required:true }}
             />
             {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
-
+            {errors.notitle && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
             <Subheading style={styles.label}>Description (Optional)</Subheading>
             <Controller
-              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
+              as={<TextInput multiline={true}  maxLength={165} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
               name="description"
                     defaultValue={activeCookbook.description}
               control={control}
@@ -829,7 +910,7 @@ else if(editingCookbooks){
 
           </View>
             {cookbookRecipesList}
-          
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
@@ -837,26 +918,28 @@ else if(editingCookbooks){
 else if(showModal){
   return(
     <SafeAreaView>
-             <KeyboardAvoidingView style={{padding:10}}>
+             <KeyboardAvoidingView style={{backgroundColor:"#FFFFFF"}}>
   
-         
-          <Title style={{ color: '#FFFFFF', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Create A Cookbook</Title>
+         <View style={{margin:10}}>       
+          <Title style={{ color: '#000000', fontSize: 20, marginTop: 30, fontWeight: '500', marginBottom: 10,textAlign:'center' }}>Create A Cookbook</Title>
 
           <View style={{ marginBottom: 10 }}>
             <Subheading style={styles.label}>Title</Subheading>
             <Controller
-              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              as={<TextInput multiline={true} maxLength={140}  disabled={loading} style={styles.input} />}
               name="title"
 
               control={control}
               onChange={onChange}
               rules={{ min:1,required:true }}
+              
             />
             {errors.title && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
+          {errors.notitle && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must be atleast one character</Subheading>}
 
             <Subheading style={styles.label}>Description (Optional)</Subheading>
             <Controller
-              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} secureTextEntry={true} />}
+              as={<TextInput multiline={true}  maxLength={225} disabled={loading} style={styles.longInput} />}
               name="description"
 
               control={control}
@@ -877,6 +960,7 @@ else if(showModal){
             </Button>
 
           </View>
+        </View>
       </KeyboardAvoidingView>
 </SafeAreaView>
   )
@@ -942,13 +1026,15 @@ else if(showEditModal){
             <View style={{ alignContent: "center", justifyContent: "center", alignItems: "center" }}>
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
-                  <Button onPress={()=> props.navigate('ViewCookbook')}>View Your Cookbook</Button>
+                 
                   <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Saved Recipes</Headline>
                   <Button style={{ marginHorizontal: 10, backgroundColor: '#F48FB1',marginBottom:10 }} color="#FFFFFF" onPress={() => props.navigate('EditRecipe', { mode: 'create' })}>
                     Create Recipe
             </Button>
                 </View>
               <Subheading>Scroll Through Your Favorites</Subheading>
+
+               <Button mode="contained" style={{margin:10}} onPress={()=> loadAgain()}>Tap To Refresh</Button>
                 <ScrollView style={{maxHeight:350}} indicatorStyle={"blue"}>
                 {recipeFlatList}
               </ScrollView>
@@ -987,7 +1073,7 @@ else if(showEditModal){
           <View style={{ marginBottom: 10 }}>
             <Subheading style={styles.label}>Title</Subheading>
             <Controller
-              as={<TextInput maxLength={140}  disabled={loading} style={styles.input} />}
+              as={<TextInput multiline={true} scrollEnabled={true} maxLength={140}  disabled={loading} style={styles.input} />}
               name="title"
 
               control={control}

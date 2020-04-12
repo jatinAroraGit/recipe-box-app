@@ -1,10 +1,11 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card } from 'react-native-paper';
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
+import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Firebase from '../configure/Firebase';
 import axios from 'axios';
 import { PulseIndicator } from 'react-native-indicators';
+import * as Print from 'expo-print';
 var sanitizeHtml = require('sanitize-html');
 var stripHtml = require('string-strip-html');
 
@@ -77,7 +78,12 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
         var cleanSummary = sanitizeHtml(recSummary);
         let pureTextSummary = stripHtml(cleanSummary);
         htmlDescrition = htmlDescrition + "<div><p>" + pureTextSummary + "</p></div>"
-        setsummary(pureTextSummary);
+        if (pureTextSummary.length > 0) {
+          setsummary(pureTextSummary);
+        }
+        else {
+          setsummary('N/A');
+        }
         const ingredients = res.data.includedIngredients;
 
         console.log(ingredients);
@@ -222,7 +228,43 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
 
 
   }
+  const downloadRecipe = async () => {
+    let htmlTitle = "<div><h2>" + recipeInfo.title + " </h2></div>";
+    let htmlStepsTitle = "<div><h2>Steps</h2><ul>"
+    if (step.length > 0) {
+      step.forEach(i => {
+        htmlSteps = htmlSteps + "<li>" + i.description + "</li>"
+      })
+    }
+    else {
+      htmlSteps = "<li>" + "Not Available" + "</li>"
+    }
+    htmlSteps = htmlSteps + "</ul></div>"
 
+    let htmlIngredientsTitle = "<div><h2>Ingredients</h2><ul>"
+    if (ingred.length > 0) {
+      console.log(ingred[0]);
+      ingred.forEach(i => {
+        htmlIngredients = htmlIngredients + "<li>" + i.name + ' ' + i.amount + " " + i.unit + "" + "</li>"
+      })
+    }
+    else {
+      htmlIngredients = "<li>" + "Not Available" + "</li>"
+    }
+    htmlIngredients = htmlIngredients + "</ul></div>"
+    htmlDescrition = "<p>" + summary + "</p>"
+
+    let finalPdfHtml = "<div style='margin:20px'>" + htmlTitle + htmlDescrition + htmlIngredientsTitle + htmlIngredients + htmlStepsTitle + htmlSteps + "</div>";
+
+    const options = { html: finalPdfHtml, base64: false };
+
+    // Put this in an onPress for a button or in a function you want to print from
+
+    Print.printAsync(options).catch((err) => {
+      console.log(err);
+    });
+
+  };
   const addToList = () => {
     if (iconName == 'bookmark-plus')
       setIconName('bookmark-check');
@@ -294,11 +336,6 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
       //   });
     }
 
-    const downloadRecipe = () => {
-
-      // SOMEHOW MAKE INTO A PDF AND SAVE
-
-    }
 
     return (
       <SafeAreaView style={styles.container}>
@@ -324,7 +361,7 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
 
           <View style={styles.infoContainer}>
             <Headline style={{ color: '#000000', fontWeight: "600" }}>{recipeInfo.title}</Headline>
-
+            < Button color={'#FFFFFF'} style={{ margin: 10, backgroundColor: "#FF80AB" }} onPress={downloadRecipe}>Print Recipe</Button>
           </View>
 
           {/* <View style={styles.ratingContainer}>
@@ -391,7 +428,7 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
             </View>
             :
             <View style={{ flex: 1 }}>
-              <Title>No Ingredients Added Yet</Title>
+              <Title style={{ textAlign: "center" }}>No Ingredients Added Yet</Title>
             </View>
           }
 
@@ -408,7 +445,7 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
 
             :
             <View style={{ flex: 1, margin: 10 }}>
-              <Title>No Steps Added Yet</Title>
+              <Title style={{ textAlign: "center" }}>No Steps Added Yet</Title>
             </View>
           }
 

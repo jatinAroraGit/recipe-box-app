@@ -199,7 +199,7 @@ function LoginForm({ props }) {
         <View style={{ marginBottom: 10 }}>
           <Subheading style={styles.label}>Email</Subheading>
           <Controller
-            as={<TextInput maxLength={125} clearTextOnFocus={true} disabled={loading} style={styles.input} />}
+            as={<TextInput maxLength={125} disabled={loading} style={styles.input} />}
             name="email"
 
             control={control}

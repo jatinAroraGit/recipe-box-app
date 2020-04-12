@@ -85,11 +85,22 @@ function RegisterForm({ nav }) {
   const onSubmit = data => {
 
     //  JSON.
-    JSON.stringify(data);
-
+    console.log(JSON.stringify(data));
+    if (data.answer) {
+      data.answer = data.answer.trim();
+      if (data.answer == "") {
+        setError('answer', "answer", "required");
+      }
+    }
+    if (data.question) {
+      data.question = data.question.trim();
+      if (data.question == "") {
+        setError('question', "question", "required");
+      }
+    }
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
 
-      if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer) {
+      if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer && data.answer == "" && data.question == "") {
 
         var name = data.firstName + " " + data.lastName;
         setLoading(true);
@@ -180,6 +191,19 @@ function RegisterForm({ nav }) {
           setError("matchPassword", 'no pmatch', "Passwords do not match");
 
         }
+        console.log("que value");
+
+        console.log(data.question);
+        if (data.question == "") {
+
+          setError("question", 'question', "Question ");
+
+        }
+        if (data.answer == "") {
+
+          setError("answer", 'answer', " Answer required");
+
+        }
 
         if (!data.firstName) {
 
@@ -198,6 +222,7 @@ function RegisterForm({ nav }) {
           setError("same", 'match', "Question and Answer must differ");
 
         }
+
 
       }
     }
@@ -248,7 +273,7 @@ function RegisterForm({ nav }) {
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
       {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
-
+      <Text style={{ color: "#FFAB00", fontWeight: "600" }}>Rules: Must be atelast 6 characters and should contain atleast one lowercase letter, uppercase letter , a special character and a number.</Text>
       <Subheading style={styles.label}>Confirm Password</Subheading>
       <Controller
         as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
@@ -291,7 +316,7 @@ function RegisterForm({ nav }) {
         onChange={onChange}
         rules={{ required: true }}
       />
-      {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must enter a question.</Subheading>}
+      {errors.question && <Subheading style={{ color: '#BF360C' }}>You must enter a question.</Subheading>}
 
       <Subheading style={styles.label}>Answer</Subheading>
       <Controller
@@ -299,10 +324,11 @@ function RegisterForm({ nav }) {
         name="answer"
         control={control}
         onChange={onChange}
-        rules={{ required: true }}
+        rules={{ required: true, pattern: ".*[^ ].*" }}
       />
       {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must provide an answer.</Subheading>}
       {errors.same && <Subheading style={{ color: '#BF360C' }}>Your answer cannot be same as the question.</Subheading>}
+      {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
       {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>

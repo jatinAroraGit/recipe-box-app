@@ -9,8 +9,10 @@ class UserItemsScreen extends React.Component {
     super(props);
     this.state = {
       navigation: this.props.navigation,
-
+      refresh: 0
     }
+
+
   }
 
   callbackFunction = (childData) => {

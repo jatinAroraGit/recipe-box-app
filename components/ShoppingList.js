@@ -17,8 +17,8 @@ export default function ShoppingList({ navigation, ingredSent }) {
   const [showModal, setShowModal] = useState(false);
   const [currItem, setCurrItem] = useState({});
   const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
+  const [resText, setResText] = useState("");
   let userId = Firebase.auth().currentUser.uid;
 
   // const [hasZero, setHasZero] = useState(ingredSent);
@@ -28,6 +28,7 @@ export default function ShoppingList({ navigation, ingredSent }) {
     let sendData = {
       userId: userId
     }
+    setLoading(true);
     console.log('SUBMIT');
     axios.post(apiKey.baseURL + 'shoppingList/getShoppingList', sendData, {
       headers: {
@@ -49,24 +50,25 @@ export default function ShoppingList({ navigation, ingredSent }) {
         if (res.status == 200) {
 
         }
-        console.log(recipeInfo);
-        console.log("Complete Recipe Info Object: ");
+
 
         setLoading(false);
       }
       else {
         setLoading(false);
 
-        // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+        setResText("Oops!, Something Went Wrong, Try Again Please.");
         setError("noUser", 'no user', "no account uses this email");
       }
     }).catch(error => {
+      setResText("Oops!, Something Went Wrong, Try Again Please.");
 
 
       console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
       //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
       setLoading(false);
       console.log(error);
+
     });
 
 
@@ -80,6 +82,9 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
 
   const onSubmit = async data => {
+    console.log('before' + data.listUnit);
+    // data.listUnit = data.listUnit.trim();
+    console.log('After', data.listUnit);
     if (!data.listUnit) {
       data.listUnit = '';
     }
@@ -113,6 +118,57 @@ export default function ShoppingList({ navigation, ingredSent }) {
         // console.log(recipeInfo);
         console.log("Complete Recipe Info Object: ");
         setShowModal(false);
+
+        /************** */
+
+        let sendData = {
+          userId: userId
+        }
+        console.log('SUBMIT');
+        axios.post(apiKey.baseURL + 'shoppingList/getShoppingList', sendData, {
+          headers: {
+            'content-type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          withCredentials: false,
+        },
+        ).then((res) => {
+
+          if (res.data) {
+            console.log('Recipe Added To User List');
+            console.log(res.data);
+            setListItems(res.data.items.reverse());
+            //console.log(res);
+            // setListModal(false);
+            // setIsFound(true);
+            //setRecipeInfo(res.data);
+            if (res.status == 200) {
+
+            }
+            console.log(recipeInfo);
+            console.log("Complete Recipe Info Object: ");
+
+            setLoading(false);
+          }
+          else {
+            setLoading(false);
+
+            // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+            setError("noUser", 'no user', "no account uses this email");
+          }
+        }).catch(error => {
+
+
+          console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+          //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+          setLoading(false);
+          console.log(error);
+        });
+
+
+
+        /*************** */
+
         setLoading(false);
       }
       else {
@@ -120,12 +176,14 @@ export default function ShoppingList({ navigation, ingredSent }) {
         //  setIsFound(false);
         //   setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
         setError("noUser", 'no user', "no account uses this email");
+        setResText("Oops!, Something Went Wrong, Try Again Please.");
+
       }
     }).catch(error => {
 
       // setIsFound(false);
       console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-      // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+      setResText("Oops!, Something Went Wrong, Try Again Please.");
       setLoading(false);
       console.log(error);
     });
@@ -242,101 +300,109 @@ export default function ShoppingList({ navigation, ingredSent }) {
     console.log(currItem);
     setShowModal(true);
   };
-  if (showModal) {
+  if (resText) {
     return (
-
       <SafeAreaView>
-        <Title style={{ color: '#B50900' }}>Editing Shopping List Item</Title>
-        <Subheading style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>{currItem.name}</Subheading>
-        <KeyboardAvoidingView>
-
-          <View style={{ marginBottom: 10 }}>
-            <Subheading style={styles.label}>Quantity(Must Be Atleas 1)</Subheading>
-            <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Must Be Atleat 1</Subheading>
-
-            <Controller
-              as={<TextInput keyboardType="decimal-pad" maxLength={6} style={customStyles.input} />}
-              name="listQuantity"
-              defaultValue={currItem.quantity}
-              control={control}
-              onChange={onChange}
-              rules={{ min: 1 }}
-
-            />
-
-            <Subheading style={styles.label}>Unit Of Quantity</Subheading>
-            <Controller
-              as={<TextInput editable={false} maxLength={25} style={customStyles.input} />}
-              name="listUnit"
-              defaultValue={currItem.unit}
-              control={control}
-              onChange={onChange}
-
-
-            />
-
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
-              Update
-
-            </Button>
-            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => setShowModal(false)} >
-              Cancel
-            </Button>
-
-          </View>
-        </KeyboardAvoidingView>
+        <Title>{resText}</Title>
       </SafeAreaView>
-
     )
-  }
+  } else
+    if (showModal) {
+      return (
 
-  else if (!showModal)
-    return (
-      <View>
+        <SafeAreaView>
+          <Title style={{ color: '#B50900' }}>Editing Shopping List Item</Title>
+          <Subheading style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>{currItem.name}</Subheading>
+          <KeyboardAvoidingView>
 
-        {/* TODO:
+            <View style={{ marginBottom: 10 }}>
+              <Subheading style={styles.label}>Quantity(Must Be Atleas 1)</Subheading>
+              <Text style={{ color: "#FFC300" }}>Should be atleast 0.5</Text>
+
+
+              <Controller
+                as={<TextInput keyboardType="decimal-pad" maxLength={6} style={customStyles.input} />}
+                name="listQuantity"
+                defaultValue={currItem.quantity}
+                control={control}
+                onChange={onChange}
+                rules={{ min: 1 }}
+
+              />
+
+              <Subheading style={styles.label}>Unit Of Quantity</Subheading>
+              <Controller
+                as={<TextInput editable={false} maxLength={25} style={customStyles.disabledInput} />}
+                name="listUnit"
+                defaultValue={currItem.unit}
+                control={control}
+                onChange={onChange}
+
+
+              />
+
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+              <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+                Update
+
+            </Button>
+              <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => setShowModal(false)} >
+                Cancel
+            </Button>
+
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+
+      )
+    }
+
+    else if (!showModal)
+      return (
+        <View>
+
+          {/* TODO:
       Support showing unit as well
       create a string which is combination of name, quantity and unit
       throw that into array.
       send that array to back end.
       */}
 
-        <View style={styles.viewBoxStyle}>
-          <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline>
+          <View style={styles.viewBoxStyle}>
+            <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Shopping Ingredients</Headline>
 
-          {listItems.map((oneIngred, i) => {
-            return (
-              <View key={oneIngred.id} >
-                <Card style={styles.nestedCardStyle}>
-                  <View style={{ flexDirection: 'column', padding: 10 }}>
-                    <View style={{ flexDirection: 'row' }}>
+            {listItems.map((oneIngred, i) => {
+              return (
+                <View key={oneIngred.id} >
+                  <Card style={styles.nestedCardStyle}>
+                    <View style={{ flexDirection: 'column', padding: 10 }}>
+                      <View style={{ flexDirection: 'row' }}>
 
-                      <Subheading style={{ justifyContent: "center", textAlign: "center" }} >{oneIngred.name} : {oneIngred.quantity} {oneIngred.unit} </Subheading>
+                        <Subheading style={{ justifyContent: "center", textAlign: "center" }} >{oneIngred.name} : {oneIngred.quantity} {oneIngred.unit} </Subheading>
+                      </View>
+                      <View style={{ justifyContent: 'flex-end', flexDirection: "row" }}>
+                        <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
+                          editListItem(oneIngred);
+                        }}><Text>Edit</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
+                          deleteIngredients(oneIngred, i);
+                        }}><Text style={{ color: '#D50000' }}>Delete</Text></TouchableOpacity>
+                      </View>
                     </View>
-                    <View style={{ justifyContent: 'flex-end', flexDirection: "row" }}>
-                      <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
-                        editListItem(oneIngred);
-                      }}><Text>Edit</Text></TouchableOpacity>
-                      <TouchableOpacity style={styles.button} title='Delete' onPress={() => {
-                        deleteIngredients(oneIngred, i);
-                      }}><Text style={{ color: '#D50000' }}>Delete</Text></TouchableOpacity>
-                    </View>
-                  </View>
-                  {/* <View>
+                    {/* <View>
                   
                 </View> */}
-                </Card>
-              </View>
+                  </Card>
+                </View>
 
-            )
-          })}
-        </View>
+              )
+            })}
+          </View>
 
-      </View >
+        </View >
 
-    )
+      )
 }
 
 const styles = StyleSheet.create({
@@ -538,6 +604,15 @@ const customStyles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#B2DFDB',
+    borderWidth: 0,
+    height: 40,
+    padding: 5,
+    width: "auto",
+    borderRadius: 4,
+    alignSelf: "stretch"
+  },
+  disabledInput: {
+    backgroundColor: '#BDBDBD',
     borderWidth: 0,
     height: 40,
     padding: 5,
