@@ -407,8 +407,8 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
                 return (
                   <Card key={index + 1} style={styles.nestedCardStyle}>
                     <View style={{ flexDirection: 'row' }}>
-                      <View style={styles.recentItemIndicator}></View>
-                      <Text style={{ marginTop: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+
+                      <Text style={{ margin: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
                       {/* <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
                                             <TouchableOpacity style={styles.button} onPress={() => {
                                                 decrementCountHandler(oneIngred);

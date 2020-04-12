@@ -100,7 +100,7 @@ function RegisterForm({ nav }) {
     }
     if (data.email && data.password && data.confirmEmail && data.confirmPassword && data.firstName && data.lastName && data.question && data.answer) {
 
-      if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer && data.answer == "" && data.question == "") {
+      if (data.email === data.confirmEmail && data.password === data.confirmPassword && data.question != data.answer && data.answer != "" && data.question != "") {
 
         var name = data.firstName + " " + data.lastName;
         setLoading(true);

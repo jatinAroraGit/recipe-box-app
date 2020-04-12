@@ -702,7 +702,7 @@ function ViewCookbookScreen({ props, cookbook }) {
               <View style={{ marginBottom: 1 }}>
                 <Title style={{ color: "#F06292", flexWrap: "wrap", margin: 5, textAlign: "center" }} >{cookbookInfo.userCookbook.title}</Title>
 
-                <Subheading style={styles.label}>Description </Subheading>
+                <Subheading style={{ fontWeight: "600", textAlign: "center" }}>Description </Subheading>
                 <Text style={{ flexWrap: "wrap", margin: 5, textAlign: "center" }}> {(cookbookInfo.userCookbook.description && cookbookInfo.userCookbook.description.trim() != '') ? cookbookInfo.userCookbook.description : 'N/A'} </Text>
 
 

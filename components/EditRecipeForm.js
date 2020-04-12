@@ -314,14 +314,14 @@ function EditRecipeForm({ nav }) {
     if (!published) {
       return (
 
-        <Chip onClose={() => removeIngredient(i)} key={i} style={{ margin: 5, alignSelf: 'baseline' }}>
-          {ingredient.name}: {ingredient.amount} {ingredient.unit}</Chip>
+        <Chip children={<Text style={{ flex: 1, flexWrap: "wrap" }}> {ingredient.name}: {ingredient.amount} {ingredient.unit}</Text>} textStyle={{ flexWrap: "wrap" }} onClose={() => removeIngredient(i)} key={i} style={{ margin: 5, alignSelf: 'flex-start', flexWrap: "wrap" }}>
+        </Chip>
 
       );
     }
     else {
       return (
-        <Chip key={i} children={<Text> {ingredient.name}: {ingredient.amount} {ingredient.unit}</Text>} style={{ margin: 2, alignSelf: 'baseline', flexWrap: "wrap" }}>
+        <Chip children={<Text style={{ flexWrap: "wrap" }}> {ingredient.name}: {ingredient.amount} {ingredient.unit}</Text>} textStyle={{ flexWrap: "wrap" }} key={i} style={{ margin: 5, alignSelf: 'flex-start', flexWrap: "wrap" }}>
         </Chip>
       )
     }
@@ -779,7 +779,7 @@ function EditRecipeForm({ nav }) {
           </View>
           <Subheading style={styles.label}>Ingredient Name</Subheading>
           <Controller
-            as={<TextInput defaultValue={defaultVar} disabled={published} style={(published) ? styles.disabledInput : styles.input} value={defaultVar} clearTextOnFocus={true} />}
+            as={<TextInput maxLength={22} defaultValue={defaultVar} disabled={published} style={(published) ? styles.disabledInput : styles.input} value={defaultVar} clearTextOnFocus={true} />}
             name="ingredientName"
             id="ingredientName"
             defaultValue=""
@@ -801,21 +801,21 @@ function EditRecipeForm({ nav }) {
                 control={control}
                 onChange={onChange}
 
-                maxLength={5}
+                maxLength={4}
                 min="0" />
 
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', marginHorizontal: 5, marginBottom: 10 }} >
               <Text style={{ justifyContent: 'center', color: '#FFFFFF' }}>Unit (optional)</Text>
               <Controller
-                as={<TextInput maxLength={15} clearTextOnFocus={true} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
+                as={<TextInput maxLength={6} clearTextOnFocus={true} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
                 name="ingredientUnit"
                 id="ingredientUnit"
                 defaultValue=""
                 autoCapitalize="none"
                 control={control}
                 onChange={onChange}
-                maxLength={30} />
+                maxLength={8} />
             </View>
 
           </View>
@@ -881,12 +881,13 @@ function EditRecipeForm({ nav }) {
             keyboardType="numeric"
             control={control}
             onChange={onChange}
+
           />
           {errors.servings && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>{errors.servings.message}
           </Subheading>}
           <Subheading style={styles.label}>Cuisine</Subheading>
           <Controller
-            as={<TextInput maxLength={35} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
+            as={<TextInput maxLength={30} disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="cuisine"
             defaultValue={recipe.cuisine}
 
