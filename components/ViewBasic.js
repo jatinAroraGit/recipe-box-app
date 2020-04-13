@@ -45,5 +45,6 @@ class ViewBasic extends React.Component {
 
 ViewBasic.navigationOptions = {
   header: null,
+  gestureEnabled: false
 };
 export default ViewBasic;

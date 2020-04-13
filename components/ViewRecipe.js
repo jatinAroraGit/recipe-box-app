@@ -730,37 +730,51 @@ function ViewRecipe({ navigation, recipeDetail }) {
     )
   }
   else if (addToCookbook) {
-    return (
-      <SafeAreaView style={{ padding: 10 }} >
-        {!successfulAdd ? <View>
-          <Title>Choose A Cookbook To Add To</Title>
-          <Text>Adding It To A Cookbook will also save it the recipe to your account</Text>
-          <Text style={{ textAlign: "center" }}>Swipe Left Or Right To See The Cookbooks You Have</Text>
+    if (cookbooksList.length > 0) {
+      return (
 
-          {cookbooksList.map((item, index) => {
-            return (
-              <Card key={index + 1} style={styles.nestedCardStyle}>
-                <View style={{ flexDirection: 'row', margin: 5 }}>
+        <SafeAreaView style={{ padding: 10 }} >
+          {!successfulAdd ? <View>
+            <Title style={{ margin: 5 }}>Choose A Cookbook To Add To</Title>
+            <Text style={{ fontSize: 18 }}>Adding It To A Cookbook will also save it the recipe to your account</Text>
 
-                  <Title style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{item.title}</Title>
-                  <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
-                    <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
+            {cookbooksList.map((item, index) => {
+              return (
+                <Card key={index + 1} style={styles.nestedCardStyle}>
+                  <View style={{ flexDirection: 'row', margin: 5 }}>
+
+                    <Title style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{item.title}</Title>
+                    <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                      <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
+                    </View>
                   </View>
-                </View>
-              </Card>
+                </Card>
 
-            )
-          })}
-          <Button mode="contained" style={{ backgroundColor: "#D50000" }} onPress={() => setAddToCookbook(false)}>Cancel</Button>
-        </View> :
-          <View><Title>Added To The Cookbook</Title>
+              )
+
+            })}
+
+            <Button mode="contained" style={{ backgroundColor: "#D50000" }} onPress={() => setAddToCookbook(false)}>Cancel</Button>
+          </View> :
+            <View><Title>Added To The Cookbook</Title>
+              <Button mode="contained" onPress={() => goBackToRecipe()}> Go Back To The Recipe</Button>
+            </View>
+          }
+
+
+        </SafeAreaView>
+      )
+    }
+    else {
+      return (
+        <SafeAreaView style={{ padding: 10 }} >
+          <Title>Looks like you do not have any cookbooks to add this recipe to. You can create one by going to the Your Dashboard and Hitting the Your Recipes and Cookbooks Button</Title>
+          <View style={{ margin: 10 }}>
             <Button mode="contained" onPress={() => goBackToRecipe()}> Go Back To The Recipe</Button>
           </View>
-        }
-
-
-      </SafeAreaView>
-    )
+        </SafeAreaView>
+      )
+    }
   } else if (!loading) {
 
 

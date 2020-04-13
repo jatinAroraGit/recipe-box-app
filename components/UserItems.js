@@ -1058,7 +1058,7 @@ else if(showEditModal){
                 <View style={{ flexDirection: "column" }}>
                   <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Your Cookbooks</Headline>
                   <Subheading style={{textAlign:"center"}}>Swipe Left or Right For Your Cookbooks</Subheading>
-                  <Button style={{ marginHorizontal: 10, backgroundColor: '#FF9800' }} color="#FFFFFF" onPress={() => setShowModal(true)}>
+                <Button style={{ marginHorizontal: 10, backgroundColor: '#7CB342' }} color="#FFFFFF" onPress={() => setShowModal(true)}>
                     Create Cookbook
             </Button>
                 </View>

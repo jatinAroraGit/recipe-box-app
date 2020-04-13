@@ -292,7 +292,7 @@ class UserHomeScreen extends React.Component {
                   <Surface style={customStyles.defaultRounded}>
                     <Text onPress={() => {
                       this.props.navigation.navigate('Shopping');
-                    }} style={{ color: '#ffffff', fontSize: 20 }}>See Your Shopping List</Text>
+                    }} style={{ color: '#FFFFFF', fontSize: 20 }}>See Your Shopping List</Text>
                   </Surface>
                 </View>
 

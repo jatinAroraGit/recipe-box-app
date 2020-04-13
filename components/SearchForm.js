@@ -254,9 +254,11 @@ function SearchForm({ props }) {
         <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
 
           <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
+
+
             <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Search</Title>
             <Controller
-              as={<Searchbar returnKeyType="search" onSubmitEditing={handleSubmit(onSubmit)} placeholder="Enter Or Hit Search" style={styles.input} />}
+              as={<TextInput returnKeyType="search" placeholder="Enter Or Hit Search" style={styles.input} />}
               name="query"
               control={control}
               onChange={onChange}
@@ -264,6 +266,7 @@ function SearchForm({ props }) {
 
 
             />
+
             <View style={{ alignSelf: 'center', marginBottom: 3 }}>
               {errors.query && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Invalid Search.</Subheading>}
               <Button color='#FFFFFF' style={{ backgroundColor: '#388E3C', marginTop: 20 }} onPress={handleSubmit(onSubmit)}>
