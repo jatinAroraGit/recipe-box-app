@@ -654,15 +654,15 @@ function ViewCookbookScreen({ props, cookbook }) {
       initialNumToRender={1}
       style={styles.container}
       extraData={refresh}
-      ListHeaderComponent={<Subheading style={{ textAlign: "center", fontWeight: "500" }}>List Of Recipes In The Cookbook</Subheading>}
-      ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
+
+      ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center", margin: 6 }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
       snapToAlignment={"center"}
       data={cookbookInfo.cookbookRecipes}
       keyExtractor={(item, index) => index.toString()}
       renderItem={
         ({ item, index }) =>
           <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, marginTop: 10 }} >
-            <Title style={{ textAlign: "center" }}>{item.title}</Title>
+            <Title style={{ textAlign: "center", margin: 6 }}>{item.title}</Title>
 
             <Button onPress={() => props.navigate('ViewBasicRecipe', { props: item.id })}>View Recipe</Button>
           </View >
@@ -707,6 +707,7 @@ function ViewCookbookScreen({ props, cookbook }) {
 
 
               </View>
+              <Subheading style={{ textAlign: "center", fontWeight: "500" }}>Scroll To See List Of Recipes In The Cookbook</Subheading>
               {cookbookRecipesList}
 
 

@@ -59,6 +59,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
   const [addToCookbook, setAddToCookbook] = useState(false);
   const [successfulAdd, setSuccessfulAdd] = useState(false);
+  const [defImage, setDefImage] = useState(true);
 
   var ingredientsArray = [];
   var stepArray = [];
@@ -159,8 +160,16 @@ function ViewRecipe({ navigation, recipeDetail }) {
       <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{"\n"}{index + 1}) {step.description} {"\n"}</Subheading >
     )
   })
-
-
+  /*
+  const mapCook = cookbooksList.map((step, index) => {
+    return (
+      <View>
+        <Subheading key={index} style={{ color: '#000000', fontWeight: "400" }}>{"\n"}{index + 1}) {step.title} {"\n"}</Subheading >
+        <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
+      </View>
+    )
+  })
+*/
 
   const toggleSwitch = (value) => {
     setSwitchValue(value);
@@ -388,9 +397,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
   }
   const addRecipeToCookbook = (cookbook) => {
     recipeInfo.userId = userId;
-    console.log('Adding The Recipe')
 
-    console.log(recipeInfo);
     let sendData = {
       userId: userId,
       cookbookId: cookbook.cookbookId,
@@ -411,9 +418,9 @@ function ViewRecipe({ navigation, recipeDetail }) {
         //console.log(res);
         // setIsFound(true);
         //setRecipeInfo(res.data);
-        if (res.status == 200) {
-          setSuccessfulAdd(true);
-        }
+
+        setSuccessfulAdd(true);
+
         console.log(recipeInfo);
         console.log("Complete Recipe Info Object: ", recipeCompleteDetail);
 
@@ -473,66 +480,72 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
 
   const onSubmit = async data => {
-    console.log('before' + data.listUnit);
+    if (data.listQuantity < 0.5) {
+      setError("quantityShort", 'quantityShort', "Ingredient text is too short.");
 
-    console.log('After', data.listUnit);
-    if (!data.listUnit) {
-      console.log('no trim', data.listUnit);
-      data.listUnit = '';
     }
-    else if (data.listUnit) {
-      console.log('trimmer', data.listUnit);
-      data.listUnit = data.listUnit.trim();
-    }
-    item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit;
+    else {
+      console.log('before' + data.listUnit);
 
-    console.log('Sendign To List: ' + item);
-    let sendData = {
-      userId: userId,
-      listItems: item,
-    }
-    console.log('SUBMIT');
-    axios.post(apiKey.baseURL + 'shoppingList/updateShoppingList', sendData, {
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      withCredentials: false,
-    },
-    ).then((res) => {
-
-      if (res.data) {
-        console.log('Recipe Added To User List');
-        //console.log(res);
-        setListModal(false);
-        setCurrItem();
-        // setIsFound(true);
-        //setRecipeInfo(res.data);
-        if (res.status == 200) {
-
-        }
-        console.log(recipeInfo);
-        console.log("Complete Recipe Info Object: ");
-
-        setLoading(false);
+      console.log('After', data.listUnit);
+      if (!data.listUnit) {
+        console.log('no trim', data.listUnit);
+        data.listUnit = '';
       }
-      else {
+      else if (data.listUnit) {
+        console.log('trimmer', data.listUnit);
+        data.listUnit = data.listUnit.trim();
+      }
+      item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit.toUpperCase();
+
+      console.log('Sendign To List: ' + item);
+      let sendData = {
+        userId: userId,
+        listItems: item,
+      }
+      console.log('SUBMIT');
+      axios.post(apiKey.baseURL + 'shoppingList/updateShoppingList', sendData, {
+        headers: {
+          'content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: false,
+      },
+      ).then((res) => {
+
+        if (res.data) {
+          console.log('Recipe Added To User List');
+          //console.log(res);
+          setListModal(false);
+          setCurrItem();
+          // setIsFound(true);
+          //setRecipeInfo(res.data);
+          if (res.status == 200) {
+
+          }
+          console.log(recipeInfo);
+          console.log("Complete Recipe Info Object: ");
+
+          setLoading(false);
+        }
+        else {
+          setLoading(false);
+          setIsFound(false);
+          setListModal(false)
+          setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+          setError("noUser", 'no user', "no account uses this email");
+        }
+      }).catch(error => {
         setLoading(false);
         setIsFound(false);
-        setListModal(false)
+        setListModal(false);
+        setIsFound(false);
+        console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
         setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-        setError("noUser", 'no user', "no account uses this email");
-      }
-    }).catch(error => {
-      setLoading(false);
-      setIsFound(false);
-      setListModal(false);
-      setIsFound(false);
-      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-      setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
 
-      console.log(error);
-    });
+        console.log(error);
+      });
+    }
 
   }
 
@@ -591,7 +604,6 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
   const resetViewRecipe = () => {
     setLoading(true);
-    setTimeout(setLoading(false), 8000);
 
     setRecipeInfo(bakRecipeInfo);
     setListModal(false);
@@ -626,30 +638,27 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
     />
 
+  let demoCookbookList = <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(cookbooksList[0])}>Add one This</Button>
 
   let cookBookFlatList =
     <FlatList
       style={styles.container}
-      extraData={refresh}
-      ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Cookbooks Saved</Title></Card.Content></Card>}
+
+      ListEmptyComponent={<Title style={{ textAlign: "center" }}>No Cookbooks Saved</Title>}
       snapToAlignment={"center"}
+
       data={cookbooksList}
       keyExtractor={(item, index) => index.toString()}
       renderItem={
         ({ item }) =>
 
-          <Card onPress={() => props.navigate('PageNotFound', { props: JSON.stringify(item) })} style={customStyles.nestedCardStyle}>
+          <View style={{ backgroundColor: "#BBDEFB", margin: 10, borderRadius: 10, padding: 10 }}>
+            <Title style={{ textAlign: "left", flexWrap: "wrap" }}>{item.title}</Title>
 
-            <Card.Content>
+            <TouchableOpacity style={styles.button} onPress={() => addRecipeToCookbook(item)}><Title>Add To This</Title></TouchableOpacity>
 
-              <Title style={{ justifyContent: "flex-start" }}>{item.title}</Title>
-
-            </Card.Content>
-            <Card.Actions>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
-
-            </Card.Actions>
-          </Card>
+            <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
+          </View>
       }
 
 
@@ -685,9 +694,13 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               control={control}
               onChange={onChange}
-              rules={{ min: 0.5 }}
-            />
+              rules={{ min: 0.5, required: true }}
 
+            />
+            {errors.quantityShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
+            {errors.listQuantity && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
             <Subheading style={styles.label}>Unit Of Quantity</Subheading>
             <Controller
               as={<TextInput maxLength={25} style={customStyles.input} />}
@@ -695,10 +708,11 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               control={control}
               onChange={onChange}
-
+              rules={{ pattern: /^[a-zA-Z]+$/ }}
 
             />
-
+            {errors.listUnit && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Must be alphabets
+ </Subheading>}
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
             <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
@@ -717,11 +731,27 @@ function ViewRecipe({ navigation, recipeDetail }) {
   }
   else if (addToCookbook) {
     return (
-      <SafeAreaView >
+      <SafeAreaView style={{ padding: 10 }} >
         {!successfulAdd ? <View>
           <Title>Choose A Cookbook To Add To</Title>
           <Text>Adding It To A Cookbook will also save it the recipe to your account</Text>
-          {cookBookFlatList}
+          <Text style={{ textAlign: "center" }}>Swipe Left Or Right To See The Cookbooks You Have</Text>
+
+          {cookbooksList.map((item, index) => {
+            return (
+              <Card key={index + 1} style={styles.nestedCardStyle}>
+                <View style={{ flexDirection: 'row', margin: 5 }}>
+
+                  <Title style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{item.title}</Title>
+                  <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                    <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => addRecipeToCookbook(item)}>Add In This</Button>
+                  </View>
+                </View>
+              </Card>
+
+            )
+          })}
+          <Button mode="contained" style={{ backgroundColor: "#D50000" }} onPress={() => setAddToCookbook(false)}>Cancel</Button>
         </View> :
           <View><Title>Added To The Cookbook</Title>
             <Button mode="contained" onPress={() => goBackToRecipe()}> Go Back To The Recipe</Button>
@@ -744,8 +774,10 @@ function ViewRecipe({ navigation, recipeDetail }) {
             <View style={{ alignSelf: "center" }}>
 
               <View style={styles.profileImage}>
+                {defImage ? <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} onError={(error) => setDefImage(false)} resizeMode="center"></Image> :
+                  <Image source={{ uri: "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1-scaled-1150x647.png" }} style={styles.image} resizeMode="center"></Image>
+                }
 
-                <Image source={{ uri: (recipeDetail.image) ? recipeDetail.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.image} resizeMode="center"></Image>
               </View>
 
 
@@ -792,10 +824,8 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
               <View style={{ marginTop: 32 }}>
                 <Subheading style={{ textAlign: "center", fontSize: 18, fontWeight: "600" }}>Description</Subheading>
-                <ScrollView style={{ maxHeight: (summary.length < 100) ? 90 : 150, backgroundColor: "#EF9A9A", borderRadius: 10, padding: 10, minWidth: '100%' }}>
 
-                  <Subheading style={{ textAlign: "center", marginBottom: 15 }}>{summary}</Subheading>
-                </ScrollView>
+                <Subheading style={{ textAlign: "center", marginBottom: 15 }}>{summary}</Subheading>
 
               </View>
             </View>
@@ -822,22 +852,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
 
                 )
               })}
-              <Provider>
-                <Portal>
-                  <Modal dismissable={false} visible={false} contentContainerStyle={styles.modalStyle}>
-                    <View >
-                      <Card.Content>
-                        <Title style={{ fontSize: 20 }}>Shop List</Title>
-                        <Subheading style={{ fontSize: 15, color: '#000000', marginTop: 10 }}>You need to verify your account to proceed further</Subheading>
-                        <Subheading style={{ fontSize: 15, color: '#E91E63', marginTop: 10 }}>A verification email has been sent to your email.
-                </Subheading>
-                        <Subheading style={{ fontSize: 15, color: '#E91E63', marginTop: 10 }}> </Subheading>
-                        <Button style={{ backgroundColor: '#C62828' }} color='#FF00FF' mode="contained" onPress={() => console.log('presss')}>Close  </Button>
-                      </Card.Content>
-                    </View>
-                  </Modal>
-                </Portal>
-              </Provider>
+
 
               <TouchableOpacity style={styles.button}
                 onPress={() => {

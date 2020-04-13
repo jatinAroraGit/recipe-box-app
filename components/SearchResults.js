@@ -122,11 +122,11 @@ function SearchResults({ navigation, ingredQuery }) {
       withCredentials: false,
     },
     ).then((response) => {
-      console.log(response);
+      // console.log(response);
       if (response.data) {
-        console.log(response.data);
+        // console.log(response.data);
         const items = response.data;
-        console.log(items);
+        // console.log(items);
         setItems(items);
         setItemCount(items.length);
         setLoading(false);

@@ -82,111 +82,121 @@ export default function ShoppingList({ navigation, ingredSent }) {
 
 
   const onSubmit = async data => {
-    console.log('before' + data.listUnit);
-    // data.listUnit = data.listUnit.trim();
-    console.log('After', data.listUnit);
-    if (!data.listUnit) {
-      data.listUnit = '';
+    if (data.listQuantity < 0.5) {
+      setError("quantityShort", 'quantityShort', "Ingredient text is too short.");
+
     }
-    let item = currItem.name + ' ' + data.listQuantity + ' ' + data.listUnit;
-    console.log('Sendign To List: ' + item);
-    let sendData = {
-      userId: userId,
-      name: currItem.name,
-      quantity: data.listQuantity,
-      unit: data.listUnit
-    }
-    console.log('SUBMIT');
-    axios.post(apiKey.baseURL + 'shoppingList/updateShoppingListOneItem', sendData, {
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      withCredentials: false,
-    },
-    ).then((res) => {
-
-      if (res.data) {
-        console.log('Recipe Added To User List');
-        //console.log(res);
-        // setListModal(false);
-        // setIsFound(true);
-        //setRecipeInfo(res.data);
-        if (res.status == 200) {
-
-        }
-        // console.log(recipeInfo);
-        console.log("Complete Recipe Info Object: ");
-        setShowModal(false);
-
-        /************** */
-
-        let sendData = {
-          userId: userId
-        }
-        console.log('SUBMIT');
-        axios.post(apiKey.baseURL + 'shoppingList/getShoppingList', sendData, {
-          headers: {
-            'content-type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: false,
+    else {
+      console.log('before' + data.listUnit);
+      // data.listUnit = data.listUnit.trim();
+      console.log('After', data.listUnit);
+      if (!data.listUnit) {
+        data.listUnit = '';
+      }
+      let item = currItem.name + ' ' + data.listQuantity + ' ' + data.listUnit.toUpperCase();
+      console.log('Sendign To List: ' + item);
+      let finalUnit = data.listUnit.toUpperCase();
+      console.log('SUBMIT');
+      console.log(finalUnit);
+      let sendData = {
+        userId: userId,
+        name: currItem.name,
+        quantity: data.listQuantity,
+        unit: finalUnit
+      }
+      console.log('SUBMIT');
+      console.log(sendData);
+      axios.post(apiKey.baseURL + 'shoppingList/updateShoppingListOneItem', sendData, {
+        headers: {
+          'content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
-        ).then((res) => {
+        withCredentials: false,
+      },
+      ).then((res) => {
 
-          if (res.data) {
-            console.log('Recipe Added To User List');
-            console.log(res.data);
-            setListItems(res.data.items.reverse());
-            //console.log(res);
-            // setListModal(false);
-            // setIsFound(true);
-            //setRecipeInfo(res.data);
-            if (res.status == 200) {
+        if (res.data) {
+          console.log('Recipe Added To User List');
+          //console.log(res);
+          // setListModal(false);
+          // setIsFound(true);
+          //setRecipeInfo(res.data);
+          if (res.status == 200) {
 
+          }
+          // console.log(recipeInfo);
+          console.log("Complete Recipe Info Object: ");
+          setShowModal(false);
+
+          /************** */
+
+          let sendData = {
+            userId: userId
+          }
+          console.log('SUBMIT');
+          axios.post(apiKey.baseURL + 'shoppingList/getShoppingList', sendData, {
+            headers: {
+              'content-type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: false,
+          },
+          ).then((res) => {
+
+            if (res.data) {
+              console.log('Recipe Added To User List');
+              console.log(res.data);
+              setListItems(res.data.items.reverse());
+              //console.log(res);
+              // setListModal(false);
+              // setIsFound(true);
+              //setRecipeInfo(res.data);
+              if (res.status == 200) {
+
+              }
+              console.log(recipeInfo);
+              console.log("Complete Recipe Info Object: ");
+
+              setLoading(false);
             }
-            console.log(recipeInfo);
-            console.log("Complete Recipe Info Object: ");
+            else {
+              setLoading(false);
 
+              // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+              setError("noUser", 'no user', "no account uses this email");
+            }
+          }).catch(error => {
+
+
+            console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+            //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
             setLoading(false);
-          }
-          else {
-            setLoading(false);
-
-            // setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-            setError("noUser", 'no user', "no account uses this email");
-          }
-        }).catch(error => {
+            console.log(error);
+          });
 
 
-          console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-          //  setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+
+          /*************** */
+
           setLoading(false);
-          console.log(error);
-        });
+        }
+        else {
+          setLoading(false);
+          //  setIsFound(false);
+          //   setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+          setError("noUser", 'no user', "no account uses this email");
+          setResText("Oops!, Something Went Wrong, Try Again Please.");
 
+        }
+      }).catch(error => {
 
-
-        /*************** */
-
-        setLoading(false);
-      }
-      else {
-        setLoading(false);
-        //  setIsFound(false);
-        //   setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
-        setError("noUser", 'no user', "no account uses this email");
+        // setIsFound(false);
+        console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
         setResText("Oops!, Something Went Wrong, Try Again Please.");
-
-      }
-    }).catch(error => {
-
-      // setIsFound(false);
-      console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
-      setResText("Oops!, Something Went Wrong, Try Again Please.");
-      setLoading(false);
-      console.log(error);
-    });
+        setLoading(false);
+        console.log(error);
+      });
+    }
 
   }
 
@@ -316,7 +326,7 @@ export default function ShoppingList({ navigation, ingredSent }) {
           <KeyboardAvoidingView>
 
             <View style={{ marginBottom: 10 }}>
-              <Subheading style={styles.label}>Quantity(Must Be Atleas 1)</Subheading>
+              <Subheading style={styles.label}>Quantity</Subheading>
               <Text style={{ color: "#FFC300" }}>Should be atleast 0.5</Text>
 
 
@@ -326,10 +336,13 @@ export default function ShoppingList({ navigation, ingredSent }) {
                 defaultValue={currItem.quantity}
                 control={control}
                 onChange={onChange}
-                rules={{ min: 1 }}
+                rules={{ min: 0.5, required: true }}
 
               />
-
+              {errors.quantityShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
+              {errors.listQuantity && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
               <Subheading style={styles.label}>Unit Of Quantity</Subheading>
               <Controller
                 as={<TextInput editable={false} maxLength={25} style={customStyles.disabledInput} />}

@@ -218,6 +218,7 @@ function UserItems({ props }) {
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCookbooks, setEditingCookbook] = useState(false);
+  const [refresh2, setRefresh2] = useState(false);
 
   
   let [responseStr, setResponseTxt] = useState();
@@ -451,6 +452,7 @@ const loadAgain =async() =>{
        cookbookRecipesList.splice(i, 1)
        setCookbookRecipes(cookbookRecipesList);
        setRefresh(!refresh);
+       setRefresh2(!refresh2);
        // setItemCount(items.length);
        setLoading(false);
      }
@@ -498,6 +500,7 @@ const loadAgain =async() =>{
         userRecipesList.splice(i, 1)
         setUserRecipes(userRecipesList);
         setRefresh(!refresh);
+        setRefresh2(!refresh2);
         // setItemCount(items.length);
         setLoading(false);
       }
@@ -541,6 +544,7 @@ const loadAgain =async() =>{
         newCookbooksList.splice(i, 1)
         setUserCookbooks(newCookbooksList);
         setRefresh(!refresh);
+        setRefresh2(!refresh2);
         // setItemCount(items.length);
         setLoading(false);
       }
@@ -623,6 +627,7 @@ const getUpdatedCookbooks = async(cookbookId)=>{
           cookbooksList.push(response.data);
           setUserCookbooks(cookbooksList);
           setRefresh(!refresh);
+          setRefresh2(!refresh2);
           setLoading(false);
 
         }
@@ -702,6 +707,7 @@ const getUpdatedCookbooks = async(cookbookId)=>{
         }
           else if (editingCookbooks){
             setRefresh(!refresh);
+            setRefresh2(!refresh2);
         getUpdatedCookbooks(activeCookbook.cookbookId);
           setShowEditModal(false);
             setEditingCookbook(false);
@@ -759,13 +765,10 @@ const getUpdatedCookbooks = async(cookbookId)=>{
   
     <FlatList
     scrollEnabled={true}
-      initialNumToRender={1}
-      style={styles.container}
-      extraData={refresh}
-      ListHeaderComponent={<Text style={{textAlign:"center",color:"#FFFFFF", fontWeight:'600',fontSize:18}}>{userRecipes.length} Saved Recipes</Text>}
+     
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Saved</Title></Card.Content></Card>}
       snapToAlignment={"center"}
-      horizontal={((Platform.OS == 'web') ? false : false)}
+      horizontal={true}
       data={userRecipes}
       keyExtractor={(item, index) => index.toString()}
       renderItem={
@@ -780,10 +783,13 @@ const getUpdatedCookbooks = async(cookbookId)=>{
               
             </Card.Content>
             <Card.Actions>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#90CAF9" }} onPress={() => props.navigate('ViewBasicRecipe', { props: item.uid })}>View</Button>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#00BFA5" }} onPress={() => props.navigate('EditRecipe', { mode: 'edit', uid: item.uid })}>Edit</Button>
-              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000" }} onPress={() => deleteUserRecipe(item, index)}>Delete</Button>
+              <Button  mode={"contained"} style={{ marginEnd: 8, backgroundColor: "#90CAF9" }} onPress={() => props.navigate('ViewBasicRecipe', { props: item.uid })}>View</Button>
+              <Button mode={"contained"} style={{ marginEnd: 10, backgroundColor: "#00BFA5" }} onPress={() => props.navigate('EditRecipe', { mode: 'edit', uid: item.uid })}>Edit</Button>
+              <View style={{alignContent:"flex-end",justifyContent:"flex-end",alignItems:"baseline"}}>
+              <Button mode={"contained"} style={{ marginEnd: 5, backgroundColor: "#D50000",alignSelf:"flex-end",justifyContent:"flex-end",alignContent:"flex-end",alignItems:"baseline" }} onPress={() => deleteUserRecipe(item, index)}> Delete</Button>
+              </View>
             </Card.Actions>
+            
           </Card>
       }
 
@@ -794,8 +800,9 @@ const getUpdatedCookbooks = async(cookbookId)=>{
   let cookBookFlatList =
     <FlatList
       style={styles.container}
-      extraData={refresh}
+      extraData={refresh2}
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Cookbooks Saved</Title></Card.Content></Card>}
+      horizontal={true}
       snapToAlignment={"center"}
       data={userCookbooks}
       keyExtractor={(item, index) => index.toString()}
@@ -827,8 +834,8 @@ const getUpdatedCookbooks = async(cookbookId)=>{
       scrollEnabled={false}
       initialNumToRender={1}
       style={styles.container}
-      extraData={refresh}
-      ListHeaderComponent={<Subheading style={{textAlign:"center", fontWeight:"500"}}>List Of Recipes In The Cookbook</Subheading>}
+  
+     
       ListEmptyComponent={<Card style={customStyles.nestedCardStyle}><Card.Content><Title style={{ justifyContent: "center" }}>No Recipes Added To This Cookbook</Title></Card.Content></Card>}
       snapToAlignment={"center"}
       data={cookbookRecipes}
@@ -909,6 +916,7 @@ else if(editingCookbooks){
             </Button>
 
           </View>
+          <Subheading style={{ textAlign: "center", fontWeight: "500" }}>SCroll To See List Of Recipes In The Cookbook</Subheading>
             {cookbookRecipesList}
         </View>
       </KeyboardAvoidingView>
@@ -1027,15 +1035,16 @@ else if(showEditModal){
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
                  
-                  <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>Your Saved Recipes</Headline>
+                  <Headline style={{ color: '#FFFFFF', fontWeight: "600", textAlign: "left" }}>  Your Saved Recipes</Headline>
                   <Button style={{ marginHorizontal: 10, backgroundColor: '#F48FB1',marginBottom:10 }} color="#FFFFFF" onPress={() => props.navigate('EditRecipe', { mode: 'create' })}>
                     Create Recipe
             </Button>
                 </View>
-              <Subheading>Scroll Through Your Favorites</Subheading>
+              <Subheading style={{textAlign:"center"}}>Swipe Left Or Write Through Your Favorites</Subheading>
 
                <Button mode="contained" style={{margin:10}} onPress={()=> loadAgain()}>Tap To Refresh</Button>
-                <ScrollView style={{maxHeight:350}} indicatorStyle={"blue"}>
+              <Text style={{ textAlign: "center", color: "#FFFFFF", fontWeight: '600', fontSize: 18 }}>  {userRecipes.length} Saved Recipes</Text>
+                <ScrollView style={{maxHeight:350,flex:1}} indicatorStyle={"blue"}>
                 {recipeFlatList}
               </ScrollView>
               </View>
@@ -1048,6 +1057,7 @@ else if(showEditModal){
               <View style={customStyles.viewBoxStyle}>
                 <View style={{ flexDirection: "column" }}>
                   <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Your Cookbooks</Headline>
+                  <Subheading style={{textAlign:"center"}}>Swipe Left or Right For Your Cookbooks</Subheading>
                   <Button style={{ marginHorizontal: 10, backgroundColor: '#FF9800' }} color="#FFFFFF" onPress={() => setShowModal(true)}>
                     Create Cookbook
             </Button>

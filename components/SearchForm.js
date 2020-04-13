@@ -73,6 +73,7 @@ function SearchForm({ props }) {
   const [selectedMealType, setSelectedMealType] = useState('None');
   const [chips, setChips] = useState([]);
   const [refresh, setRefresh] = useState(false)
+  const [def, setDef] = useState("");
 
   const { control, handleSubmit, errors, setError } = useForm({ mode: 'onChange' });
   const _showModal = () => { setVisibleModal(true) };
@@ -92,75 +93,64 @@ function SearchForm({ props }) {
     if (data.query)
       data.query = data.query.trim();
 
-    if (data.query != "") {
+    //  if (data.query != "") {
 
-      for (var i in chips) {
+    for (var i in chips) {
 
-        num++;
-        if (chips[i] != "") {  //If there is an ingredient to show,
-          if (i > 0) {  //If it is not the first ingredient,
-            //  results.includeIngredients += ',';// add a comma.
-          }
-          results.includeIngredients.push(chips[i]);//Add the ingredient.
+      num++;
+      if (chips[i] != "") {  //If there is an ingredient to show,
+        if (i > 0) {  //If it is not the first ingredient,
+          //  results.includeIngredients += ',';// add a comma.
         }
-      }
-
-      if (selectedCuisine != "None") {
-        num++;
-        results.cuisine = selectedCuisine;
-
-      }
-
-      if (data.query != undefined) {
-        num++;
-        console.log('query trimmed', data.query.trim());
-        results.query = data.query.trim();
-
-      }
-
-      if (selectedMealType != "None") {
-        console.log('meal type trimmed', selectedMealType.valueOf());
-        num++;
-        results.mealType = selectedMealType;
-      }//TODO make mealType an array that can support multiple values.  Requires changing input type before supporting it here.
-
-      const result = JSON.stringify(results);
-      console.log('Final Query:: ', results);
-      if (num > 0) {
-
-        props.navigate("Results", { results: result });
-
-      } else {
-
-        setError("search", 'search', "Invalid Search Terms");
-        //TODO this seems like the wrong error message, this seems to be reached when no search parameters are entered
-
+        results.includeIngredients.push(chips[i]);//Add the ingredient.
       }
     }
-    else {
-      console.log("search error");
-      setError("query", "query", "Invalid search");
+
+    if (selectedCuisine != "None") {
+      num++;
+      results.cuisine = selectedCuisine;
+
     }
+
+    if (data.query != undefined) {
+      num++;
+      console.log('query trimmed', data.query.trim());
+      results.query = data.query.trim();
+
+    }
+
+    if (selectedMealType != "None") {
+      console.log('meal type trimmed', selectedMealType.valueOf());
+      num++;
+      results.mealType = selectedMealType;
+    }//TODO make mealType an array that can support multiple values.  Requires changing input type before supporting it here.
+
+    const result = JSON.stringify(results);
+    console.log('Final Query:: ', results);
+    if (num > 0) {
+
+      props.navigate("Results", { results: result });
+
+    } else {
+
+      setError("search", 'search', "Invalid Search Terms");
+      //TODO this seems like the wrong error message, this seems to be reached when no search parameters are entered
+
+    }
+    /*
+     }
+     else {
+       console.log("search error");
+       setError("query", "query", "Invalid search");
+     }
+     */
   }
   const onChange = args => {
     return {
       value: args[0].nativeEvent.text,
     };
   };
-  let chipsList =
-    <FlatList
-      data={chips}
-      horizontal={true}
-      extraData={refresh}
-      snapToAlignment={"center"}
 
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={
-        ({ item, index }) =>
-          <Chip onClose={() => { console.log("remove", index); removeChip(index) }} key={index} style={{ margin: 5, alignSelf: 'baseline' }}>{item}</Chip>
-
-      }
-    />
 
 
 
@@ -198,7 +188,52 @@ function SearchForm({ props }) {
 
     }
   }
+  const removeStep = (i) => {
+    let temp = [...chips];
+    temp.splice(i, 1);
+    setChips(temp);
+  }
 
+  const showIngs = chips.map((ing, i) => {
+    return (
+      <View>
+
+        <View style={{ marginBottom: 10, backgroundColor: '#dddddd', width: 'auto', padding: 2, zIndex: 1000, flexDirection: "row" }} key={i} >
+          <Text style={{ flexWrap: "wrap", fontSize: 18 }}>{ing}</Text>
+
+          <Button style={{ backgroundColor: '#D50000', marginLeft: 2 }} mode="contained" onPress={() => removeStep(i)}>
+            Remove
+        </Button>
+
+
+        </View>
+
+      </View>
+
+    );
+
+  });
+
+
+  const onStep = data => {
+    console.log(data.ing);
+    if (data.ing) {
+      data.ing = data.ing.trim();
+    }
+
+    //  setStepLoading(true);
+    // data.step = data.step.trim();
+    if (data.ing.length > 1) {
+      let tempArray = [...chips];
+      tempArray[tempArray.length] = data.ing;
+      setChips(tempArray);
+      setDef("");
+      //TODO clear step text
+    } else {
+      setError("ingShort", 'ingShort', "Ingredient text is too short.");
+    }
+    //  setStepLoading(false);
+  }
   const removeChip = (i) => {
     console.log(i);
     var temp = new Array;
@@ -221,12 +256,12 @@ function SearchForm({ props }) {
           <View style={{ margin: 5, padding: 4, borderRadius: 10 }}>
             <Title style={{ color: '#4DB6AC', fontSize: 30, marginTop: 30, alignSelf: 'center' }}>Search</Title>
             <Controller
-              as={<Searchbar returnKeyType="search" onSubmitEditing={handleSubmit(onSubmit)} placeholder="Searching For..." style={styles.input} />}
+              as={<Searchbar returnKeyType="search" onSubmitEditing={handleSubmit(onSubmit)} placeholder="Enter Or Hit Search" style={styles.input} />}
               name="query"
               control={control}
               onChange={onChange}
               defaultValue=""
-              rules={{ required: true }}
+
 
             />
             <View style={{ alignSelf: 'center', marginBottom: 3 }}>
@@ -239,19 +274,35 @@ function SearchForm({ props }) {
             <View style={{ flex: 1, margin: 5, padding: 4, backgroundColor: '#37474F', borderRadius: 10 }}>
               <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EC407A', alignSelf: "center", fontSize: 20 }}>Filter By</Title>
               <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Include Ingredients</Title>
-              <TextInput value={currentIngredient} placeholder={"Press Enter to Submit Ingredient"} onChangeText={(value) => { setCurrentIngredient(value) }} style={styles.input} returnKeyType="done" onSubmitEditing={(value) => updateIngredient(value.nativeEvent.text)}></TextInput>
+
+              {showIngs}
+              <Controller
+                as={<TextInput clearTextOnFocus={true} placeholder="add a new ingredient" style={styles.input} />}
+
+                multiline={true}
+                name="ing"
+                defaultValue={def}
+                placeholder="type ingredient and press add"
+                control={control}
+                onChange={onChange}
+
+              />
+              <Button style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} mode="contained" onPress={handleSubmit(onStep)}>
+                Add
+      </Button>
+              {errors.ingShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>{errors.ingShort.message}
+              </Subheading>}
               <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
 
-                {chipsList}
 
 
               </View>
 
               <Title style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}>Cuisine</Title>
-              <TextInput style={styles.input} placeholder={selectedMealType} onSubmitEditing={(value) => setSelectedCuisine(value.nativeEvent.text)}></TextInput>
+              <TextInput style={styles.input} placeholder="Example: Mediterranean" onSubmitEditing={(value) => setSelectedCuisine(value.nativeEvent.text)}></TextInput>
 
               <Subheading style={{ marginHorizontal: 15, marginTop: 15, color: '#EEEEEE', alignSelf: "center", fontSize: 16 }}> Meal Type</Subheading>
-              <TextInput style={styles.input} placeholder={selectedMealType} onSubmitEditing={(value) => setSelectedMealType(value.nativeEvent.text)}></TextInput>
+              <TextInput style={styles.input} placeholder="Example: Dinner" onSubmitEditing={(value) => setSelectedMealType(value.nativeEvent.text)}></TextInput>
 
             </View>
           </View>

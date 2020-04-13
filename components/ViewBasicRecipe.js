@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight } from "react-native";
-import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button } from 'react-native-paper';
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Switch, Platform, Dimensions, TouchableOpacity, Alert, TouchableHighlight, KeyboardAvoidingView } from "react-native";
+import { FAB, Title, Headline, Subheading, Surface, Provider, Modal, Portal, Card, Button, IconButton, TextInput } from 'react-native-paper';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Firebase from '../configure/Firebase';
 import axios from 'axios';
@@ -8,6 +8,8 @@ import { PulseIndicator } from 'react-native-indicators';
 import * as Print from 'expo-print';
 var sanitizeHtml = require('sanitize-html');
 var stripHtml = require('string-strip-html');
+import { useForm, Controller } from 'react-hook-form'
+
 
 function ViewBasicRecipe({ navigation, recipeDetail }) {
   let mainId = recipeDetail;
@@ -38,12 +40,19 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
   const [recipeInfo, setRecipeInfo] = useState();
   const [summary, setsummary] = useState(0);
   const [switchValue, setSwitchValue] = useState(false);
+  const [listModal, setListModal] = useState(false);
+  const [currItem, setCurrItem] = useState({});
+  const { control, handleSubmit, errors, setError, reset } = useForm({ mode: 'onChange' });
+
   // const [modalVisible, setModalVisible] = useState(false);
   var ingredientsArray = [];
   var stepArray = [];
   var mapArr = [];
   var noInstruction = true;
   // let noSteps = false;
+  let bakRecipeInfo;
+  let apiKey = require('../configure/apiKey.json');
+  let userId = Firebase.auth().currentUser.uid;
 
   useEffect(() => {
 
@@ -265,17 +274,102 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
     });
 
   };
-  const addToList = () => {
-    if (iconName == 'bookmark-plus')
-      setIconName('bookmark-check');
-    else
-      setIconName('bookmark-plus');
 
-    setShowModal(true);
+  const resetViewRecipe = () => {
+    setLoading(true);
+
+    setRecipeInfo(bakRecipeInfo);
+    setListModal(false);
+
+    setLoading(false);
+    setRecipeInfo(recipeInfo);
+  }
+
+  const onSubmit = async data => {
+    if (data.listQuantity < 0.5) {
+      setError("quantityShort", 'quantityShort', "Ingredient text is too short.");
+
+    }
+    else {
+      console.log('before' + data.listUnit);
+
+      console.log('After', data.listUnit);
+      if (!data.listUnit) {
+        console.log('no trim', data.listUnit);
+        data.listUnit = '';
+      }
+      else if (data.listUnit) {
+        console.log('trimmer', data.listUnit);
+        data.listUnit = data.listUnit.trim();
+      }
+      item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit.toUpperCase();
+
+      console.log('Sendign To List: ' + item);
+      let sendData = {
+        userId: userId,
+        listItems: item,
+      }
+      console.log('SUBMIT');
+      axios.post(apiKey.baseURL + 'shoppingList/updateShoppingList', sendData, {
+        headers: {
+          'content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: false,
+      },
+      ).then((res) => {
+
+        if (res.data) {
+          console.log('Recipe Added To User List');
+          //console.log(res);
+          setListModal(false);
+          setCurrItem();
+          // setIsFound(true);
+          //setRecipeInfo(res.data);
+          if (res.status == 200) {
+
+          }
+          console.log(recipeInfo);
+          console.log("Complete Recipe Info Object: ");
+
+          setLoading(false);
+        }
+        else {
+          setLoading(false);
+          setIsFound(false);
+          setListModal(false)
+          setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+          setError("noUser", 'no user', "no account uses this email");
+        }
+      }).catch(error => {
+        setLoading(false);
+        setIsFound(false);
+        setListModal(false);
+        setIsFound(false);
+        console.log("AXIOS CAUGHT ERROR ::::::::::::::::::::");
+        setResponseTxt("Oops!, Something Went Wrong, Try Again Please.");
+
+        console.log(error);
+      });
+    }
 
   }
 
 
+
+
+  const openListScreen = (item) => {
+    bakRecipeInfo = recipeInfo;
+
+    setLoading(false);
+    setCurrItem(item);
+    setListModal(true);
+  }
+  const onChange = args => {
+    return {
+      value: args[0].nativeEvent.text,
+    };
+  };
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 3 }}>
@@ -285,56 +379,58 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
 
       </SafeAreaView>
     )
+  } else if (listModal) {
+    return (
+
+      <SafeAreaView style={{ flex: 3 }}>
+        <Title style={{ color: '#B50900' }}>Adding To Shopping List</Title>
+        <Subheading style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>{currItem.name}</Subheading>
+        <KeyboardAvoidingView>
+
+          <View style={{ marginBottom: 10 }}>
+            <Subheading style={styles.label}>Quantity</Subheading>
+            <Text style={{ color: "#FFC300" }}>Should be atleast 0.5</Text>
+            <Controller
+              as={<TextInput keyboardType={"number-pad"} maxLength={6} style={customStyles.input} />}
+              name="listQuantity"
+
+              control={control}
+              onChange={onChange}
+              rules={{ min: 0.5, required: true }}
+            />
+            {errors.quantityShort && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
+            {errors.listQuantity && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>Value Must be Atleast 0.5
+            </Subheading>}
+            <Subheading style={styles.label}>Unit Of Quantity</Subheading>
+            <Controller
+              as={<TextInput maxLength={25} style={customStyles.input} />}
+              name="listUnit"
+
+              control={control}
+              onChange={onChange}
+              rules={{ pattern: /^[a-zA-Z]+$/ }}
+
+            />
+            {errors.listUnit && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Must be alphabet
+ </Subheading>}
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#1DE9B6' }} color="#FFFFFF" onPress={handleSubmit(onSubmit)}>
+              Add To List
+
+            </Button>
+            <Button disabled={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#81D4FA' }} color="#FFFFFF" onPress={() => resetViewRecipe()} >
+              Cancel
+            </Button>
+
+          </View>
+        </KeyboardAvoidingView>
+
+      </SafeAreaView >
+    )
   } else if (!loading) {
 
-    const saveRecipe = () => {
-
-      // CHECK IF USER IS LOGGED IN. IF SO SEND TO API AND ADD TO CURRENT USER'S LIST OF SAVED RECIPES
-
-      setShowModal(true);
-      console.log('showModal', showModal);
-    }
-
-    const addRecipeToCookbook = (id) => {
-
-
-      /*
-      ****************************************************************************************************************
-      **********************************************Database part*****************************************************
-      ****************************************************************************************************************
-      */
-
-      //    var auth = Firebase.auth();
-      //    const user_id = auth.currentUser.uid;
-
-      // const recipeInfo = {
-      //     "uid": id,
-      //     "userId": user_id,
-      //     "cookbookId": ,
-      // }
-
-      // Axios.post(baseURL + 'userAccount/getUserAccount', recipeInfo, {
-      //     headers: {
-      //       'content-type': 'application/json',
-      //       'Access-Control-Allow-Origin': '*',
-
-      //     }
-      //   }).then((response) => {
-      //     // if(response.data.uid ||;
-      //     console.log(response);
-      //     if (response.data) {
-      //       setSecurityQuestion(response.data.securityQuestion)
-      //       setResponse(response.data.response);
-      //       setUserFound(true);
-      //     }
-      //     else {
-      //       setError("noUser", 'no user', "no account uses this email");
-      //     }
-      //   }).catch(error => {
-      //     // setLoading(false);
-      //     console.log("Error" + error);
-      //   });
-    }
 
 
     return (
@@ -392,32 +488,29 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
           </View>
           <View style={{ marginTop: 32 }}>
             <Subheading style={{ textAlign: "center", fontSize: 18, fontWeight: "600" }}>Description</Subheading>
-            <ScrollView style={{ maxHeight: (summary.length < 100) ? 90 : 150, backgroundColor: "#EF9A9A", borderRadius: 10, padding: 10, minWidth: '100%' }}>
 
-              <Subheading style={{ textAlign: "center", marginBottom: 15 }}>{summary}</Subheading>
-            </ScrollView>
+            <Subheading style={{ textAlign: "center", marginBottom: 15 }}>{summary}</Subheading>
 
           </View>
 
           {recipeInfo.includedIngredients.length > 0 ?
             <View style={styles.viewBoxStyle}>
+
               {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}> */}
               <Headline style={{ color: '#FFFFFF', fontWeight: "600" }}>Ingredients</Headline>
+
+
               {ingred.map((oneIngred, index) => {
                 return (
                   <Card key={index + 1} style={styles.nestedCardStyle}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', margin: 5 }}>
 
-                      <Text style={{ margin: 6, color: '#000000', fontSize: 16 }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
-                      {/* <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
-                                            <TouchableOpacity style={styles.button} onPress={() => {
-                                                decrementCountHandler(oneIngred);
-                                            }}><Text>-</Text></TouchableOpacity>
-                                            <Text>{oneIngred.count}</Text>
-                                            <TouchableOpacity style={styles.button} onPress={() => {
-                                                incrementCountHandler(oneIngred)
-                                            }}><Text>+</Text></TouchableOpacity>
-                                        </View> */}
+                      <Text style={{ marginTop: 6, color: '#000000', fontSize: 16, marginRight: 10, flex: 1, flexWrap: "wrap" }}>{oneIngred.name} ( {oneIngred.amount} {oneIngred.unit} )</Text>
+                      <View style={{ flexDirection: 'row', alignSelf: 'center', alignItems: "center", alignContent: "center" }}>
+                        <TouchableOpacity style={styles.button} onPress={() => {
+                          openListScreen(oneIngred);
+                        }}><IconButton icon="cart-plus" size={20} /></TouchableOpacity>
+                      </View>
                     </View>
                   </Card>
 
@@ -425,6 +518,10 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
               })}
 
 
+              <TouchableOpacity style={styles.button}
+                onPress={() => {
+                  navigation.navigate('Shopping');
+                }}><Text>View Shopping List</Text></TouchableOpacity>
             </View>
             :
             <View style={{ flex: 1 }}>
@@ -745,4 +842,105 @@ const styles = StyleSheet.create({
     color: "#CABFAB"
   }
 
+});
+const customStyles = StyleSheet.create({
+  defaultRounded: {
+    margin: 6,
+    marginTop: 12,
+    borderWidth: 0,
+    borderRadius: 10,
+    padding: 8,
+    height: 'auto',
+    width: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+    backgroundColor: '#4FC3F7'
+  },
+  customStyle: {
+    borderWidth: 0,
+    borderRadius: 10,
+    backgroundColor: '#81D4FA',
+    margin: 18,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 400
+      },
+      android: {
+        width: 400
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+
+
+      }
+    }),
+  },
+
+  nestedCardStyle: {
+    padding: 0,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    margin: 5,
+    flexWrap: 'wrap',
+    alignItems: "flex-start",
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 270
+      },
+      android: {
+        width: 270
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 70) : 550,
+
+
+      }
+
+    }),
+  },
+  viewBoxStyle: {
+    marginTop: 10,
+    backgroundColor: '#81D4FA',
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    borderWidth: 0,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
+    height: 'auto',
+    ...Platform.select({
+      ios: {
+        width: 300
+      },
+      android: {
+        width: 300
+      },
+      web: {
+        width: ((Dimensions.get('window').width) < 500) ? ((Dimensions.get('window').width) - 50) : 600,
+
+
+      }
+    }),
+  },
+  input: {
+    backgroundColor: '#B2DFDB',
+    borderWidth: 0,
+    height: 40,
+    padding: 5,
+    width: "auto",
+    borderRadius: 4,
+    alignSelf: "stretch"
+  },
 });

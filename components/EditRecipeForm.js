@@ -100,13 +100,16 @@ const styles = StyleSheet.create({
   multilineInput: {
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
-    height: "auto",
+    minHeight: 150,
+    maxHeight: 150,
+    width: 250,
     padding: 5,
     borderRadius: 4,
   },
   descInput: {
     backgroundColor: '#FFFFFF',
-    height: 150,
+    minHeight: 150,
+    maxHeight: 150,
     paddingBottom: 10,
     width: 300
     //borderWidth: 0,
@@ -696,12 +699,12 @@ function EditRecipeForm({ nav }) {
         <View>
           <Card.Content>
             <Title>Updating Step</Title>
-            <View style={{ minHeight: 100 }}>
+            <View style={{ minHeight: 150 }}>
               <TextInput multiline={true} scrollEnabled={true} defaultValue={steps[currentStep]} editable={true} style={styles.multilineInput} onChangeText={text => setNewStep(text)} />
 
             </View>
             <Button style={{ backgroundColor: '#00BFA5', margin: 10 }} color='#FF00FF' mode="contained" onPress={() => updateStep(currentStep)}>Update </Button>
-            <Button style={{ backgroundColor: '#C62828', margin: 10 }} color='#FF00FF' mode="contained" onPress={() => setShowModal(false)}>Cancel </Button>
+            <Button style={{ backgroundColor: '#C62828', margin: 10 }} color='#FF00FF' mode="contained" onPress={() => setEditingStep(false)}>Cancel </Button>
 
           </Card.Content>
         </View>
@@ -747,7 +750,7 @@ function EditRecipeForm({ nav }) {
           <Controller
             as={
 
-              <TextInput multiline={true} disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
+              <TextInput multiline={true} scrollEnabled={true} disabled={published} style={(published) ? styles.descInputDisabled : styles.descInput} />}
 
             name="recipeDesc"
             defaultValue={recipe.summary}
@@ -860,7 +863,7 @@ function EditRecipeForm({ nav }) {
 
           <Subheading style={styles.label}>Ready In Minutes</Subheading>
           <Controller
-            as={<TextInput defaultValue={String(recipe.readyInMinutes)}
+            as={<TextInput maxLength={4} defaultValue={String(recipe.readyInMinutes)}
               disabled={published} style={(published) ? styles.disabledInput : styles.input} />}
             name="readyInMinutes"
             defaultValue={String(recipe.readyInMinutes)}
@@ -868,6 +871,7 @@ function EditRecipeForm({ nav }) {
             min={1}
             control={control}
             onChange={onChange}
+
           />
           {errors.readyInMinutes && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}>{errors.readyInMinutes.message}
           </Subheading>}

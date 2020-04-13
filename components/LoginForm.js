@@ -239,7 +239,7 @@ function LoginForm({ props }) {
 
 
         <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => { props.navigate('ForgotPassword') }}>
-          Forgot Password ?
+          Forgot Password
       </Button>
         <Provider>
           <Portal>

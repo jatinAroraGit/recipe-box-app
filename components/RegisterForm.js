@@ -273,7 +273,7 @@ function RegisterForm({ nav }) {
         rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
       />
       {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
-      <Text style={{ color: "#FFAB00", fontWeight: "600" }}>Rules: Must be atelast 6 characters and should contain atleast one lowercase letter, uppercase letter , a special character and a number.</Text>
+      <Text style={{ color: "#FFAB00", fontWeight: "600" }}>Rules: Must be atelast 8 characters and should contain atleast one lowercase letter, uppercase letter , a special character and a number.</Text>
       <Subheading style={styles.label}>Confirm Password</Subheading>
       <Controller
         as={<TextInput maxLength={25} style={styles.input} secureTextEntry={true} />}
@@ -329,7 +329,7 @@ function RegisterForm({ nav }) {
       {errors.answer && <Subheading style={{ color: '#BF360C' }}>You must provide an answer.</Subheading>}
       {errors.same && <Subheading style={{ color: '#BF360C' }}>Your answer cannot be same as the question.</Subheading>}
       {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
-      {errors.firebase && <Subheading style={{ color: '#BF360C' }}>{errors.firebase.message}</Subheading>}
+
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         <Button loading={loading} style={{ marginHorizontal: 10, marginTop: 20, backgroundColor: '#29D4FA' }} pre mode="contained" onPress={handleSubmit(onSubmit)}>

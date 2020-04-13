@@ -11,6 +11,7 @@ export default class RecipeCards extends React.PureComponent {
     this.state = {
       baseUri: `https://spoonacular.com/recipeImages/`,
       sendItem: JSON.stringify(this.props.oneitem),
+      defImage: true
       // navigation: this.props.navigation,
     }
 
@@ -27,7 +28,12 @@ export default class RecipeCards extends React.PureComponent {
 
           <Text style={styles.cardTitle}>{this.props.oneitem.title}</Text>
           <View style={{ flexDirection: "row" }}>
-            <Image style={styles.cardImage} source={{ uri: (this.props.oneitem.image) ? this.props.oneitem.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }}></Image>
+
+            {this.state.defImage ? <Image source={{ uri: (this.props.oneitem.image) ? this.props.oneitem.image : "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg" }} style={styles.cardImage} onError={(error) => this.setState({ defImage: false })} resizeMode="center"></Image> :
+              <Image source={{ uri: "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1-scaled-1150x647.png" }} style={styles.cardImage} resizeMode="center"></Image>
+            }
+
+
             {/* <Image style={styles.cardImage} source={this.props.oneitem.image} /> */}
             <View style={{ flexDirection: "column" }}>
               <Text style={styles.cardText}>Serving Size: {this.props.oneitem.servings}</Text>

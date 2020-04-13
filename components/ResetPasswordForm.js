@@ -236,7 +236,7 @@ function ResetPasswordForm({ props }) {
             rules={{ required: true, pattern: /(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/ }}
           />
 
-          <Text>Must Be Atleast 6 Character and must include atleast one uppercase letter, one lowercase letter, a number and a special character</Text>
+          <Text>Must Be Atleast 8 Character and must include atleast one uppercase letter, one lowercase letter, a number and a special character</Text>
           {errors.password && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}>Invalid Password.</Subheading>}
           {errors.invalid && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '600' }}></Subheading>}
 
@@ -253,7 +253,7 @@ function ResetPasswordForm({ props }) {
 
 
         <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => { props.navigate('ForgotPassword') }}>
-          Forgot Password ?
+          Forgot Password
       </Button>
         <Provider>
           <Portal>
