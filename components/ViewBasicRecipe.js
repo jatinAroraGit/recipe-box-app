@@ -302,7 +302,7 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
         console.log('trimmer', data.listUnit);
         data.listUnit = data.listUnit.trim();
       }
-      item = currItem.name + '~' + data.listQuantity + '~' + data.listUnit.toUpperCase();
+      let item = currItem.name.toUpperCase() + '~' + data.listQuantity + '~' + data.listUnit.toUpperCase();
 
       console.log('Sendign To List: ' + item);
       let sendData = {
@@ -409,7 +409,7 @@ function ViewBasicRecipe({ navigation, recipeDetail }) {
 
               control={control}
               onChange={onChange}
-              rules={{ pattern: /^[a-zA-Z]+$/ }}
+              rules={{ pattern: /^[a-zA-Z ]*$/ }}
 
             />
             {errors.listUnit && <Subheading style={{ color: '#BF360C', fontSize: 15, fontWeight: '300' }}> Must be alphabet
