@@ -768,7 +768,7 @@ function ViewRecipe({ navigation, recipeDetail }) {
     else {
       return (
         <SafeAreaView style={{ padding: 10 }} >
-          <Title>Looks like you do not have any cookbooks to add this recipe to. You can create one by going to the Your Dashboard and Hitting the Your Recipes and Cookbooks Button</Title>
+          <Title>Looks like you do not have any cookbooks to add this recipe to. You can create one by going to the  Dashboard and Hitting the Your Recipes and Cookbooks Button</Title>
           <View style={{ margin: 10 }}>
             <Button mode="contained" onPress={() => goBackToRecipe()}> Go Back To The Recipe</Button>
           </View>

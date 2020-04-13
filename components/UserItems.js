@@ -916,7 +916,7 @@ else if(editingCookbooks){
             </Button>
 
           </View>
-          <Subheading style={{ textAlign: "center", fontWeight: "500" }}>SCroll To See List Of Recipes In The Cookbook</Subheading>
+          <Subheading style={{ textAlign: "center", fontWeight: "500" }}>Scroll To See List Of Recipes In The Cookbook</Subheading>
             {cookbookRecipesList}
         </View>
       </KeyboardAvoidingView>
@@ -1040,7 +1040,7 @@ else if(showEditModal){
                     Create Recipe
             </Button>
                 </View>
-              <Subheading style={{textAlign:"center"}}>Swipe Left Or Write Through Your Favorites</Subheading>
+              <Subheading style={{textAlign:"center"}}>Swipe Left Or Right Through Your Favorites</Subheading>
 
                <Button mode="contained" style={{margin:10}} onPress={()=> loadAgain()}>Tap To Refresh</Button>
               <Text style={{ textAlign: "center", color: "#FFFFFF", fontWeight: '600', fontSize: 18 }}>  {userRecipes.length} Saved Recipes</Text>
