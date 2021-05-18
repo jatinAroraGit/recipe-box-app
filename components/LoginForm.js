@@ -241,6 +241,10 @@ function LoginForm({ props }) {
         <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: 'grey', margin: 20 }} onPress={() => { props.navigate('ForgotPassword') }}>
           Forgot Password
       </Button>
+
+        <Button color='#FFFFFF' style={{ alignSelf: 'center', backgroundColor: '#008080', margin: 20 }} onPress={() => { props.navigate('UserHomeScreen') }}>
+          DEV LOGIN
+      </Button>
         <Provider>
           <Portal>
             <Modal visible={unverified == 1} contentContainerStyle={styles.modalStyle}>

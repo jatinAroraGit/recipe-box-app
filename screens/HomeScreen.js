@@ -158,7 +158,7 @@ class HomeScreen extends React.Component {
 
               </Surface>
 
-              <Text style={{ color: '#00000', fontWeight: "600", margin: 10 }}>Scroll  To Know More
+              <Text style={{ color: '#000000', fontWeight: "600", margin: 10 }}>Scroll  To Know More
      </Text>
 
 

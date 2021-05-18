@@ -3,7 +3,6 @@
     "name": "RecipeBox",
     "slug": "recipe-box",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "primaryColor": "#F06292",
     "scheme": "recipebox",
     "platforms": [
